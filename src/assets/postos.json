@@ -1,0 +1,51 @@
+[
+  {
+    "Municipio": "FORTALEZA",
+    "Local_de_Votacao": "BNB CLUBE",
+    "Endereco": "AVENIDA SANTOS DUMONT 3646",
+    "Bairro": "ALDEOTA",
+    "CEP": "60150162"
+  },
+  {
+    "Municipio": "FORTALEZA",
+    "Local_de_Votacao": "ESCOLA ESTADUAL ARQUITETO ROGERIO FROES",
+    "Endereco": "AVENIDA DAS GRAVIOLAS 1000",
+    "Bairro": "CIDADE 2000",
+    "CEP": "60190600"
+  },
+  {
+    "Municipio": "FORTALEZA",
+    "Local_de_Votacao": "ESCOLA ESTADUAL MATIAS BECK",
+    "Endereco": "RUA PROFESSORA AIDA BALAIO 38",
+    "Bairro": "MUCURIPE",
+    "CEP": "60176390"
+  },
+  {
+    "Municipio": "FORTALEZA",
+    "Local_de_Votacao": "ESCOLA MUNICIPAL JOSE RAMOS TORRES DE MELO",
+    "Endereco": "AVENIDA DA ABOLIÇÃO 3984",
+    "Bairro": "MUCURIPE",
+    "CEP": "60165082"
+  },
+  {
+    "Municipio": "FORTALEZA",
+    "Local_de_Votacao": "ESCOLA ESTADUAL DRAGAO DO MAR",
+    "Endereco": "RUA UMARI S/N",
+    "Bairro": "MUCURIPE",
+    "CEP": "60175280"
+  },
+  {
+    "Municipio": "FORTALEZA",
+    "Local_de_Votacao": "IATE CLUBE",
+    "Endereco": "AVENIDA DA ABOLIÇÃO 4813",
+    "Bairro": "MUCURIPE",
+    "CEP": "60165082"
+  },
+  {
+    "Municipio": "FORTALEZA",
+    "Local_de_Votacao": "CLUBE DO MEDICO",
+    "Endereco": "AVENIDA DIOGUINHO 3355",
+    "Bairro": "VICENTE PINZON",
+    "CEP": "60182001"
+  }
+]
