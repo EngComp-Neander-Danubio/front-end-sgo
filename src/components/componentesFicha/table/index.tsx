@@ -20,6 +20,7 @@ import { IconeBusca } from '../registrosMedicos/icones/iconeBusca';
 
 interface ITable {
   isOpen?: boolean;
+  isActions?: boolean;
   columns?: string[]; // Array de strings que representa os nomes das colunas
   registers?: { [key: string]: any }[]; // Array de objetos, onde cada objeto representa uma linha e as chaves são os nomes das colunas
   moreLoad?: () => void;
@@ -29,7 +30,7 @@ interface ITable {
 }
 
 export const TableFicha: React.FC<ITable> = ({
-  isOpen,
+  isActions,
   columns,
   registers,
   moreLoad,
@@ -39,25 +40,13 @@ export const TableFicha: React.FC<ITable> = ({
 }) => {
   const start = currentPosition > 0 ? currentPosition - rowsPerLoad + 1 : 0;
   const end = currentPosition;
-  /* useEffect(() => {
-    if (columns && registers) {
-      // Verifica se "Ações" já não foi adicionada
-      if (!columns.includes('Ações')) {
-        // Adiciona "Ações" ao array de colunas
-        columns.push('Ações');
-      }
-
-      // Itera sobre os registros e adiciona a propriedade "Ações" se ainda não existir
-      registers.forEach(register => {
-        if (!register['Ações']) {
-          register['Ações'] = ''; // Adiciona a coluna "Ações" com um valor padrão
-        }
-      });
-    }
-  }, [columns, registers]); */
-
   return (
-    <TableContainer pt={4} w="100%" transitionDuration="1.0s">
+    <TableContainer
+      pt={4}
+      w="100%"
+      transitionDuration="1.0s"
+
+    >
       <Table variant="simple">
         <TableCaption textAlign="left" p={0}>
           <Flex justify="space-between">
@@ -107,9 +96,9 @@ export const TableFicha: React.FC<ITable> = ({
                 customIcon={<AiOutlineArrowDown />}
               />
             ))}
-            {/* {registers && registers.length > 0 && (
+            {registers && registers.length > 0 && isActions && (
               <ThTable title="Ações" customIcon={undefined} />
-            )} */}
+            )}
           </Tr>
         </Thead>
         <Tbody>
@@ -125,7 +114,7 @@ export const TableFicha: React.FC<ITable> = ({
                       : JSON.stringify(register[column])
                   }
                   /* customIcons={
-                    false
+                    isActions
                       ? [
                           <IconeBusca key="busca" />,
                           <IconeRelatorio key="relatorio" />,
@@ -136,6 +125,18 @@ export const TableFicha: React.FC<ITable> = ({
                   } */
                 />
               ))}
+              <TdTable
+                customIcons={
+                  isActions
+                    ? [
+                        <IconeBusca key="busca" />,
+                        <IconeRelatorio key="relatorio" />,
+                        <IconeEditar key="editar" />,
+                        <IconeDeletar key="deletar" />,
+                      ]
+                    : undefined
+                }
+              />
             </Tr>
           ))}
         </Tbody>

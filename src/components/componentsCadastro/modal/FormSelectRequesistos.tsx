@@ -19,6 +19,8 @@ import { optionsMilitares } from '../../../types/typesMilitar';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
 export type IForm = {
   quantity_militars: number;
+  quantity_services: number;
+  quantity_folgas: number;
   quantity_turnos: number;
   aleatoriedade: boolean;
   efetivo_tipo: boolean;
@@ -33,14 +35,25 @@ export type IForm = {
 };
 
 export const FormSelectRequesitos: React.FC = () => {
-  const { control, setValue, trigger, watch, reset } = useFormContext<IForm>();
+  const {
+    control,
+    setValue,
+    trigger,
+    watch,
+    reset,
+    getValues,
+  } = useFormContext<IForm>();
   const [quantity, setQuantity] = useState(2);
   const [quantityTurnos, setQuantityTurnos] = useState(1);
+  const [quantityServices, setQuantityServices] = useState(1);
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const isAleatorio = watch('aleatoriedade');
   const [switchGrad, setSwitchGrad] = useState(true);
   const [swicth, setSwicth] = useState(true);
+  const dateFirst = new Date(watch('dateFirst'));
+  const dateFinish = new Date(watch('dateFinish'));
+  const [quantityFolga, setQuantityFolga] = useState(0);
   const handleSwicth = (e: any) => {
     setSwicth(!swicth);
   };
@@ -67,12 +80,48 @@ export const FormSelectRequesitos: React.FC = () => {
       reset();
     }
   };
+  const handleQuantityServicesPlus = () => {
+    if (quantityServices <= dateFinish.getDate() - dateFirst.getDate()) {
+      setQuantityServices(q => q + 1);
+      setQuantityFolga(q => q - 1);
+    }
+  };
 
+  const handleQuantityServiceMinus = () => {
+    if (quantityServices > 1) {
+      setQuantityServices(q => q - 1);
+      setQuantityFolga(q => q + 1);
+    }
+  };
+  const handleQuantityFolgaPlus = () => {
+    if (quantityFolga <= dateFinish.getDate() - dateFirst.getDate()) {
+      setQuantityFolga(q => q + 1);
+      setQuantityServices(q => q - 1);
+    }
+  };
+
+  const handleQuantityfolgaMinus = () => {
+    if (quantityFolga > 0) {
+      setQuantityFolga(q => q - 1);
+      setQuantityServices(q => q + 1);
+    }
+  };
   setValue('quantity_militars', quantity);
   setValue('quantity_turnos', quantityTurnos);
+  setValue('quantity_services', quantityServices);
+  setValue('quantity_folgas', quantityFolga);
+
   useEffect(() => {
-    reset();
-  }, []);
+    const differenceDates = dateFinish.getDate() - dateFirst.getDate();
+    console.log(
+      'differenceDates',
+      differenceDates,
+      'qtd folgas',
+      quantityFolga,
+    );
+    setValue('quantity_folgas', differenceDates);
+  }, [dateFirst, dateFinish, setValue]);
+
   useEffect(() => {
     const triggerAntiguidade = async () => {
       await trigger('antiguidade');
@@ -215,6 +264,7 @@ export const FormSelectRequesitos: React.FC = () => {
                           onChange={onChange}
                           onBlur={onBlur}
                           error={error}
+                          value={value}
                         />
                       </Flex>
                     );
@@ -541,6 +591,97 @@ export const FormSelectRequesitos: React.FC = () => {
               </Flex>
             ))}
           </Flex>
+        )}
+        {dateFinish.getTime() - dateFirst.getTime() > 1 && (
+          <>
+            <FormLabel fontWeight={'bold'}>Folga entre serviços</FormLabel>
+            <Flex
+              flexDirection={'row'}
+              justify={'center'}
+              align={'center'}
+              justifyContent={'space-between'}
+            >
+              <Flex
+                flexDirection={'row'}
+                align={'center'}
+                justify={'center'}
+                gap={2}
+              >
+                <FormLabel>Serviços</FormLabel>
+                <Controller
+                  name="quantity_services"
+                  control={control}
+                  render={({ field }) => (
+                    <Flex
+                      flexDirection={'row'}
+                      align={'center'}
+                      justify={'center'}
+                      gap={2}
+                    >
+                      <FaMinusCircle
+                        onClick={() => {
+                          handleQuantityServiceMinus();
+                        }}
+                      />
+                      <Input
+                        w={'60px'}
+                        h={'30px'}
+                        type="text"
+                        value={`${quantityServices}`} // Use o valor do campo controlado
+                        onChange={e => {
+                          const newValue = Number(e.target.value);
+                          setQuantityServices(newValue);
+                          field.onChange(newValue);
+                        }}
+                      />
+                      <FaPlusCircle
+                        onClick={() => {
+                          handleQuantityServicesPlus();
+                        }}
+                      />
+                    </Flex>
+                  )}
+                />
+              </Flex>
+              <Flex
+                flexDirection={'row'}
+                align={'center'}
+                justify={'center'}
+                gap={2}
+              >
+                <FormLabel>Folgas</FormLabel>
+                <Controller
+                  name="quantity_folgas"
+                  control={control}
+                  render={({ field }) => (
+                    <>
+                      <FaMinusCircle
+                        onClick={() => {
+                          handleQuantityfolgaMinus();
+                        }}
+                      />
+                      <Input
+                        w={'60px'}
+                        h={'30px'}
+                        type="text"
+                        value={`${quantityFolga}`} // Use o valor do campo controlado
+                        onChange={e => {
+                          const newValue = Number(e.target.value);
+                          setQuantityFolga(newValue);
+                          field.onChange(newValue);
+                        }}
+                      />
+                      <FaPlusCircle
+                        onClick={() => {
+                          handleQuantityFolgaPlus();
+                        }}
+                      />
+                    </>
+                  )}
+                />
+              </Flex>
+            </Flex>
+          </>
         )}
       </Flex>
     </FormControl>

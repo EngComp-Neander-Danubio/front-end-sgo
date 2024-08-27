@@ -70,11 +70,21 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     setIsLoading(true);
     const parameters = param !== undefined ? param : '';
     try {
-      const response = await api.get<{ items: Event[] }>(`tasks/${parameters}`);
+      const response = await api.get<{ items: Event[] }>(
+        `operacao/${parameters}`,
+      );
       setEvents((response.data as unknown) as Event[]);
+       /* toast({
+         title: 'Sucesso',
+         description: 'Eventos/Operações carregados com sucesso',
+         status: 'success',
+         position: 'top-right',
+         duration: 9000,
+         isClosable: true,
+       }); */
       console.log('Dados carregados:', response.data);
     } catch (error) {
-      console.error('Falha ao carregar as tarefas:', error);
+      console.error('Falha ao carregar os eventos/operações:', error);
     } finally {
       setIsLoading(false);
     }

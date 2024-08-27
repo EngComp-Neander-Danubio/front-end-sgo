@@ -110,9 +110,19 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
     uploadEvent(data);
   };
 
-  const headerKeys = postos.length > 0 ? Object.keys(postos[0]) : [];
+  const headerKeys =
+    postos.length > 0
+      ? Object.keys(postos[0]).filter(key =>
+          ['Local de Votação',  'Endereço', 'Bairro','Município'].includes(key),
+        )
+      : [];
   const headerKeysMilitar =
-    militares.length > 0 ? Object.keys(militares[0]) : [];
+    militares.length > 0
+      ? Object.keys(militares[0]).filter(key =>
+          ['matricula', 'posto_grad', 'nome_completo', 'opm'].includes(key),
+        )
+      : [];
+
   /* console.log(headerKeys); */
   return (
     <>
@@ -367,6 +377,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
               </ButtonGroup>
               <Flex
                 overflowX={'auto'}
+                overflowY={'auto'}
                 align={'center'}
                 w={'100%'}
                 justify={'center'}
