@@ -54,16 +54,7 @@ export const ToListEvents: React.FC<IFlexCadastrar> = ({
           gap={2}
           align={{ base: 'flex-start' }}
         >
-          <Flex
-            display={{ base: 'flex', lg: 'flex', md: 'flex', sm: 'block' }}
-            gap={4}
-            align={'center'}
-            justify={'center'}
-          >
-            {/* <InputInlcuir handleSubmit={() => handleSubmit} /> */}
-          </Flex>
-
-          <Flex
+          {/* <Flex
             borderBottom="1px solid rgba(0, 0, 0, 0.5)"
             boxShadow="0px 4px 4px -2px rgba(0, 0, 0, 0.5)"
             borderRadius={'8px'}
@@ -74,17 +65,12 @@ export const ToListEvents: React.FC<IFlexCadastrar> = ({
             align={'center'}
             justifyContent={'center'}
           >
-            {/*
-              O conteúdo vem aqui
-              */}
-            <Flex p={8} w={'100%'}>
-              <ToListEventsContent />
-            </Flex>
-          </Flex>
 
-          {/* <Flex mt={4} align={'center'} justify={'center'}>
-            <BotaoNovoRegistro />
+
           </Flex> */}
+          <Flex p={8} w={isOpen ? '86vw' : '93vw'}>
+            <ToListEventsContent />
+          </Flex>
         </Flex>
       </Flex>
     </Flex>

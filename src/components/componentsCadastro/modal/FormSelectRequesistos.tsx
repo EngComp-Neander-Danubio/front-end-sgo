@@ -3,20 +3,17 @@ import {
   Text,
   FormControl,
   FormLabel,
-  Select,
   Switch,
   Input,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { Controller, useForm, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
-import { isNumeric } from 'validator';
 import { DatePickerRequisitos } from './DatePickerRequisitos';
 import { DatePickerTime } from './DatePickerTime';
 import { SelectPattern } from './SelectPattern';
 import { optionsModalidade } from '../../../types/typesModalidade';
 import { optionsMilitares } from '../../../types/typesMilitar';
-import { InputPatternController } from '../inputPatternController/InputPatternController';
 export type IForm = {
   quantity_militars: number;
   quantity_services: number;
@@ -58,9 +55,12 @@ export const FormSelectRequesitos: React.FC = () => {
     setSwicth(!swicth);
   };
   const handleSwicthGrad = (e: any) => {
+    if (!isAleatorio) trigger('antiguidade');
+    
     setSwitchGrad(!switchGrad);
   };
-  const handleQuantityPlus = () => {
+  const handleQuantityPlus = async() => {
+    if(!isAleatorio) await trigger('antiguidade')
     setQuantity(q => q + 1);
   };
 
@@ -122,13 +122,7 @@ export const FormSelectRequesitos: React.FC = () => {
     setValue('quantity_folgas', differenceDates);
   }, [dateFirst, dateFinish, setValue]);
 
-  useEffect(() => {
-    const triggerAntiguidade = async () => {
-      await trigger('antiguidade');
-    };
 
-    if (!isAleatorio) triggerAntiguidade();
-  }, [trigger, isAleatorio]);
 
   return (
     <FormControl>
@@ -212,8 +206,11 @@ export const FormSelectRequesitos: React.FC = () => {
                 id="aleatoriedade"
                 //colorScheme={'#38A169'}
                 color={'#38A169'}
-                onChange={e => {
+                onChange={async e => {
                   field.onChange(e.target.checked);
+
+                    await trigger('antiguidade');
+
                   handleSwicth(!field.value);
                 }}
                 isChecked={field.value ?? false}
@@ -223,7 +220,7 @@ export const FormSelectRequesitos: React.FC = () => {
         </Flex>
         {!swicth && (
           <Flex flexDirection={'column'} justify={'center'}>
-            <FormLabel fontWeight={'bold'}>Somente Praças?</FormLabel>
+            {/* <FormLabel fontWeight={'bold'}>Somente Praças?</FormLabel>
             <Controller
               name="efetivo_tipo"
               control={control}
@@ -239,37 +236,45 @@ export const FormSelectRequesitos: React.FC = () => {
                   isChecked={field.value ?? true}
                 />
               )}
-            />
+            /> */}
             <Flex flexDirection={'column'} justify={'center'}>
               <FormLabel fontWeight={'bold'}>Efetivo</FormLabel>
               {Array.from({ length: quantity }, (_, index) => (
-                <Controller
+                <Flex
+                  gap={2}
+                  flexDirection={'column'}
                   key={index} // `key` aplicada no nível correto
-                  name={`antiguidade.${index}` as const}
-                  control={control}
-                  render={({
-                    field: { onChange, onBlur, value, ref },
-                    fieldState: { error },
-                  }) => {
-                    const options = switchGrad
+                >
+                  <Text>{index + 1}° Policial Militar</Text>
+                  <Controller
+                    name={`antiguidade.${index}` as const}
+                    control={control}
+                    render={({
+                      field: { onChange, onBlur, value, ref },
+                      fieldState: { error },
+                    }) => {
+                      /* const options = switchGrad
                       ? optionsMilitares.filter(m => Number(m.militarRank) >= 7)
-                      : optionsMilitares;
+                      : optionsMilitares; */
+                      const options = optionsMilitares;
 
-                    return (
-                      <Flex gap={2} flexDirection={'column'}>
-                        <Text>{index + 1}° Policial Militar</Text>
+                      return (
                         <SelectPattern
                           options={options} // `options` calculado uma vez
                           placeholderSelect="Militares"
-                          onChange={onChange}
+                          onChange={async e => {
+                            onChange(e.currentTarget.value);
+                           await trigger(`aleatoriedade`)
+
+                          }}
                           onBlur={onBlur}
                           error={error}
                           value={value}
                         />
-                      </Flex>
-                    );
-                  }}
-                />
+                      );
+                    }}
+                  />
+                </Flex>
               ))}
             </Flex>
           </Flex>
@@ -592,7 +597,7 @@ export const FormSelectRequesitos: React.FC = () => {
             ))}
           </Flex>
         )}
-        {dateFinish.getTime() - dateFirst.getTime() > 1 && (
+        {/* {dateFinish.getTime() - dateFirst.getTime() > 1 && (
           <>
             <FormLabel fontWeight={'bold'}>Folga entre serviços</FormLabel>
             <Flex
@@ -682,7 +687,7 @@ export const FormSelectRequesitos: React.FC = () => {
               </Flex>
             </Flex>
           </>
-        )}
+        )} */}
       </Flex>
     </FormControl>
   );

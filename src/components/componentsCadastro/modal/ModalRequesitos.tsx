@@ -50,7 +50,7 @@ export const ModalRequesitos: React.FC<IModal> = ({ isOpen, onClose }) => {
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="red" mr={3} onClick={onClose}>
+                <Button colorScheme="yellow" mr={3} onClick={onClose}>
                   Cancelar
                 </Button>
                 <Button
@@ -60,7 +60,7 @@ export const ModalRequesitos: React.FC<IModal> = ({ isOpen, onClose }) => {
                   type="submit"
                   //onClick={!methodsRequisitos.formState.defaultValues ? onClose : undefined}
                 >
-                  Distribuir
+                  Confirmar
                 </Button>
               </ModalFooter>
             </ModalContent>

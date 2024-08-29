@@ -128,7 +128,6 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
           groupedMilitares[a] = remainingMilitares.filter(
             m => m.posto_grad === a,
           );
-          console.log(groupedMilitares[a]);
         });
 
         postosData.forEach(posto => {
@@ -153,7 +152,7 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
 
               if (militar) {
                 selectedMilitares.push(militar);
-                console.log(selectedMilitares);
+                //console.log(selectedMilitares);
                 groupedMilitares[a] = groupedMilitares[a].filter(
                   m => m.matricula !== militar.matricula,
                 );
@@ -163,20 +162,6 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
               }
             });
 
-           /*  // Adiciona militares restantes se necessário
-            while (
-              selectedMilitares.length < requisitoServico.quantity_militars &&
-              remainingMilitares.length > 0
-            ) {
-              const militarExtra = remainingMilitares.shift()!;
-              selectedMilitares.push(militarExtra);
-            } */
-            // Adiciona militares restantes se necessário
-           /*  while (
-              selectedMilitares.length < requisitoServico.quantity_militars
-            ) { */
-              // Para cada antiguidade, se não houver mais militares na graduação atual,
-              // procure na próxima graduação para completar o serviço
               requisitoServico.antiguidade.forEach((a, index) => {
                 if (
                   selectedMilitares.length <
@@ -196,15 +181,6 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
                 }
               }
             );
-
-              /* // Se ainda restarem vagas e militares no array remainingMilitares, adicione-os
-              if (
-                selectedMilitares.length < requisitoServico.quantity_militars &&
-                remainingMilitares.length > 0
-              ) {
-                //selectedMilitares.push(remainingMilitares.shift()!);
-              } */
-            //}
 
             // Cria o objeto de serviço
             const service: Service = {

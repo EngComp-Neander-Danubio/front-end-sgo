@@ -26,7 +26,7 @@ export const FlexConteudo: React.FC<IFlexCadastrar> = ({
         borderTopLeftRadius={0}
         w={isOpen ? '87vw' : '94vw'}
         transitionDuration="1.0s"
-        h={'75vh'}
+        h={'80vh'}
         position="relative"
         borderBottom="1px solid rgba(0, 0, 0, 0.5)"
         boxShadow="0px 4px 4px -2px rgba(0, 0, 0, 0.5)"
@@ -81,7 +81,7 @@ export const FlexConteudo: React.FC<IFlexCadastrar> = ({
             align={'center'}
             justifyContent={'center'}
           >
-            <Flex>
+            <Flex mb={10}>
               <AccordinCadastro
                 isOpen={isOpen}
                 handleToggle={handleToggle}
@@ -91,10 +91,6 @@ export const FlexConteudo: React.FC<IFlexCadastrar> = ({
               />
             </Flex>
           </Flex>
-
-          {/* <Flex mt={4} align={'center'} justify={'center'}>
-            <BotaoNovoRegistro />
-          </Flex> */}
         </Flex>
       </Flex>
     </Flex>

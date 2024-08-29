@@ -21,7 +21,7 @@ import {
 } from '@chakra-ui/react';
 import { OptionType, SelectPattern } from './SelectPattern';
 import React, { useState } from 'react';
-import { OPMs, optionsOPMs } from '../../../types/typesOPM';
+import { OPMs, options1CRPM, optionsOPMs } from '../../../types/typesOPM';
 import { Controller, useForm } from 'react-hook-form';
 import { ModalFormAddMilitar } from './ModalFormAddMilitar';
 import { FormEfetivo } from '../formEfetivo/FormEfetivo';
@@ -39,8 +39,12 @@ export const ModalSAPM: React.FC<IModal> = ({
   onClose,
   select_opm,
 }) => {
+  const { control, reset, getValues } = useForm();
   const [selectedCheckbox, setSelectedCheckbox] = useState<
     'Todos' | 'especializadas' | 'POG' | 'Setores Administrativos' | null
+  >(null);
+  const [selectedCheckboxGrandeOPMs, setSelectedCheckboxGrandeOPMs] = useState<
+    '1crpm' | '2crpm' | '3crpm' | '4crpm' | null
   >(null);
   const [opm, setOPM] = useState<OPMs[]>([]);
   const toast = useToast();
@@ -48,6 +52,11 @@ export const ModalSAPM: React.FC<IModal> = ({
     option: 'Todos' | 'especializadas' | 'POG' | 'Setores Administrativos',
   ) => {
     setSelectedCheckbox(option);
+  };
+  const handleCheckboxChangeGrandeOPM = (
+    option: '1crpm' | '2crpm' | '3crpm' | '4crpm',
+  ) => {
+    setSelectedCheckboxGrandeOPMs(option);
   };
 
   const handleSelectOpm = (option: OPMs) => {
@@ -80,6 +89,7 @@ export const ModalSAPM: React.FC<IModal> = ({
     try {
       if (opm.length > 0) {
         setOPM([]);
+        //reset();
         toast({
           title: 'Exclusão de OPMs.',
           description: 'OPMs excluída com sucesso.',
@@ -106,7 +116,7 @@ export const ModalSAPM: React.FC<IModal> = ({
       const updatedOpm = opm.filter(o => o !== option);
 
       setOPM(updatedOpm);
-
+      //reset();
       toast({
         title: 'Exclusão de OPMs.',
         description: 'OPM excluída com sucesso.',
@@ -126,9 +136,6 @@ export const ModalSAPM: React.FC<IModal> = ({
       });
     }
   };
-
-  const { control, reset, getValues } = useForm();
-
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -181,10 +188,34 @@ export const ModalSAPM: React.FC<IModal> = ({
 
                   <Divider />
                   <Flex gap={4} h="50px">
-                    <Checkbox size="md">1° CRPM</Checkbox>
-                    <Checkbox size="md">2° CRPM</Checkbox>
-                    <Checkbox size="md">3° CRPM</Checkbox>
-                    <Checkbox size="md">4° CRPM</Checkbox>
+                    <Checkbox
+                      size="md"
+                      //isChecked={selectedCheckboxGrandeOPMs === '1crpm'}
+                      onChange={() => handleCheckboxChangeGrandeOPM('1crpm')}
+                    >
+                      1° CRPM
+                    </Checkbox>
+                    <Checkbox
+                      size="md"
+                      //isChecked={selectedCheckboxGrandeOPMs === '2crpm'}
+                      onChange={() => handleCheckboxChangeGrandeOPM('2crpm')}
+                    >
+                      2° CRPM
+                    </Checkbox>
+                    <Checkbox
+                      size="md"
+                      //isChecked={selectedCheckboxGrandeOPMs === '3crpm'}
+                      onChange={() => handleCheckboxChangeGrandeOPM('3crpm')}
+                    >
+                      3° CRPM
+                    </Checkbox>
+                    <Checkbox
+                      size="md"
+                      //isChecked={selectedCheckboxGrandeOPMs === '4crpm'}
+                      onChange={() => handleCheckboxChangeGrandeOPM('4crpm')}
+                    >
+                      4° CRPM
+                    </Checkbox>
                     <Checkbox size="md">CPCHOQUE</Checkbox>
                     <Checkbox size="md">CPRAIO</Checkbox>
                     <Checkbox size="md">CPE</Checkbox>
@@ -259,8 +290,8 @@ export const ModalSAPM: React.FC<IModal> = ({
                               onClick={value => {
                                 const v = getValues('select_opm');
                                 onChange(value);
-                                if (v !== undefined || v !== null)
-                                  handleSelectOpm((value as unknown) as OPMs);
+                                if (v !== undefined || v !== null || v !== '')
+                                  handleSelectOpm((v as unknown) as OPMs);
                               }}
                               bgColor=" #38A169"
                               color={'#fff'}
@@ -292,21 +323,21 @@ export const ModalSAPM: React.FC<IModal> = ({
                         );
 
                         return (
-                          <Flex flexWrap={'wrap'}>
+                          <Flex flexWrap={'wrap'} key={index}>
                             <Controller
-                              key={index}
                               name={`checkbox-${index}`}
                               control={control}
                               render={({ field: { onBlur } }) => (
-                                <Checkbox
-                                  size="md"
-                                  isChecked
-                                  onBlur={onBlur}
-                                  onChange={() => handleDeleteOpm(item)}
-                                >
-                                  {option?.label || 'Item não encontrado'}{' '}
-                                  {/* Exibe o rótulo associado ao item */}
-                                </Checkbox>
+                                <>
+                                  <Checkbox
+                                    size="md"
+                                    isChecked
+                                    onBlur={onBlur}
+                                    onChange={() => handleDeleteOpm(item)}
+                                  >
+                                    {option?.label || 'Item não encontrado'}
+                                  </Checkbox>
+                                </>
                               )}
                             />
                           </Flex>
@@ -322,7 +353,7 @@ export const ModalSAPM: React.FC<IModal> = ({
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="red" mr={3} onClick={onClose}>
+            <Button colorScheme="yellow" mr={3} onClick={onClose}>
               Cancelar
             </Button>
             <Button

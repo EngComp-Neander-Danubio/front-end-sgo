@@ -27,6 +27,7 @@ interface ITable {
   lessLoad?: () => void;
   currentPosition: number;
   rowsPerLoad: number;
+  label_tooltip?: string;
 }
 
 export const TableFicha: React.FC<ITable> = ({
@@ -37,16 +38,12 @@ export const TableFicha: React.FC<ITable> = ({
   lessLoad,
   currentPosition,
   rowsPerLoad,
+  label_tooltip,
 }) => {
   const start = currentPosition > 0 ? currentPosition - rowsPerLoad + 1 : 0;
   const end = currentPosition;
   return (
-    <TableContainer
-      pt={4}
-      w="100%"
-      transitionDuration="1.0s"
-
-    >
+    <TableContainer pt={4} w="100%" transitionDuration="1.0s">
       <Table variant="simple">
         <TableCaption textAlign="left" p={0}>
           <Flex justify="space-between">
@@ -113,26 +110,28 @@ export const TableFicha: React.FC<ITable> = ({
                       ? register[column]
                       : JSON.stringify(register[column])
                   }
-                  /* customIcons={
-                    isActions
-                      ? [
-                          <IconeBusca key="busca" />,
-                          <IconeRelatorio key="relatorio" />,
-                          <IconeEditar key="editar" />,
-                          <IconeDeletar key="deletar" />,
-                        ]
-                      : undefined
-                  } */
                 />
               ))}
               <TdTable
                 customIcons={
                   isActions
                     ? [
-                        <IconeBusca key="busca" />,
-                        <IconeRelatorio key="relatorio" />,
-                        <IconeEditar key="editar" />,
-                        <IconeDeletar key="deletar" />,
+                        <IconeBusca
+                          key="busca"
+                          label_tooltip={`${label_tooltip}`}
+                        />,
+                        <IconeRelatorio
+                          key="relatorio"
+                          label_tooltip={`${label_tooltip}`}
+                        />,
+                        <IconeEditar
+                          key="editar"
+                          label_tooltip={`${label_tooltip}`}
+                        />,
+                        <IconeDeletar
+                          key="deletar"
+                          label_tooltip={`${label_tooltip}`}
+                        />,
                       ]
                     : undefined
                 }

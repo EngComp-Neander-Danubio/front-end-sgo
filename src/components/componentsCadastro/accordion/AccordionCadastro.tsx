@@ -380,7 +380,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                 overflowY={'auto'}
                 align={'center'}
                 w={'100%'}
-                justify={'center'}
+                //justify={'center'}
                 /* w={{
               lg: isOpen ? '78vw' : '98vw',
               md: isOpen ? '78vw' : '98vw',

@@ -15,6 +15,7 @@ export const ToListEventsContent = () => {
       currentPosition={0}
       rowsPerLoad={0}
       isActions={true}
+      label_tooltip={'Evento'}
     />
   );
 };

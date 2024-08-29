@@ -86,7 +86,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
             >
               SISTEMA INTEGRADO DE GERENCIAMENTO
               <br />
-              DE EFETIVO POLICIAL
+              DE OPERAÇÔES
             </Text>
             {/* <Link to="/"></Link> */}
 
@@ -102,7 +102,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
               display={!props.isOpen ? 'visibility' : 'none'}
               textAlign={'center'}
             >
-              SIGEPOL
+              SGO
             </Text>
           </Flex>
           <Flex
@@ -137,7 +137,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
               </Text>
             </Flex>
 
-            <Link to="/ficha">
+            {/* <Link to="/ficha">
               <Flex
                 p={6}
                 pl={4}
@@ -165,7 +165,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
                   Minha área
                 </Text>
               </Flex>
-            </Link>
+            </Link> */}
           </Flex>
         </Flex>
 
@@ -234,7 +234,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
             handleToggle={!props.isOpen ? props.handleToggle : undefined}
             handleClick={() => navigate('/lista-de-eventos')}
           />
-          
+
           <AccordionMenuLateral
             displayCustom={{
               lg: props.isOpen ? 'block' : 'none',
