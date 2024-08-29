@@ -25,12 +25,12 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <AuthProvider>
         <MilitaresProvider>
           <EventsProvider>
-            <RequisitosProvider>
-              <PostosProvider>
+            <PostosProvider>
+              <RequisitosProvider>
                 <CSSReset />
                 <App />
-              </PostosProvider>
-            </RequisitosProvider>
+              </RequisitosProvider>
+            </PostosProvider>
           </EventsProvider>
         </MilitaresProvider>
       </AuthProvider>

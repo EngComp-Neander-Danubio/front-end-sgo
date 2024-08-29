@@ -12,6 +12,7 @@ import { useToast } from '@chakra-ui/react';
 import { Militar, optionsMilitares } from '../../types/typesMilitar';
 import { useRequisitos } from './useRequesitos';
 import { useMilitares } from '../militares/useMilitares';
+import { usePostos } from '../postosContext/usePostos';
 
 export type Requisito = {
   columns?: string[];
@@ -25,12 +26,19 @@ export type Militares_service = {
   posto_grad: string;
 };
 
-export type Postos = {
+/* export type Postos = {
   Municipio: string;
   Local_de_Votacao: string;
   Endereco: string;
   Bairro: string;
   CEP: string;
+}; */
+export type Postos = {
+  cidade: string;
+  local: string;
+  rua: string;
+  bairro: string;
+  numero: number;
 };
 
 export type RequisitoServico = {
@@ -59,7 +67,7 @@ export interface IContextRequisitoData {
   requisitoServico: RequisitoServico;
   militars: Militares_service[];
   militaresRestantes: Militares_service[];
-  postos: Postos[];
+  postosServices: Postos[];
   services: Service[];
   handleSubmitRequisitos: (data: RequisitoServico) => void;
   handleRandomServices: () => void;
@@ -77,17 +85,16 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   // Supondo que `useMilitares` retorna o tipo correto
   const { militares } = useMilitares();
-
-  console.log(militares);
-
+  const { postos } = usePostos();
   // Inicializa o estado com `militares` se ele for do tipo correto
   const [militars, setMilitares] = useState<Militares_service[]>(militares);
   //console.log('militars', militars);
+  //console.log('postos', postos);
 
   const [militaresRestantes, setMilitaresRestantes] = useState<
     Militares_service[]
   >([]);
-  const [postos, setPostos] = useState<Postos[]>(postosData);
+  const [postosServices, setPostosServices] = useState<Postos[]>(postos);
   const [totalMilitar, setTotalMilitar] = useState<number>(0);
   const [totalMilitarEscalados, setTotalMilitarEscalados] = useState<number>(0);
   const [services, setServices] = useState<Service[]>([]);
@@ -112,14 +119,24 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
       setMilitares([]); // Inicializa como array vazio se não for um array
     }
   }, [militares]);
-
+  useEffect(() => {
+    if (postos && Array.isArray(postos)) {
+      setPostosServices(postos);
+      //console.log('postos services', postosServices);
+    } else {
+      setPostosServices([]); // Inicializa como array vazio se não for um array
+    }
+  }, [postos, postosServices]);
   const handleRandomServices = () => {
     const generateServices = () => {
       const services: Service[] = [];
       let remainingMilitares = [...militars]; // Clona a lista de militares
+      let postos = [...postosServices]; // Clona a lista de militares
+      console.log(postos);
+      console.log(remainingMilitares);
       const groupedMilitares: Record<string, Militares_service[]> = {};
 
-      if (!requisitoServico || !postosData) return;
+      if (!requisitoServico || !postosServices) return;
 
       let currentDate = new Date(requisitoServico.dateFirst);
       while (currentDate <= requisitoServico.dateFinish) {
@@ -130,8 +147,8 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
           );
         });
 
-        postosData.forEach(posto => {
-          requisitoServico.turnos.forEach(turno => {
+        requisitoServico.turnos.forEach(turno => {
+          postosServices?.forEach(posto => {
             const selectedMilitares: Militares_service[] = [];
 
             // Preenche militares conforme a antiguidade e lotação
@@ -162,29 +179,26 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
               }
             });
 
-              requisitoServico.antiguidade.forEach((a, index) => {
+            requisitoServico.antiguidade.forEach((a, index) => {
+              if (
+                selectedMilitares.length < requisitoServico.quantity_militars &&
+                groupedMilitares[a].length === 0
+              ) {
+                const nextAntiguidade = requisitoServico.antiguidade[index + 1];
                 if (
-                  selectedMilitares.length <
-                    requisitoServico.quantity_militars &&
-                  groupedMilitares[a].length === 0
+                  nextAntiguidade &&
+                  groupedMilitares[nextAntiguidade].length > 0
                 ) {
-                  const nextAntiguidade =
-                    requisitoServico.antiguidade[index + 1];
-                  if (
-                    nextAntiguidade &&
-                    groupedMilitares[nextAntiguidade].length > 0
-                  ) {
-                    selectedMilitares.push(
-                      groupedMilitares[nextAntiguidade].shift()!,
-                    );
-                  }
+                  selectedMilitares.push(
+                    groupedMilitares[nextAntiguidade].shift()!,
+                  );
                 }
               }
-            );
+            });
 
             // Cria o objeto de serviço
             const service: Service = {
-              posto: `${posto.Local_de_Votacao}-${posto.Endereco}, ${posto.Bairro}, ${posto.Municipio}`,
+              posto: `${posto?.local} - ${posto?.rua}-${posto?.numero}, ${posto?.bairro}, ${posto?.cidade}`,
               dia: new Date(currentDate), // Clone para evitar mutação
               turno: [new Date(turno.initial), new Date(turno.finished)], // Hora do turno
               modalidade: requisitoServico.modalidade,
@@ -210,7 +224,7 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
   const contextValue = useMemo(
     () => ({
       militars,
-      postos,
+      postosServices,
       requisitoServico,
       services,
       totalMilitar,
@@ -221,7 +235,7 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
     }),
     [
       militars,
-      postos,
+      postosServices,
       requisitoServico,
       services,
       totalMilitar,

@@ -38,6 +38,13 @@ import { ModalRestantes } from '../modal/ModalRestantes';
 import { ModalSAPM } from '../modal/ModalSAPM';
 import { OPMs } from '../../../types/typesOPM';
 import { useEvents } from '../../../context/eventContext/useEvents';
+import { ModalFormAddPosto } from '../modal/ModalFormAddPosto';
+import { ModalServices } from '../modal/ModalServices';
+import {
+  columnsMapMilitar,
+  handleSortByPostoGrad,
+} from '../../../types/typesMilitar';
+import { columnsMapPostos } from '../../../types/yupPostos/yupPostos';
 interface IAccordion extends AccordionProps {
   handleSubmit: () => void;
   isOpen: boolean;
@@ -63,6 +70,11 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
     onClose: onCloseFormAddMilitar,
   } = useDisclosure();
   const {
+    isOpen: isOpenFormAddPosto,
+    onOpen: onOpenFormAddPosto,
+    onClose: onCloseFormAddPosto,
+  } = useDisclosure();
+  const {
     isOpen: isOpenModalRelatorio,
     onOpen: onOpenModalRelatorio,
     onClose: onCloseModalRelatorio,
@@ -76,6 +88,11 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
     isOpen: isOpenModalSAPM,
     onOpen: onOpenModalSAPM,
     onClose: onCloseModalSAPM,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenModalServices,
+    onOpen: onOpenModalServices,
+    onClose: onCloseModalServices,
   } = useDisclosure();
   const {
     postos,
@@ -113,7 +130,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
   const headerKeys =
     postos.length > 0
       ? Object.keys(postos[0]).filter(key =>
-          ['Local de Votação',  'Endereço', 'Bairro','Município'].includes(key),
+          ['Local', 'Rua', 'Numero', 'Bairro', 'Cidade'].includes(key),
         )
       : [];
   const headerKeysMilitar =
@@ -122,8 +139,27 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
           ['matricula', 'posto_grad', 'nome_completo', 'opm'].includes(key),
         )
       : [];
+  // Primeiro, transforme os registros dos militares com as novas chaves
+  const transformedMiltitares = militares.map(militar => {
+    const transformedMilitar: {
+      [key: string]: any;
+    } = {};
+    Object.entries(columnsMapMilitar).forEach(([newKey, originalKey]) => {
+      transformedMilitar[newKey] = militar[originalKey];
+    });
+    return transformedMilitar;
+  });
 
-  /* console.log(headerKeys); */
+  const transformedPostos = postos.map(posto => {
+    const transformedPosto: {
+      [key: string]: any;
+    } = {};
+    Object.entries(columnsMapPostos).forEach(([newKey, originalKey]) => {
+      transformedPosto[newKey] = posto[originalKey];
+    });
+    return transformedPosto;
+  });
+
   return (
     <>
       <Accordion
@@ -268,6 +304,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                     rightIcon={<BiPencil size={'16px'} />}
                     bg=" #38A169"
                     variant="outline"
+                    onClick={onOpenFormAddPosto}
                   >
                     Adicionar Individual
                   </Button>
@@ -291,8 +328,8 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
             >
               <TableFicha
                 isOpen={postos.length > 0}
-                columns={headerKeys}
-                registers={(postos as unknown) as { [key: string]: string }[]}
+                columns={['Local', 'Rua', 'Número', 'Bairro', 'Cidade']}
+                registers={transformedPostos}
                 moreLoad={loadMore}
                 lessLoad={loadLess}
                 currentPosition={currentPosition}
@@ -390,8 +427,13 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
               >
                 <TableFicha
                   isOpen={militares.length > 0}
-                  columns={headerKeysMilitar}
-                  registers={militares}
+                  columns={[
+                    'Matrícula',
+                    'Posto/Graduação',
+                    'Nome Completo',
+                    'Unidade',
+                  ]}
+                  registers={handleSortByPostoGrad(transformedMiltitares)}
                   currentPosition={currentPositionMilitar}
                   rowsPerLoad={100}
                   lessLoad={loadLessMilitar}
@@ -468,6 +510,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                   >
                     Restantes{' '}
                   </Text>
+                  <Text>{militaresRestantes.length}</Text>
                 </Flex>
                 <Flex gap={2}>
                   <Button
@@ -485,7 +528,9 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                     rightIcon={<BiPencil size={'16px'} />}
                     bgColor=" #38A169"
                     variant="ghost"
-                    onClick={handleRandomServices}
+                    onClick={() => {
+                      handleRandomServices(), onOpenModalServices();
+                    }}
                   >
                     Gerar Escala
                   </Button>
@@ -497,11 +542,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                 gap={2}
 
                 // border={'1px solid red'}
-              >
-                <Flex overflowY={'auto'}>
-                  <CardService services={services} isOpen={isOpen} />
-                </Flex>
-              </Flex>
+              ></Flex>
               <Flex>
                 <BotaoCadastrar
                   handleSubmit={function(): void {
@@ -518,6 +559,11 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
         isOpen={isOpenRequesitos}
         onOpen={onOpenRequesitos}
         onClose={onCloseRequesitos}
+      />
+      <ModalFormAddPosto
+        isOpen={isOpenFormAddPosto}
+        onOpen={onOpenFormAddPosto}
+        onClose={onCloseFormAddPosto}
       />
       <ModalFormAddMilitar
         isOpen={isOpenFormAddMilitar}
@@ -541,6 +587,11 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
         onClose={onCloseModalSAPM}
         opms={[]}
         select_opm={'' as OPMs}
+      />
+      <ModalServices
+        isOpen={isOpenModalServices}
+        onOpen={onOpenModalServices}
+        onClose={onCloseModalServices}
       />
     </>
   );

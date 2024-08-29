@@ -40,3 +40,42 @@ export const optionsMilitares: Array<{ label: string; value: string; militarRank
   { label: 'Aluno-Soldado', value: 'Al Sd PM', militarRank: Militar.AlunoSoldado },
   { label: 'Aleatório', value: 'aleatorio', militarRank: Militar.Aleatorio },
 ];
+
+export const columnsMapMilitar: {
+  [key: string]: string;
+} = {
+  //'Ord': 'id', // Exemplo: 'Ord' mapeia para 'id'
+  'Matrícula': 'matricula',
+  'Posto/Graduação': 'posto_grad',
+  'Nome Completo': 'nome_completo',
+  'Unidade': 'opm',
+};
+
+// Agora, defina a função para ordenar pela hierarquia de posto_grad
+export const handleSortByPostoGrad = (militares: any[]) => {
+  // Defina a ordem hierárquica das graduações (do menor para o maior)
+  const hierarchy = [
+    'Cel PM',
+    'Ten-Cel PM',
+    'Maj PM',
+    'Cap PM',
+    '1º Ten PM',
+    '2º Ten PM',
+    'St PM',
+    '1º Sgt PM',
+    '2º Sgt PM',
+    '3º Sgt PM',
+    'Cb PM',
+    'Sd PM',
+    'Al Sd PM',
+  ];
+
+  // Ordene os militares transformados de acordo com a hierarquia
+  return militares.sort((a, b) => {
+    const indexA = hierarchy.indexOf(a['Posto/Graduação']);
+    const indexB = hierarchy.indexOf(b['Posto/Graduação']);
+
+    // Compara os índices da hierarquia
+    return indexA - indexB;
+  });
+};

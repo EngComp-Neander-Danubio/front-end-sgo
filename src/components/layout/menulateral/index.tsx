@@ -271,7 +271,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
           >
             <GridItem area={'header'}></GridItem>
             <GridItem area={'footer'}>
-              <Relogio />
+              {/* <Relogio /> */}
             </GridItem>
           </Grid>
         </Flex>

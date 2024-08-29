@@ -35,10 +35,10 @@ export const PostoServico: React.FC = () => {
           <GridItem area={'header'} h={'fit-content'}>
             <DashHeader isOpen={isOpen} handleToggle={handleToggle} />
           </GridItem>
-          <GridItem area={'nav'} >
+          <GridItem area={'nav'}>
             <MenuLateral isOpen={isOpen} handleToggle={handleToggle} />
           </GridItem>
-          <GridItem area={'main'} >
+          <GridItem area={'main'}>
             <FlexConteudo isOpen={isOpen} handleToggle={handleToggle} />
           </GridItem>
           <GridItem

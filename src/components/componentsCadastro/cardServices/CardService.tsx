@@ -53,7 +53,7 @@ export const CardService: React.FC<ICard> = ({ services, isOpen }) => {
               direction={{ base: 'column', sm: 'row' }}
               overflow="hidden"
               variant="outline"
-              h="35vh"
+              //h="35vh"
               w="full" // Faz o card ocupar toda a largura do seu contêiner
             >
               <CardBody>
@@ -123,7 +123,7 @@ export const CardService: React.FC<ICard> = ({ services, isOpen }) => {
                 <TableContainer
                   //w={'40vw'}
                   w={{
-                    lg: isOpen ? '34vw' : '40vw',
+                    lg: isOpen ? '45vw' : '90vw',
                     md: isOpen ? '80vw' : '90vw',
                     sm: isOpen ? '80vw' : '90vw',
                   }}

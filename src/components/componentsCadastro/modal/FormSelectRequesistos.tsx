@@ -56,7 +56,7 @@ export const FormSelectRequesitos: React.FC = () => {
   };
   const handleSwicthGrad = (e: any) => {
     if (!isAleatorio) trigger('antiguidade');
-    
+
     setSwitchGrad(!switchGrad);
   };
   const handleQuantityPlus = async() => {
@@ -279,109 +279,6 @@ export const FormSelectRequesitos: React.FC = () => {
             </Flex>
           </Flex>
         )}
-        {/* <FormLabel fontWeight={'bold'}>Quantidade de dias?</FormLabel>
-        <Controller
-          name="quantity_days"
-          control={control}
-          rules={{
-            required: 'Campo é obrigatório!',
-          }}
-          render={({ field }) => (
-            <Flex
-              flexDirection={'row'}
-              align={'center'}
-              //justify={'center'}
-              gap={2}
-            >
-              <FaMinusCircle onClick={handleQuantityDaysMinus} />
-              <Input
-                w={'60px'}
-                h={'30px'}
-                type="text"
-                value={`${quantityDays}`} // Use o valor do campo controlado
-                onChange={e => {
-                  const newValue = Number(e.target.value);
-                  setQuantityDays(newValue);
-                  field.onChange(newValue);
-                }}
-              />
-              <FaPlusCircle onClick={handleQuantityDaysPlus} />
-            </Flex>
-          )}
-        /> */}
-
-        {/* <Controller
-          name={`days`}
-          control={control}
-          rules={{
-            required: 'Campo é obrigatório!',
-          }}
-          render={({ field: { onChange, onBlur, value, ref } }) => (
-            <Flex gap={2} flexDirection={'column'}>
-              <Text>1° Dia</Text>
-              <Flex
-                flexDirection={'row'}
-                align={'center'}
-                //justify={'center'}
-                justifyContent={'space-between'}
-                gap={2}
-              >
-                <Input
-                  placeholder="Selecione uma data e horário para o início"
-                  type="datetime-local"
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  value={
-                    typeof value === 'string' || Array.isArray(value)
-                      ? value
-                      : ''
-                  }
-                  ref={ref}
-                />
-              </Flex>
-            </Flex>
-          )}
-        /> */}
-
-        {/* {quantityDays > 1 && (
-          <Flex flexDirection={'column'} justify={'center'}>
-            {Array.from({ length: quantityDays - 1 }, (_, index) => (
-              <Controller
-                key={index}
-                name={`days.${index}` as const}
-                control={control}
-                rules={{
-                  required: 'Campo é obrigatório!',
-                }}
-                render={({ field: { onChange, onBlur, value, ref } }) => (
-                  <Flex gap={2} flexDirection={'column'}>
-                    <Text>{index + 2}° Dia</Text>
-                    <Flex
-                      flexDirection={'row'}
-                      align={'center'}
-                      justify={'center'}
-                      justifyContent={'space-between'}
-                      gap={2}
-                    >
-                      <Input
-                        placeholder="Selecione uma data e horário para o início"
-                        type="datetime-local"
-                        onChange={onChange}
-                        onBlur={onBlur}
-                        value={
-                          typeof value === 'string' || Array.isArray(value)
-                            ? value
-                            : ''
-                        }
-                        ref={ref}
-                      />
-                    </Flex>
-                  </Flex>
-                )}
-              />
-            ))}
-          </Flex>
-        )} */}
         <Flex flexDirection="column">
           <FormLabel fontWeight="bold">Data Inicial</FormLabel>
           <Controller

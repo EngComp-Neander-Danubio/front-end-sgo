@@ -27,6 +27,7 @@ export interface IContextEventsData {
   uploadEvent: (data: Event) => Promise<void>;
   loadEvents: (param?: string) => Promise<void>;
   updateEvents: (data: Event, id: string) => Promise<void>;
+  deleteEvent: (id: string) => Promise<void>;
   //handleOnSubmitP: (e: React.FormEvent) => void;
 }
 
@@ -74,7 +75,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
         `operacao/${parameters}`,
       );
       setEvents((response.data as unknown) as Event[]);
-       /* toast({
+      /* toast({
          title: 'Sucesso',
          description: 'Eventos/Operações carregados com sucesso',
          status: 'success',
@@ -93,7 +94,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     async (data: Event, id: string) => {
       setIsLoading(true);
       try {
-        await api.put(`/tasks/${id}`, data);
+        await api.put(`/operacao/${id}`, data);
         // await loadTasks();
         toast({
           title: 'Sucesso',
@@ -121,16 +122,47 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
+  const deleteEvent = useCallback(
+    async (id: string) => {
+      setIsLoading(true);
+      try {
+        await api.delete(`/operacao/${id}`);
+        toast({
+          title: 'Sucesso',
+          description: 'Evento/Operação deletada com sucesso',
+          status: 'success',
+          position: 'top-right',
+          duration: 9000,
+          isClosable: true,
+        });
+      } catch (error) {
+        console.error('Falha ao deletar a evento/operação:', error);
+        toast({
+          title: 'Erro',
+          description: 'Falha ao deletar a evento/operação',
+          status: 'error',
+          position: 'top-right',
+          duration: 9000,
+          isClosable: true,
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   const contextValue = useMemo(
     () => ({
       uploadEvent,
       loadEvents,
       updateEvents,
+      deleteEvent,
       events,
       eventById,
     }),
-    [uploadEvent, loadEvents, updateEvents, events, eventById],
+    [uploadEvent, loadEvents, updateEvents, deleteEvent, events, eventById],
   );
 
   return (
