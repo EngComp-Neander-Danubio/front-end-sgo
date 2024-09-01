@@ -414,7 +414,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                     'Nome Completo',
                     'Unidade',
                   ]}
-                  registers={handleSortByPostoGrad(transformedMiltitares)}
+                  registers={handleSortByPostoGrad(transformedMiltitares, '1')}
                   currentPosition={currentPositionMilitar}
                   rowsPerLoad={100}
                   lessLoad={loadLessMilitar}

@@ -9,10 +9,16 @@ import React, {
 import militaresData from '../../assets/militares.json';
 import postosData from '../../assets/postos.json';
 import { useToast } from '@chakra-ui/react';
-import { handleSortByPostoGrad, Militar, optionsMilitares } from '../../types/typesMilitar';
+import {
+  handleSortByPostoGrad,
+  handleSortByPostoGradTwoMilitar,
+  Militar,
+  optionsMilitares,
+} from '../../types/typesMilitar';
 import { useRequisitos } from './useRequesitos';
 import { useMilitares } from '../militares/useMilitares';
 import { usePostos } from '../postosContext/usePostos';
+import { object } from 'prop-types';
 
 export type Requisito = {
   columns?: string[];
@@ -139,11 +145,47 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
       let currentDate = new Date(requisitoServico.dateFirst);
       if (!requisitoServico.aleatoriedade) {
         while (currentDate <= requisitoServico.dateFinish) {
-          requisitoServico.antiguidade.forEach(a => {
-            //separa por posto/graduação
-            groupedMilitares[a] = remainingMilitares.filter(
-              m => m.posto_grad === a,
-            );
+          requisitoServico.antiguidade.forEach((a, index) => {
+            // Separa por posto/graduação
+
+            const beforeAntiguidade = requisitoServico.antiguidade[index - 1];
+            // Filtra militares de acordo com a antiguidade
+            groupedMilitares[a] = remainingMilitares.filter(m => {
+              //console.log('m', m);
+              if (a === 'aleatorio') {
+                // Se for 'aleatorio', incluir lógica específica aqui
+                console.log('entrou em aleatorio');
+                const aux = {
+                  label: m.posto_grad,
+                  name: m.nome_completo,
+                  militarRank: optionsMilitares.find(
+                    opt => opt.value === m.posto_grad,
+                  )?.militarRank,
+                };
+                const aux2 = {
+                  label: groupedMilitares[beforeAntiguidade][0].posto_grad,
+                  name: groupedMilitares[beforeAntiguidade][0].nome_completo,
+                  militarRank: optionsMilitares.find(
+                    opt =>
+                      opt.value ===
+                      groupedMilitares[beforeAntiguidade][0].posto_grad,
+                  )?.militarRank,
+                };
+                console.log('aux1', aux);
+                console.log('aux2', aux2);
+                if (
+                  aux?.militarRank &&
+                  aux2?.militarRank &&
+                  Number(aux.militarRank) > Number(aux2.militarRank)
+                ) {
+                  return Number(aux.militarRank) > Number(aux2.militarRank); // Incluir no grupo 'aleatorio' se a condição for atendida
+                }
+              } else {
+                return m.posto_grad === a; // Filtra militares que têm posto/graduação igual a 'a'
+              }
+            });
+            console.log(groupedMilitares[a]);
+            console.log(groupedMilitares[a]?.length);
           });
 
           requisitoServico.turnos.forEach(turno => {
@@ -152,7 +194,6 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
 
               // Preenche militares conforme a antiguidade e lotação
               requisitoServico.antiguidade.forEach(a => {
-                //Agora separa por lotação os que já foram separados por antiguidade
                 const militaresComLotacao = groupedMilitares[a].filter(
                   m =>
                     selectedMilitares.length > 0 &&
@@ -168,7 +209,6 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
 
                 if (militar) {
                   selectedMilitares.push(militar);
-                  //console.log(selectedMilitares);
                   groupedMilitares[a] = groupedMilitares[a].filter(
                     m => m.matricula !== militar.matricula,
                   );
@@ -203,7 +243,7 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
                 dia: new Date(currentDate), // Clone para evitar mutação
                 turno: [new Date(turno.initial), new Date(turno.finished)], // Hora do turno
                 modalidade: requisitoServico.modalidade,
-                militares: selectedMilitares, // Adiciona os militares selecionados
+                militares: handleSortByPostoGrad(selectedMilitares, '2'), // Adiciona os militares selecionados
               };
 
               services.push(service);

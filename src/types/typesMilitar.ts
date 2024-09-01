@@ -29,7 +29,7 @@ export const optionsMilitares: Array<{ label: string; value: string; militarRank
   { label: 'Tenente-Coronel', value: 'Ten-Cel PM', militarRank: Militar.TenCoronel },
   { label: 'Major', value: 'Maj PM', militarRank: Militar.Major },
   { label: 'Capitão', value: 'Cap PM', militarRank: Militar.Capitão },
-  { label: '1° Tenente', value: '1º-Ten PM', militarRank: Militar.PrimeiroTenente },
+  { label: '1° Tenente', value: '1º Ten PM', militarRank: Militar.PrimeiroTenente },
   { label: '2° Tenente', value: '2º Ten PM', militarRank: Militar.SegundoTenente },
   { label: 'Sub-Tenente', value: 'St PM', militarRank: Militar.SubTenente },
   { label: '1° Sargento', value: '1º Sgt PM', militarRank: Militar.PrimeiroSargento },
@@ -69,7 +69,7 @@ export const handleSortByPostoGrad = (militares: any[], type?: string) => {
     'Sd PM',
     'Al Sd PM',
   ];
-  if(type === '1'){
+  if (type === '1') {
 
     // Ordene os militares transformados de acordo com a hierarquia
     return militares.sort((a, b) => {
@@ -79,7 +79,7 @@ export const handleSortByPostoGrad = (militares: any[], type?: string) => {
       // Compara os índices da hierarquia
       return indexA - indexB;
     });
-  }else{
+  } else {
     return militares.sort((a, b) => {
       const indexA = hierarchy.indexOf(a['posto_grad']);
       const indexB = hierarchy.indexOf(b['posto_grad']);
@@ -89,3 +89,34 @@ export const handleSortByPostoGrad = (militares: any[], type?: string) => {
     });
   }
 };
+// Define a função para comparar dois militares e retornar o de menor hierarquia
+export const handleSortByPostoGradTwoMilitar = (militarOne: any, militarTwo: any, type?: string) => {
+  // Defina a ordem hierárquica das graduações (do menor para o maior)
+  const hierarchy = [
+    'Cel PM',
+    'Ten-Cel PM',
+    'Maj PM',
+    'Cap PM',
+    '1º Ten PM',
+    '2º Ten PM',
+    'St PM',
+    '1º Sgt PM',
+    '2º Sgt PM',
+    '3º Sgt PM',
+    'Cb PM',
+    'Sd PM',
+    'Al Sd PM',
+  ];
+
+  // Determine o índice de cada militar na hierarquia
+  const indexOne = hierarchy.indexOf(type === '1' ? militarOne['Posto/Graduação'] : militarOne['posto_grad']);
+  const indexTwo = hierarchy.indexOf(type === '1' ? militarTwo['Posto/Graduação'] : militarTwo['posto_grad']);
+
+  // Compare os índices para determinar quem tem menor hierarquia
+  if (indexOne > indexTwo) {
+    return true;
+  } else {
+    return false;
+  }
+};
+

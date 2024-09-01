@@ -214,6 +214,7 @@ export const FormSelectRequesitos: React.FC = () => {
                   handleSwicth(!field.value);
                 }}
                 isChecked={field.value ?? false}
+                //value={field.value}
               />
             )}
           />

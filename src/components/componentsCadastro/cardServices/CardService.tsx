@@ -158,31 +158,33 @@ export const CardService: React.FC<ICard> = ({ services, isOpen }) => {
                       </Tr>
                     </Thead>
                     <Tbody>
-                      {service.militares.map((militar, idx) => (
-                        <Tr key={idx}>
-                          <Td>{militar.posto_grad}</Td>
-                          <Td>{militar.nome_completo}</Td>
-                          <Td>{militar.matricula}</Td>
-                          <Td>{militar.opm}</Td>
-                          <TdTable
-                            customIcons={[
-                              <IconePermutar
-                                key="permutar"
-                                _hover={{
-                                  cursor: 'pointer',
-                                }}
-                              />,
-                              <IconeDeletar
-                                key="deletar"
-                                _hover={{
-                                  cursor: 'pointer',
-                                }}
-                                label_tooltip="militar"
-                              />,
-                            ]}
-                          />
-                        </Tr>
-                      ))}
+                      {handleSortByPostoGrad(service.militares, '2').map(
+                        (militar, idx) => (
+                          <Tr key={idx}>
+                            <Td>{militar.posto_grad}</Td>
+                            <Td>{militar.nome_completo}</Td>
+                            <Td>{militar.matricula}</Td>
+                            <Td>{militar.opm}</Td>
+                            <TdTable
+                              customIcons={[
+                                <IconePermutar
+                                  key="permutar"
+                                  _hover={{
+                                    cursor: 'pointer',
+                                  }}
+                                />,
+                                <IconeDeletar
+                                  key="deletar"
+                                  _hover={{
+                                    cursor: 'pointer',
+                                  }}
+                                  label_tooltip="militar"
+                                />,
+                              ]}
+                            />
+                          </Tr>
+                        ),
+                      )}
                     </Tbody>
                   </Table>
                 </TableContainer>
