@@ -1,31 +1,13 @@
-import {
-  Flex,
-  Text,
-  FormLabel,
-  Input,
-  FormControl,
-  FlexboxProps,
-} from '@chakra-ui/react';
+import { Flex, Text, FormLabel, Input } from '@chakra-ui/react';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { InputPatternController } from '../inputPatternController/InputPatternController';
 interface IForm {
   name: string;
   grad: string;
   opm: string;
   matricula: string;
 }
-interface IFormProps extends FlexboxProps {
-  widthSelect?: string;
-  isLoadingRequest?: boolean;
-  isEditing?: boolean;
-}
-export const FormEfetivo: React.FC<IFormProps> = ({
-  widthSelect,
-  isLoadingRequest,
-  isEditing,
-  ...props
-}) => {
+export const FormEditarEfetivo: React.FC = () => {
   const {
     control,
     formState: { errors },
@@ -38,7 +20,7 @@ export const FormEfetivo: React.FC<IFormProps> = ({
     },
   });
   return (
-    <FormControl {...props}>
+    <form>
       <Flex
         flexDirection={'column'}
         align={'center'}
@@ -51,13 +33,12 @@ export const FormEfetivo: React.FC<IFormProps> = ({
           <Controller
             name={'name'}
             control={control}
-            render={({ field, fieldState: { error } }) => (
-              <InputPatternController
-                type="text"
-                w={widthSelect || '400px'}
-                placeholder="Informe o Nome Completo"
+            render={({ field }) => (
+              <Input
                 {...field}
-                error={error}
+                type="text"
+                aria-invalid={errors.name ? 'true' : 'false'}
+                placeholder="Nome Completo"
               />
             )}
           />
@@ -67,13 +48,13 @@ export const FormEfetivo: React.FC<IFormProps> = ({
           <Controller
             name={'matricula'}
             control={control}
-            render={({ field, fieldState: { error } }) => (
-              <InputPatternController
-                type="text"
-                w={widthSelect || '400px'}
-                placeholder="Informe a Matrícula"
+            render={({ field }) => (
+              <Input
                 {...field}
-                error={error}
+                type="text"
+                aria-invalid={errors.matricula ? 'true' : 'false'}
+                placeholder="Matrícula"
+                disabled
               />
             )}
           />
@@ -83,13 +64,13 @@ export const FormEfetivo: React.FC<IFormProps> = ({
           <Controller
             name={'grad'}
             control={control}
-            render={({ field, fieldState: { error } }) => (
-              <InputPatternController
-                type="text"
-                w={widthSelect || '400px'}
-                placeholder="Informe o Posto/Graduação"
+            render={({ field }) => (
+              <Input
                 {...field}
-                error={error}
+                type="text"
+                aria-invalid={errors.grad ? 'true' : 'false'}
+                placeholder="Posto/Graduação"
+                disabled
               />
             )}
           />
@@ -99,18 +80,18 @@ export const FormEfetivo: React.FC<IFormProps> = ({
           <Controller
             name={'opm'}
             control={control}
-            render={({ field, fieldState: { error } }) => (
-              <InputPatternController
-                type="text"
-                w={widthSelect || '400px'}
-                placeholder="Informe a unidade"
+            render={({ field }) => (
+              <Input
                 {...field}
-                error={error}
+                type="text"
+                aria-invalid={errors.opm ? 'true' : 'false'}
+                placeholder="OPM"
+                disabled
               />
             )}
           />
         </Flex>
       </Flex>
-    </FormControl>
+    </form>
   );
 };

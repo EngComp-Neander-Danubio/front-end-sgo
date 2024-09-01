@@ -1,4 +1,10 @@
-import React, { createContext, useState, ReactNode, useMemo, useCallback } from 'react';
+import React, {
+  createContext,
+  useState,
+  ReactNode,
+  useMemo,
+  useCallback,
+} from 'react';
 import { useToast } from '@chakra-ui/react';
 import { readString } from 'react-papaparse';
 import { Militares_service } from '../requisitosContext/RequisitosContext';
@@ -8,9 +14,16 @@ export type Militares = {
   columns?: string[];
   registers?: { [key: string]: any }[];
 };
-
+export interface Militar {
+  id?: string;
+  nome_completo: string;
+  opm: string;
+  matricula: string;
+  posto_grad: string;
+}
 export interface IContextMilitaresData {
   militares: Militares_service[];
+  militarById: Militar;
   hasMoreMilitar: boolean;
   currentPositionMilitar: number;
   handleClickMilitar: () => void;
@@ -19,8 +32,10 @@ export interface IContextMilitaresData {
   loadMoreMilitar: () => void;
   loadLessMilitar: () => void;
   loadMilitarBySAPM: (param?: string) => void;
+  loadMilitarById: (id: string) => Promise<void>;
   uploadMilitar: (data: Militares_service) => void;
   uploadMilitaresEmLote: (data: Militares_service[]) => void;
+  updateMilitar: (data: Militar, id: string) => Promise<void>;
 }
 
 export const MilitaresContext = createContext<
@@ -33,6 +48,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
   const toast = useToast();
   const [file, setFile] = useState<File | null>(null);
   const [militares, setMilitares] = useState<Militares_service[]>([]);
+  const [militarById, setMilitarById] = useState<Militar>();
   const [currentPositionMilitar, setCurrentPositionMilitar] = useState(0);
   const [hasMoreMilitar, setHasMoreMilitar] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -162,6 +178,13 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
       fileReader.readAsText(file, 'ISO-8859-1');
     }
   };
+  const loadMilitarById = useCallback(
+    async (id: string) => {
+      setIsLoading(true);
+      setMilitarById(militares.find(e => e.id === id));
+    },
+    [militares],
+  );
 
   const loadMilitarBySAPM = useCallback(async (param?: string) => {
     setIsLoading(true);
@@ -172,13 +195,13 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
       );
       setMilitares((response.data as unknown) as Militares_service[]);
       toast({
-         title: 'Sucesso',
-         description: 'Militares carregados com sucesso',
-         status: 'success',
-         position: 'top-right',
-         duration: 9000,
-         isClosable: true,
-       });
+        title: 'Sucesso',
+        description: 'Militares carregados com sucesso',
+        status: 'success',
+        position: 'top-right',
+        duration: 9000,
+        isClosable: true,
+      });
       console.log('Dados carregados:', response.data);
     } catch (error) {
       console.error('Falha ao carregar os eventos/operações:', error);
@@ -203,6 +226,38 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
         });
       } catch (error) {
         console.error('error:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+  const updateMilitar = useCallback(
+    async (data: Militar, id: string) => {
+      setIsLoading(true);
+      try {
+        await api.put(`/operacao/${id}`, data);
+        // await loadTasks();
+        toast({
+          title: 'Sucesso',
+          description: 'Tarefa atualizada com sucesso',
+          status: 'success',
+          position: 'top-right',
+          duration: 9000,
+          isClosable: true,
+        });
+        setMilitarById((null as unknown) as Militar);
+      } catch (error) {
+        console.error('Falha ao atualizar a tarefa:', error);
+        toast({
+          title: 'Erro',
+          description: 'Falha ao atualizar a tarefa',
+          status: 'error',
+          position: 'top-right',
+          duration: 9000,
+          isClosable: true,
+        });
       } finally {
         setIsLoading(false);
       }
@@ -241,6 +296,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
       militares,
       hasMoreMilitar,
       currentPositionMilitar, // Incluído
+      militarById,
       handleClickMilitar,
       loadMoreMilitar,
       loadLessMilitar,
@@ -249,11 +305,14 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
       loadMilitarBySAPM,
       uploadMilitar,
       uploadMilitaresEmLote,
+      loadMilitarById,
+      updateMilitar,
     }),
     [
       militares,
       hasMoreMilitar,
       currentPositionMilitar, // Incluído
+      militarById,
       handleClickMilitar,
       loadMoreMilitar,
       loadLessMilitar,
@@ -262,6 +321,8 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
       loadMilitarBySAPM,
       uploadMilitar,
       uploadMilitaresEmLote,
+      loadMilitarById,
+      updateMilitar,
     ],
   );
 

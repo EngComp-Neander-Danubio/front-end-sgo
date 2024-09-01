@@ -84,7 +84,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
                   : 'none'
               }
             >
-              SISTEMA INTEGRADO DE GERENCIAMENTO
+              SISTEMA DE GERENCIAMENTO
               <br />
               DE OPERAÇÔES
             </Text>

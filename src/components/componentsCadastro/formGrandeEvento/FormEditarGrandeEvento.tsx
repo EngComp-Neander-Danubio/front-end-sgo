@@ -17,7 +17,7 @@ interface IFormProps extends FlexboxProps {
   isEditing?: boolean;
 }
 
-export const FormGrandeEvento: React.FC<IFormProps> = ({
+export const FormEditarGrandeEvento: React.FC<IFormProps> = ({
   widthSelect,
   ...props
 }) => {

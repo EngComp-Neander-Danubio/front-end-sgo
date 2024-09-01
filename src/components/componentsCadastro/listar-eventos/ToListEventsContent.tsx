@@ -3,7 +3,15 @@ import { useEvents } from '../../../context/eventContext/useEvents';
 import { TableFicha } from '../../componentesFicha/table';
 
 export const ToListEventsContent = () => {
-  const { loadEvents, events } = useEvents();
+  const {
+    loadEvents,
+    events,
+    eventById,
+    uploadEvent,
+    deleteEvent,
+    loadEventsById,
+  } = useEvents();
+
 
   // Defina as colunas desejadas e o mapeamento para as chaves dos eventos
   const columnsMap: { [key: string]: string } = {
@@ -26,18 +34,15 @@ export const ToListEventsContent = () => {
     return transformedEvent;
   });
 
-  useEffect(() => {
-    loadEvents();
-  }, []);
-
   return (
     <TableFicha
-      registers={transformedEvents} // Use os registros transformados
       columns={columns} // Use as colunas personalizadas
+      registers={transformedEvents} // Use os registros transformados
       currentPosition={0}
       rowsPerLoad={0}
       isActions={true}
       label_tooltip={'Evento'}
+      handleDelete={deleteEvent}
     />
   );
 };

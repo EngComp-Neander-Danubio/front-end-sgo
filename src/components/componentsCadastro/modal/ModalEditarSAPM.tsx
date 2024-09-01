@@ -34,11 +34,13 @@ import {
   optionsEsp,
   optionsOPMs,
 } from '../../../types/typesOPM';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { ModalFormAddMilitar } from './ModalFormAddMilitar';
 import { FormEfetivo } from '../formEfetivo/FormEfetivo';
 import { printValue } from 'yup';
 import { FormEditarEfetivo } from '../formEfetivo/FormEditarEfetivo';
+import { militarSchema } from '../../../types/yupMilitares/yupMilitares';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 interface IModal {
   isOpen: boolean;
@@ -48,11 +50,37 @@ interface IModal {
   select_opm: OPMs;
 }
 
-export const ModalSAPM: React.FC<IModal> = ({
+export interface IForm {
+  id?: string;
+  nomeOperacao: string;
+  comandante: string;
+  dataInicio: Date;
+  dataFinal: Date;
+}
+
+export const ModalEditarSAPM: React.FC<IModal> = ({
   isOpen,
   onClose,
   select_opm,
 }) => {
+  const methodsInput = useForm<IForm>({
+    resolver: yupResolver(militarSchema),
+  });
+  //const {militarById, updateMilitar } = useMilitares();
+
+  const { setValue } = methodsInput;
+  /* useEffect(() => {
+    if (militarById) {
+      setValue('matricula', militarById.matricula
+      setValue('nome_completo', militarById?.nome_completo);
+      setValue('posto_grad', new Date(militarById?.posto_grad));
+      setValue('opm', new Date(militarById?.opm));
+    }
+  }, [militarById, setValue]); */
+  const onSubmit = async (data: IForm) => {
+    //await updateMilitar(data, militarById?.id);
+    onClose();
+  };
   const { control, reset, getValues } = useForm();
   const [selectedCheckbox, setSelectedCheckbox] = useState<
     'Todos' | 'especializadas' | 'POG' | 'Setores Administrativos' | null
@@ -251,7 +279,7 @@ export const ModalSAPM: React.FC<IModal> = ({
         <ModalOverlay />
         <ModalContent maxW="80vw" minW="30vw" maxH="80vh" minH="40vh">
           <ModalHeader>
-            <Center>Adicionar/Excluir OPM</Center>
+            <Center>Editar OPM</Center>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody justifyContent="center" padding={4} gap={4}>
@@ -283,8 +311,6 @@ export const ModalSAPM: React.FC<IModal> = ({
                             handleCheckbox(e.currentTarget.checked, optionsEsp);
                             //console.log('', opm);
                           }}
-                          onBlur={onBlur}
-                          value={value}
                         >
                           Especializadas
                         </Checkbox>
@@ -314,8 +340,6 @@ export const ModalSAPM: React.FC<IModal> = ({
                             );
                             //console.log('', opm);
                           }}
-                          onBlur={onBlur}
-                          value={value}
                         >
                           Setores Administrativos
                         </Checkbox>
@@ -340,8 +364,6 @@ export const ModalSAPM: React.FC<IModal> = ({
                             );
                             //console.log('', opm);
                           }}
-                          onBlur={onBlur}
-                          value={value}
                         >
                           1° CRPM
                         </Checkbox>
@@ -361,8 +383,6 @@ export const ModalSAPM: React.FC<IModal> = ({
                               options2CRPM,
                             );
                           }}
-                          onBlur={onBlur}
-                          value={value}
                         >
                           2° CRPM
                         </Checkbox>
@@ -382,8 +402,6 @@ export const ModalSAPM: React.FC<IModal> = ({
                               options3CRPM,
                             );
                           }}
-                          onBlur={onBlur}
-                          value={value}
                         >
                           3° CRPM
                         </Checkbox>
@@ -403,8 +421,6 @@ export const ModalSAPM: React.FC<IModal> = ({
                               options4CRPM,
                             );
                           }}
-                          onBlur={onBlur}
-                          value={value}
                         >
                           4° CRPM
                         </Checkbox>
@@ -423,8 +439,6 @@ export const ModalSAPM: React.FC<IModal> = ({
                               optionsCPCHOQUE,
                             );
                           }}
-                          onBlur={onBlur}
-                          value={value}
                         >
                           CPCHOQUE
                         </Checkbox>
@@ -443,8 +457,6 @@ export const ModalSAPM: React.FC<IModal> = ({
                               optionsCPRAIO,
                             );
                           }}
-                          onBlur={onBlur}
-                          value={value}
                         >
                           CPRAIO
                         </Checkbox>
@@ -460,8 +472,6 @@ export const ModalSAPM: React.FC<IModal> = ({
                             handleCheckboxChangeGrandeOPM('cpe');
                             handleCheckbox(e.currentTarget.checked, optionsCPE);
                           }}
-                          onBlur={onBlur}
-                          value={value}
                         >
                           CPE
                         </Checkbox>
@@ -596,7 +606,11 @@ export const ModalSAPM: React.FC<IModal> = ({
                   </Flex>
                 </TabPanel>
                 <TabPanel>
-                  <FormEditarEfetivo />
+                  <FormProvider {...methodsInput}>
+                    <form onSubmit={methodsInput.handleSubmit(onSubmit)}>
+                      <FormEditarEfetivo />
+                    </form>
+                  </FormProvider>
                 </TabPanel>
               </TabPanels>
             </Tabs>

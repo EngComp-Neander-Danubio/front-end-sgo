@@ -21,10 +21,15 @@ import { TdTable } from '../../componentesFicha/table/td';
 import { IconeEditar, IconeDeletar } from '../../ViewLogin';
 import { IconePermutar } from '../../componentesFicha/registrosMedicos/icones/iconePermuta/IconePermuta';
 import { IconeMore } from '../../componentesFicha/registrosMedicos/icones/iconeMais/IconeMore';
+import {
+  columnsMapMilitar,
+  handleSortByPostoGrad,
+} from '../../../types/typesMilitar';
 interface ICard extends CardProps {
   services: Service[];
   isOpen: boolean;
 }
+
 export const CardService: React.FC<ICard> = ({ services, isOpen }) => {
   return (
     <>
@@ -50,13 +55,16 @@ export const CardService: React.FC<ICard> = ({ services, isOpen }) => {
             justify="center"
           >
             <Card
-              direction={{ base: 'column', sm: 'row' }}
+              direction={{
+                base: 'column',
+                sm: 'row',
+              }}
               overflow="hidden"
               variant="outline"
               //h="35vh"
               w="full" // Faz o card ocupar toda a largura do seu contêiner
             >
-              <CardBody>
+              <CardBody fontSize={'12px'}>
                 <Heading
                   size="md"
                   flexDirection="row"
@@ -64,23 +72,33 @@ export const CardService: React.FC<ICard> = ({ services, isOpen }) => {
                 >
                   <Flex align="center" justify="space-between">
                     <Text>
-                      Serviço do dia:{' '}
+                      Serviço do dia:
+                      {'  '}
                       {service.dia.toLocaleDateString('pt-BR', {
+                        weekday: 'long',
                         day: '2-digit',
-                        month: '2-digit',
-                        year: '2-digit',
+                        month: 'long',
+                        year: 'numeric',
                       })}
                     </Text>
                     <Flex gap={2}>
                       <IconeEditar
-                        _hover={{ cursor: 'pointer' }}
+                        _hover={{
+                          cursor: 'pointer',
+                        }}
                         label_tooltip="Posto de Serviço"
                       />
                       <IconeDeletar
-                        _hover={{ cursor: 'pointer' }}
+                        _hover={{
+                          cursor: 'pointer',
+                        }}
                         label_tooltip="Posto de Serviço"
                       />
-                      <IconeMore _hover={{ cursor: 'pointer' }} />
+                      <IconeMore
+                        _hover={{
+                          cursor: 'pointer',
+                        }}
+                      />
                     </Flex>
                   </Flex>
                 </Heading>
@@ -127,6 +145,7 @@ export const CardService: React.FC<ICard> = ({ services, isOpen }) => {
                     md: isOpen ? '80vw' : '90vw',
                     sm: isOpen ? '80vw' : '90vw',
                   }}
+                  fontSize={'12px'}
                 >
                   <Table variant="simple">
                     <Thead>
@@ -149,11 +168,15 @@ export const CardService: React.FC<ICard> = ({ services, isOpen }) => {
                             customIcons={[
                               <IconePermutar
                                 key="permutar"
-                                _hover={{ cursor: 'pointer' }}
+                                _hover={{
+                                  cursor: 'pointer',
+                                }}
                               />,
                               <IconeDeletar
                                 key="deletar"
-                                _hover={{ cursor: 'pointer' }}
+                                _hover={{
+                                  cursor: 'pointer',
+                                }}
                                 label_tooltip="militar"
                               />,
                             ]}

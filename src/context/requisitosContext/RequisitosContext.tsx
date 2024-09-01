@@ -9,7 +9,7 @@ import React, {
 import militaresData from '../../assets/militares.json';
 import postosData from '../../assets/postos.json';
 import { useToast } from '@chakra-ui/react';
-import { Militar, optionsMilitares } from '../../types/typesMilitar';
+import { handleSortByPostoGrad, Militar, optionsMilitares } from '../../types/typesMilitar';
 import { useRequisitos } from './useRequesitos';
 import { useMilitares } from '../militares/useMilitares';
 import { usePostos } from '../postosContext/usePostos';
@@ -131,30 +131,97 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
     const generateServices = () => {
       const services: Service[] = [];
       let remainingMilitares = [...militars]; // Clona a lista de militares
-      let postos = [...postosServices]; // Clona a lista de militares
-      console.log(postos);
-      console.log(remainingMilitares);
+
       const groupedMilitares: Record<string, Militares_service[]> = {};
 
       if (!requisitoServico || !postosServices) return;
 
       let currentDate = new Date(requisitoServico.dateFirst);
-      while (currentDate <= requisitoServico.dateFinish) {
-        requisitoServico.antiguidade.forEach(a => {
-          //separa por posto/graduação
-          groupedMilitares[a] = remainingMilitares.filter(
-            m => m.posto_grad === a,
-          );
-        });
+      if (!requisitoServico.aleatoriedade) {
+        while (currentDate <= requisitoServico.dateFinish) {
+          requisitoServico.antiguidade.forEach(a => {
+            //separa por posto/graduação
+            groupedMilitares[a] = remainingMilitares.filter(
+              m => m.posto_grad === a,
+            );
+          });
 
+          requisitoServico.turnos.forEach(turno => {
+            postosServices?.forEach(posto => {
+              const selectedMilitares: Militares_service[] = [];
+
+              // Preenche militares conforme a antiguidade e lotação
+              requisitoServico.antiguidade.forEach(a => {
+                //Agora separa por lotação os que já foram separados por antiguidade
+                const militaresComLotacao = groupedMilitares[a].filter(
+                  m =>
+                    selectedMilitares.length > 0 &&
+                    m.opm === selectedMilitares[0].opm,
+                );
+
+                let militar;
+                if (militaresComLotacao.length > 0) {
+                  militar = militaresComLotacao[0];
+                } else {
+                  militar = groupedMilitares[a][0];
+                }
+
+                if (militar) {
+                  selectedMilitares.push(militar);
+                  //console.log(selectedMilitares);
+                  groupedMilitares[a] = groupedMilitares[a].filter(
+                    m => m.matricula !== militar.matricula,
+                  );
+                  remainingMilitares = remainingMilitares.filter(
+                    m => m.matricula !== militar.matricula,
+                  );
+                }
+              });
+
+              requisitoServico.antiguidade.forEach((a, index) => {
+                if (
+                  selectedMilitares.length <
+                    requisitoServico.quantity_militars &&
+                  groupedMilitares[a].length === 0
+                ) {
+                  const nextAntiguidade =
+                    requisitoServico.antiguidade[index + 1];
+                  if (
+                    nextAntiguidade &&
+                    groupedMilitares[nextAntiguidade].length > 0
+                  ) {
+                    selectedMilitares.push(
+                      groupedMilitares[nextAntiguidade].shift()!,
+                    );
+                  }
+                }
+              });
+
+              // Cria o objeto de serviço
+              const service: Service = {
+                posto: `${posto?.Local} - ${posto?.Rua}-${posto?.Numero}, ${posto?.Bairro}, ${posto?.Cidade}`,
+                dia: new Date(currentDate), // Clone para evitar mutação
+                turno: [new Date(turno.initial), new Date(turno.finished)], // Hora do turno
+                modalidade: requisitoServico.modalidade,
+                militares: selectedMilitares, // Adiciona os militares selecionados
+              };
+
+              services.push(service);
+              loadTotalMilitarEscalados(service.militares.length);
+            });
+          });
+
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
+      } else {
         requisitoServico.turnos.forEach(turno => {
           postosServices?.forEach(posto => {
             const selectedMilitares: Militares_service[] = [];
-
+            let i = 0;
             // Preenche militares conforme a antiguidade e lotação
-            requisitoServico.antiguidade.forEach(a => {
+            while (i < requisitoServico.quantity_militars) {
               //Agora separa por lotação os que já foram separados por antiguidade
-              const militaresComLotacao = groupedMilitares[a].filter(
+              const militaresComLotacao = remainingMilitares.filter(
                 m =>
                   selectedMilitares.length > 0 &&
                   m.opm === selectedMilitares[0].opm,
@@ -164,22 +231,21 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
               if (militaresComLotacao.length > 0) {
                 militar = militaresComLotacao[0];
               } else {
-                militar = groupedMilitares[a][0];
+                militar = remainingMilitares[0];
               }
 
               if (militar) {
                 selectedMilitares.push(militar);
                 //console.log(selectedMilitares);
-                groupedMilitares[a] = groupedMilitares[a].filter(
-                  m => m.matricula !== militar.matricula,
-                );
                 remainingMilitares = remainingMilitares.filter(
                   m => m.matricula !== militar.matricula,
                 );
               }
-            });
 
-            requisitoServico.antiguidade.forEach((a, index) => {
+              i++;
+            }
+
+            /* requisitoServico.antiguidade.forEach((a, index) => {
               if (
                 selectedMilitares.length < requisitoServico.quantity_militars &&
                 groupedMilitares[a].length === 0
@@ -194,23 +260,21 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
                   );
                 }
               }
-            });
+            }); */
 
             // Cria o objeto de serviço
             const service: Service = {
-              posto: `${posto?.local} - ${posto?.rua}-${posto?.numero}, ${posto?.bairro}, ${posto?.cidade}`,
+              posto: `${posto?.Local} - ${posto?.Rua}-${posto?.Numero}, ${posto?.Bairro}, ${posto?.Cidade}`,
               dia: new Date(currentDate), // Clone para evitar mutação
               turno: [new Date(turno.initial), new Date(turno.finished)], // Hora do turno
               modalidade: requisitoServico.modalidade,
-              militares: selectedMilitares, // Adiciona os militares selecionados
+              militares: handleSortByPostoGrad(selectedMilitares, '2'), // Adiciona os militares selecionados
             };
 
             services.push(service);
             loadTotalMilitarEscalados(service.militares.length);
           });
         });
-
-        currentDate.setDate(currentDate.getDate() + 1);
       }
 
       setServices(services);

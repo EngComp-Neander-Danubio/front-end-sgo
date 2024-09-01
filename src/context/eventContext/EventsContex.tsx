@@ -4,6 +4,7 @@ import React, {
   ReactNode,
   useMemo,
   useCallback,
+  useEffect,
 } from 'react';
 
 import { useToast } from '@chakra-ui/react';
@@ -13,7 +14,8 @@ import api from '../../services/api';
   registers?: { [key: string]: any }[];
 }; */
 
-interface Event {
+export interface Event {
+  id?: string;
   nomeOperacao: string;
   comandante: string;
   dataInicio: Date;
@@ -22,11 +24,12 @@ interface Event {
 
 export interface IContextEventsData {
   events: Event[];
-
+  eventById: Event;
   //handleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   uploadEvent: (data: Event) => Promise<void>;
   loadEvents: (param?: string) => Promise<void>;
-  updateEvents: (data: Event, id: string) => Promise<void>;
+  loadEventsById: (id: string) => Promise<void>;
+  updateEvent: (data: Event, id: string) => Promise<void>;
   deleteEvent: (id: string) => Promise<void>;
   //handleOnSubmitP: (e: React.FormEvent) => void;
 }
@@ -42,7 +45,9 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
   const [events, setEvents] = useState<Event[]>([]);
   const [eventById, setEventById] = useState<Event>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  useEffect(() => {
+    loadEvents();
+  }, []);
   const uploadEvent = useCallback(
     async (data: Event) => {
       setIsLoading(true);
@@ -90,7 +95,16 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       setIsLoading(false);
     }
   }, []);
-  const updateEvents = useCallback(
+  console.log({ eventById, event: events });
+
+  const loadEventsById = useCallback(
+    async (id: string) => {
+      setIsLoading(true);
+      setEventById(events.find(e => e.id === id));
+    },
+    [events],
+  );
+  const updateEvent = useCallback(
     async (data: Event, id: string) => {
       setIsLoading(true);
       try {
@@ -157,12 +171,21 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     () => ({
       uploadEvent,
       loadEvents,
-      updateEvents,
+      updateEvent,
       deleteEvent,
+      loadEventsById,
       events,
       eventById,
     }),
-    [uploadEvent, loadEvents, updateEvents, deleteEvent, events, eventById],
+    [
+      uploadEvent,
+      loadEvents,
+      updateEvent,
+      deleteEvent,
+      loadEventsById,
+      events,
+      eventById,
+    ],
   );
 
   return (

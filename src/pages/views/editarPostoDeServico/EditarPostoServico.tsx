@@ -4,8 +4,9 @@ import { MenuLateral } from '../../../components/layout/menulateral';
 import { Flex, Grid, GridItem } from '@chakra-ui/react';
 import { FooterCetic } from '../../../components/componentsCadastro/footerImgCETIC';
 import { FlexConteudo } from '../../../components/componentsCadastro/flexCadastrar';
+import { ConteinerEditarCadastro } from '../../../components/componentsCadastro/accordion/ConteinerEditarCadastro';
 
-export const PostoServico: React.FC = () => {
+export const EditarPostoServico: React.FC = () => {
   const [isOpen, setIsOpen] = useState(true);
 
   const handleToggle = () => {
@@ -39,7 +40,10 @@ export const PostoServico: React.FC = () => {
             <MenuLateral isOpen={isOpen} handleToggle={handleToggle} />
           </GridItem>
           <GridItem area={'main'}>
-            <FlexConteudo isOpen={isOpen} handleToggle={handleToggle} />
+            <ConteinerEditarCadastro
+              isOpen={isOpen}
+              handleToggle={handleToggle}
+            />
           </GridItem>
           <GridItem
             area={'footer'}

@@ -18,8 +18,8 @@ import {
 import { FormGrandeEvento } from '../formGrandeEvento/FormGrandeEvento';
 import { BiPencil } from 'react-icons/bi';
 import { ModalRequesitos } from '../modal/ModalRequesitos';
-import { BotaoAddMilitarLote } from '../botaoAddMilitarRandom/BotaoAddMilitarRandom';
 import { BotaoCadastrar } from '../botaoCadastrar';
+
 import { TableFicha } from '../../componentesFicha/table';
 import { InputCSVpapparse } from '../inputCSVpapaparse/InputCSVpapaparse';
 import { usePostos } from '../../../context/postosContext/usePostos';
@@ -30,7 +30,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { eventoSchema } from '../../../types/yupEvento/yupEvento';
 import { useRequisitos } from '../../../context/requisitosContext/useRequesitos';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CardService } from '../cardServices/CardService';
 import { ModalRelatorio } from '../modal/ModalRelatorio';
 import { ModalRestantes } from '../modal/ModalRestantes';
@@ -44,7 +44,10 @@ import {
   handleSortByPostoGrad,
 } from '../../../types/typesMilitar';
 import { columnsMapPostos } from '../../../types/yupPostos/yupPostos';
+import { FormEditarGrandeEvento } from '../formGrandeEvento/FormEditarGrandeEvento';
 import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
+import { ModalFormEditarMilitar } from '../formEfetivo/ModalFormEditarMilitar';
+import { ModalEditarSAPM } from '../modal/ModalEditarSAPM';
 interface IAccordion extends AccordionProps {
   handleSubmit: () => void;
   isOpen: boolean;
@@ -57,7 +60,7 @@ interface IForm extends FlexboxProps {
   dataInicio: Date;
   dataFinal: Date;
 }
-export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
+export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
   const {
     isOpen: isOpenRequesitos,
     onOpen: onOpenRequesitos,
@@ -112,9 +115,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
     handleOnChangeMilitar,
     handleOnSubmitMilitar,
   } = useMilitares();
-  const methodsInput = useForm<IForm>({
-    resolver: yupResolver(eventoSchema),
-  });
+
   const {
     handleRandomServices,
     services,
@@ -122,11 +123,25 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
     totalMilitarEscalados,
     militaresRestantes,
   } = useRequisitos();
-  const { uploadEvent } = useEvents();
-  const onSubmit = async (data: IForm) => {
-    uploadEvent(data);
-  };
 
+  const methodsInput = useForm<IForm>({
+    resolver: yupResolver(eventoSchema),
+  });
+  const { eventById, updateEvent } = useEvents();
+
+  const { setValue, reset } = methodsInput;
+  useEffect(() => {
+    if (eventById) {
+      setValue('comandante', eventById?.comandante);
+      setValue('nomeOperacao', eventById?.nomeOperacao);
+      setValue('dataInicio', new Date(eventById?.dataInicio));
+      setValue('dataFinal', new Date(eventById?.dataFinal));
+    }
+  }, [eventById, setValue]);
+  const onSubmit = async (data: IForm) => {
+    await updateEvent(data, eventById?.id);
+    reset();
+  };
 
   // Primeiro, transforme os registros dos militares com as novas chaves
   const transformedMiltitares = militares.map(militar => {
@@ -199,7 +214,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                     ml={6}
                   >
                     <Flex pl={2}>
-                      <FormGrandeEvento />
+                      <FormEditarGrandeEvento />
                     </Flex>
                     {/* <Flex border={'1px solid green'} w={'60vw'}></Flex> */}
                     <Flex
@@ -208,14 +223,12 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                       w={'500px'}
                       pr={2}
                       //border={'1px solid green'}
-                    >
-
-                    </Flex>
+                    ></Flex>
                   </Flex>
                   <BotaoCadastrar
                     type="submit"
                     /* handleSubmit={() => onSubmit} */
-                    label="Salvar"
+                    label="Atualizar"
                   />
                 </Flex>
               </form>
@@ -321,7 +334,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                 handleSubmit={function(): void {
                   throw new Error('Function not implemented.');
                 }}
-                label="Salvar"
+                label="Atualizar"
               />
             </Flex>
           </AccordionPanel>
@@ -337,11 +350,11 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
           </h2>
           <AccordionPanel
             pb={4}
-            w={{
+            /* w={{
               lg: isOpen ? '78vw' : '88vw',
               md: isOpen ? '78vw' : '88vw',
               sm: isOpen ? '78vw' : '88vw',
-            }}
+            }} */
           >
             <Flex
               gap={4}
@@ -426,7 +439,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                   handleSubmit={function(): void {
                     throw new Error('Function not implemented.');
                   }}
-                  label="Salvar"
+                  label="Atualizar"
                 />
               </Flex>
             </Flex>
@@ -443,11 +456,11 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
           </h2>
           <AccordionPanel
             pb={4}
-            w={{
+            /* w={{
               lg: isOpen ? '78vw' : '88vw',
               md: isOpen ? '78vw' : '88vw',
               sm: isOpen ? '78vw' : '88vw',
-            }}
+            }} */
           >
             <Flex
               gap={4}
@@ -529,7 +542,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                   handleSubmit={function(): void {
                     throw new Error('Function not implemented.');
                   }}
-                  label="Salvar"
+                  label="Atualizar"
                 />
               </Flex>
             </Flex>
@@ -546,7 +559,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
         onOpen={onOpenFormAddPosto}
         onClose={onCloseFormAddPosto}
       />
-      <ModalFormAddMilitar
+      <ModalFormEditarMilitar
         isOpen={isOpenFormAddMilitar}
         onOpen={onOpenFormAddMilitar}
         onClose={onCloseFormAddMilitar}
@@ -562,7 +575,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
         onClose={onCloseModalRestantes}
         militaresRestantes={militaresRestantes}
       />
-      <ModalSAPM
+      <ModalEditarSAPM
         isOpen={isOpenModalSAPM}
         onOpen={onOpenModalSAPM}
         onClose={onCloseModalSAPM}

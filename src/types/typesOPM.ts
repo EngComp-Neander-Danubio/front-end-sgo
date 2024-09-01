@@ -18,39 +18,57 @@ export enum OPMs {
   BatalhaoEspecializadoEmPoliciamentoDoInterior = "bepi",
   BatalhaoDePoliciaDeChoque = "bpchoque",
   ComandoDePrevencaoEApoioAsComunidades = "copac",
-  ComandoDePoliciamentoDeRondasDeAcoesIntensivasEOstensivas = "Comando de Policiamento de Rondas de Ações Intensivas e Ostensivas – CPRAIO",
-  PrimeiroBPM = "1º BPM (Russas)",
-  SegundoBPM = "2º BPM (Juazeiro do Norte)",
-  TerceiroBPM = "3º BPM (Sobral)",
-  QuartoBPM = "4º BPM (Canindé)",
-  QuintoBPM = "5º BPM (Centro – Fortaleza)",
-  SextoBPM = "6º BPM (Parangaba – Fortaleza)",
-  SetimoBPM = "7º BPM (Crateús)",
-  OitavoBPM = "8º BPM (Aldeota – Fortaleza)",
-  NonoBPM = "9º BPM (Quixadá)",
-  DecimoBPM = "10º BPM (Iguatu)",
-  DecimoPrimeiroBPM = "11º BPM (Itapipoca)",
-  DecimoSegundoBPM = "12º BPM (Caucaia)",
-  DecimoTerceiroBPM = "13º BPM (Tauá)",
-  DecimoQuartoBPM = "14º BPM (Maracanaú)",
-  DecimoQuintoBPM = "15º BPM (Eusébio)",
-  DecimoSextoBPM = "16º BPM (Messejana – Fortaleza)",
-  DecimoSetimoBPM = "17º BPM (Cj. Ceará – Fortaleza)",
-  DecimoOitavoBPM = "18º BPM (Antônio Bezerra – Fortaleza)",
-  DecimoNonoBPM = "19º BPM (Tancredo Neves – Fortaleza)",
-  VigesimoBPM = "20º BPM (Cristo Redentor – Fortaleza)",
-  VigesimoPrimeiroBPM = "21º BPM (Cj. Esperança – Fortaleza)",
-  VigesimoSegundoBPM = "22º BPM (Papicu – Fortaleza)",
-  VigesimoTerceiroBPM = "23º BPM (Paracuru)",
-  VigesimoQuartoBPM = "24º BPM (Maranguape)",
-  VigesimoQuintoBPM = "25º BPM (Horizonte)",
-  BatalhaoDeSegurancaPatrimonial = "Batalhão de Segurança Patrimonial – BSP",
-  PrimeiraCPG = "1ª CPG – Casa Militar – Fortaleza-Ce",
-  SegundaCPG = "2ª CPG – Assembléia Legislativa do Ceará – Fortaleza – Ce",
-  TerceiraCPG = "3ª CPG – Palácio da Justiça – Fortaleza – Ce",
+  ComandoDePoliciamentoDeRondasDeAcoesIntensivasEOstensivas = "cpraio",
+  PrimeiroBPM = "1bpm",
+  SegundoBPM = "2bpm",
+  TerceiroBPM = "3bpm",
+  QuartoBPM = "4bpm",
+  QuintoBPM = "5bpm",
+  SextoBPM = "6bpm",
+  SetimoBPM = "7bpm",
+  OitavoBPM = "8bpm",
+  NonoBPM = "9bpm",
+  DecimoBPM = "10bpm",
+  DecimoPrimeiroBPM = "11bpm",
+  DecimoSegundoBPM = "12bpm",
+  DecimoTerceiroBPM = "13bpm",
+  DecimoQuartoBPM = "14bpm",
+  DecimoQuintoBPM = "15bpm",
+  DecimoSextoBPM = "16bpm",
+  DecimoSetimoBPM = "17bpm",
+  DecimoOitavoBPM = "18bpm",
+  DecimoNonoBPM = "19bpm",
+  VigesimoBPM = "20bpm",
+  VigesimoPrimeiroBPM = "21bpm",
+  VigesimoSegundoBPM = "22bpm",
+  VigesimoTerceiroBPM = "23bpm",
+  VigesimoQuartoBPM = "24bpm",
+  VigesimoQuintoBPM = "25bpm",
+  BatalhaoDeSegurancaPatrimonial = "bsp",
+  PrimeiraCPG = "1cpg",
+  SegundaCPG = "2cpg",
+  TerceiraCPG = "3cpg",
+  DPGI = "dpgi",
+  CETIC = "cetic",
+  CODIP = "codip",
+  COLOG = "colog",
+  COAFI = "coafi",
+  CGP = "cgp",
+  CPMCE = "cpmce",
+  CSAS = "csas",
+  COGEPRO = "cogepro",
+  COGEI = "cogei",
+  CPRAIO = "cpraio",
+  PrimeiroBPRAIO = "1bpraio",
+  SegundoBPRAIO = "2bpraio",
+  TerceiroBPRAIO = "3bpraio",
+  QuartoBPRAIO = "4bpraio",
+  QuintoBPRAIO = "5bpraio",
 }
 
+
 export const optionsOPMs: OptionType[] = [
+
   { label: 'Coordenadoria Geral de Operações - CGO', value: 'cgo' },
   { label: 'Comando de Policiamento da Capital – 1º CRPM', value: '1crpm' },
   { label: 'Comando de Policiamento Metropolitano – 2º CRPM', value: '2crpm' },
@@ -98,6 +116,34 @@ export const optionsOPMs: OptionType[] = [
   { label: '1ª CPG – Casa Militar – Fortaleza-Ce', value: '1cpg' },
   { label: '2ª CPG – Assembléia Legislativa do Ceará – Fortaleza – Ce', value: '2cpg' },
   { label: '3ª CPG – Palácio da Justiça – Fortaleza – Ce', value: '3cpg' },
+  { label: '1º BPRAIO (1º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '1bpraio' },
+  { label: '2º BPRAIO (2º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '2bpraio' },
+  { label: '3º BPRAIO (3º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '3bpraio' },
+  { label: '4º BPRAIO (4º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '4bpraio' },
+  { label: '5º BPRAIO (5º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '5bpraio' },
+  { label: 'DPGI (Departamento de Polícia de Gestão Interna)', value: 'dpgi' },
+  { label: 'CETIC (Centro de Tecnologia da Informação e Comunicação)', value: 'cetic' },
+  { label: 'CODIP (Coordenadoria de Inteligência Policial)', value: 'codip' },
+  { label: 'COLOG (Coordenadoria de Logística)', value: 'colog' },
+  { label: 'COAFI (Coordenadoria de Assuntos Financeiros e Infraestrutura)', value: 'coafi' },
+  { label: 'CGP (Coordenação de Gestão de Pessoas)', value: 'cgp' },
+  { label: 'CPMCE (Comando de Policiamento do Meio-Centro Este)', value: 'cpmce' },
+  { label: 'CSAS (Coordenadoria de Segurança e Assuntos Sociais)', value: 'csas' },
+  { label: 'COGEPRO (Coordenadoria de Gestão e Processos)', value: 'cogepro' },
+  { label: 'COGEI (Coordenadoria de Gestão de Estatísticas e Informações)', value: 'cogei' },
+  { label: 'BSP', value: 'bsp' },
+  { label: '1º CPG', value: '1cpg' },
+  { label: '2º CPG', value: '2cpg' },
+  { label: '3º CPG', value: '3cpg' },
+  { label: 'QCG', value: 'qcg' },
+  { label: 'CCS', value: 'ccs' },
+  { label: 'CBMPM', value: 'cbmpm' },
+  { label: 'CPJM', value: 'cpjm' },
+  { label: '1ª CIPM (Morada Nova)', value: '1cipm' },
+  { label: '2ª CIPM (Catunda)', value: '2cipm' },
+  { label: '3ª CIPM (Amontada)', value: '3cipm' },
+  { label: '4ª CIPM (Santa Quitéria)', value: '4cipm' },
+  { label: '5ª CIPM (Nova Russas)', value: '5cipm' },
 ];
 
 export const options1CRPM: OptionType[] = [
@@ -131,11 +177,9 @@ export const options3CRPM: OptionType[] = [
   { label: '1ª CIPM (Morada Nova)', value: '1cipm' },
   { label: '2ª CIPM (Catunda)', value: '2cipm' },
   { label: '3ª CIPM (Amontada)', value: '3cipm' },
-  { label: 'Comando de Policiamento do Interior Norte – 3º CRPM', value: '3crpm' },
 ];
 export const options4CRPM: OptionType[] = [
   // ... outras opções
-  { label: 'Comando de Policiamento do Interior Sul – 4º CRPM', value: '4crpm' },
   { label: '1º BPM (Russas)', value: '1bpm' },
   { label: '2º BPM (Juazeiro do Norte)', value: '2bpm' },
   { label: '9º BPM (Quixadá)', value: '9bpm' },
@@ -147,91 +191,57 @@ export const options4CRPM: OptionType[] = [
   { label: '4ª CIPM (Santa Quitéria)', value: '4cipm' },
   { label: '5ª CIPM (Nova Russas)', value: '5cipm' },
 ];
+export const optionsCPCHOQUE: OptionType[] = [
+  { label: 'Batalhão de Policiamento de Guarda Externa dos Presídios – BPGEP', value: 'bpgep' },
+  { label: 'Comando de Policiamento de Choque – CPCHOQUE', value: 'cpchoque' },
+  { label: 'Batalhão de Comando Tático Motorizado – COTAM', value: 'cotam' },
+  { label: 'Batalhão de Operações Policiais Especiais – BOPE', value: 'bope' },
+  { label: 'Batalhão Especializado em Policiamento do Interior – BEPI', value: 'bepi' },
+  { label: 'Batalhão de Polícia de Choque – BPCHOQUE', value: 'bpchoque' },
+];
 
-
-/* 1CRPM
-5BPM
-6BPM
-8BPM
-16BPM
-17BPM
-18BPM
-19BPM
-20BPM
-21BPM
-22BPM */
-
-/* 12BPM
-14BPM
-15BPM
-23BPM
-24BPM
-25BPM */
-
-/* 3CRPM
-3BPM
-4BPM
-7BPM
-11BPM
-1CIPM
-2CIPM
-3CIPM
- */
-
-/* 4CRPM
-1BPM
-2BPM
-9BPM
-10BPM
-13BPM
-1CIPM
-2CIPM
-3CIPM
-4CIPM
-5CIPM
- */
-
-/* CPE
-RPMONT
-BPMA
-BPTUR
-PRE
-BPGEP
- */
-
-/* ASSCOM
-COPAC
- */
-
-/* QCG
-1CPG
-2CPG
-3CPG
-CCS
-CBMPM
-BSP
-CPJM
- */
-
-
-/* DPGI
-CETIC
-CODIP
-COLOG
-COAFI
-CGP
-CPMCE
-CSAS
-COGEPRO
-COGEI
- */
-
-/* CGO
-1CRPM
-2CRPM
-3CRPM
-4CRPM
-CPE
-CPCHOQUE
-CPRAIO
- */
+export const optionsCPE: OptionType[] = [
+  { label: 'Batalhão de Polícia de Trânsito Urbano e Rodoviário Estadual – BPRE', value: 'bpre' },
+  { label: 'Batalhão de Policiamento Turístico – BPTUR', value: 'bptur' },
+  { label: 'Batalhão de Polícia de Meio Ambiente – BPMA', value: 'bpma' },
+  { label: 'Regimento de Policia Montada – RPMONT', value: 'rpmont' },
+  { label: 'Batalhão de Policiamento de Guarda Externa dos Presídios – BPGEP', value: 'bpgep' },
+];
+export const optionsDPGI: OptionType[] = [
+  { label: 'DPGI (Departamento de Polícia de Gestão Interna)', value: 'dpgi' },
+  { label: 'CETIC (Centro de Tecnologia da Informação e Comunicação)', value: 'cetic' },
+  { label: 'CODIP (Coordenadoria de Inteligência Policial)', value: 'codip' },
+  { label: 'COLOG (Coordenadoria de Logística)', value: 'colog' },
+  { label: 'COAFI (Coordenadoria de Assuntos Financeiros e Infraestrutura)', value: 'coafi' },
+  { label: 'CGP (Coordenação de Gestão de Pessoas)', value: 'cgp' },
+  { label: 'CPMCE (Comando de Policiamento do Meio-Centro Este)', value: 'cpmce' },
+  { label: 'CSAS (Coordenadoria de Segurança e Assuntos Sociais)', value: 'csas' },
+  { label: 'COGEPRO (Coordenadoria de Gestão e Processos)', value: 'cogepro' },
+  { label: 'COGEI (Coordenadoria de Gestão de Estatísticas e Informações)', value: 'cogei' },
+];
+export const optionsCPRAIO: OptionType[] = [
+  { label: 'CPRAIO (Comando de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: 'cpraio' },
+  { label: '1º BPRAIO (1º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '1bpraio' },
+  { label: '2º BPRAIO (2º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '2bpraio' },
+  { label: '3º BPRAIO (3º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '3bpraio' },
+  { label: '4º BPRAIO (4º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '4bpraio' },
+  { label: '5º BPRAIO (5º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '5bpraio' },
+];
+export const optionsEsp: OptionType[] = [
+  { label: '1º BPRAIO (1º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '1bpraio' },
+  { label: '2º BPRAIO (2º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '2bpraio' },
+  { label: '3º BPRAIO (3º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '3bpraio' },
+  { label: '4º BPRAIO (4º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '4bpraio' },
+  { label: '5º BPRAIO (5º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '5bpraio' },
+  { label: 'Batalhão de Policiamento de Guarda Externa dos Presídios – BPGEP', value: 'bpgep' },
+  { label: 'Comando de Policiamento de Choque – CPCHOQUE', value: 'cpchoque' },
+  { label: 'Batalhão de Comando Tático Motorizado – COTAM', value: 'cotam' },
+  { label: 'Batalhão de Operações Policiais Especiais – BOPE', value: 'bope' },
+  { label: 'Batalhão Especializado em Policiamento do Interior – BEPI', value: 'bepi' },
+  { label: 'Batalhão de Polícia de Choque – BPCHOQUE', value: 'bpchoque' },
+  { label: 'Batalhão de Polícia de Trânsito Urbano e Rodoviário Estadual – BPRE', value: 'bpre' },
+  { label: 'Batalhão de Policiamento Turístico – BPTUR', value: 'bptur' },
+  { label: 'Batalhão de Polícia de Meio Ambiente – BPMA', value: 'bpma' },
+  { label: 'Regimento de Policia Montada – RPMONT', value: 'rpmont' },
+  { label: 'Batalhão de Policiamento de Guarda Externa dos Presídios – BPGEP', value: 'bpgep' },
+];
