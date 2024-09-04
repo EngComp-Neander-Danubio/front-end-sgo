@@ -18,7 +18,9 @@ export const HomePrincipal: React.FC = () => {
       <Flex
         bg="rgba(248, 249, 250, 1)"
         w={'100%'}
-        h={'100vh'}
+        //h={'100vh'}
+        maxH={'100vh'}
+        overflow="hidden"
         // border={'1px solid red'}
       >
         <Grid
@@ -37,9 +39,7 @@ export const HomePrincipal: React.FC = () => {
           <GridItem area={'nav'}>
             <MenuLateral isOpen={isOpen} handleToggle={handleToggle} />
           </GridItem>
-          <GridItem area={'main'}>
-            Home
-          </GridItem>
+          <GridItem area={'main'}>Home</GridItem>
           <GridItem area={'footer'}>
             <Center>
               <FooterCetic />

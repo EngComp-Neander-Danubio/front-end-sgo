@@ -3,7 +3,6 @@ import { DashHeader } from '../../../components/layout/dashHeader';
 import { MenuLateral } from '../../../components/layout/menulateral';
 import { Flex, Grid, GridItem } from '@chakra-ui/react';
 import { FooterCetic } from '../../../components/componentsCadastro/footerImgCETIC';
-import { FlexConteudo } from '../../../components/componentsCadastro/flexCadastrar';
 import { ConteinerEditarCadastro } from '../../../components/componentsCadastro/accordion/ConteinerEditarCadastro';
 
 export const EditarPostoServico: React.FC = () => {
@@ -11,17 +10,18 @@ export const EditarPostoServico: React.FC = () => {
 
   const handleToggle = () => {
     setIsOpen(prevIsOpen => !prevIsOpen);
-    console.log('isOpen', !isOpen); // Observe que isso sempre exibirá o valor antigo de `isOpen`
   };
 
   return (
     <>
       <Flex
         bgColor="rgba(248, 249, 250, 1)"
-        w={'content'}
+        w={'100%'}
         //h={'content'}
-        // border={'1px solid red'}
+        //border={'1px solid red'}
+        //maxH={'100vh'}
         maxH={'100vh'}
+        overflow="hidden"
       >
         <Grid
           templateAreas={`"nav header"

@@ -24,6 +24,7 @@ export interface Militar {
 export interface IContextMilitaresData {
   militares: Militares_service[];
   militarById: Militar;
+  militaresByAPI: Militar[];
   hasMoreMilitar: boolean;
   currentPositionMilitar: number;
   handleClickMilitar: () => void;
@@ -33,6 +34,7 @@ export interface IContextMilitaresData {
   loadLessMilitar: () => void;
   loadMilitarBySAPM: (param?: string) => void;
   loadMilitarById: (id: string) => Promise<void>;
+  loadMilitaresByAPI: (id: string) => Promise<void>;
   uploadMilitar: (data: Militares_service) => void;
   uploadMilitaresEmLote: (data: Militares_service[]) => void;
   updateMilitar: (data: Militar, id: string) => Promise<void>;
@@ -48,6 +50,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
   const toast = useToast();
   const [file, setFile] = useState<File | null>(null);
   const [militares, setMilitares] = useState<Militares_service[]>([]);
+  const [militaresByAPI, setMilitaresByAPI] = useState<Militar[]>([]);
   const [militarById, setMilitarById] = useState<Militar>();
   const [currentPositionMilitar, setCurrentPositionMilitar] = useState(0);
   const [hasMoreMilitar, setHasMoreMilitar] = useState(true);
@@ -185,7 +188,29 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
     },
     [militares],
   );
-
+  const loadMilitaresByAPI = useCallback(async (id: string) => {
+    setIsLoading(true);
+    //const parameters = param !== undefined ? param : '';
+    try {
+      const response = await api.get<{ items: Militar[] }>(
+        `/operacao/${id}/militares`,
+      );
+      setMilitaresByAPI((response.data as unknown) as Militar[]);
+      toast({
+        title: 'Sucesso',
+        description: 'Postos carregados com sucesso',
+        status: 'success',
+        position: 'top-right',
+        duration: 9000,
+        isClosable: true,
+      });
+      console.log('Dados carregados:', response.data);
+    } catch (error) {
+      console.error('Falha ao carregar os Postos:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
   const loadMilitarBySAPM = useCallback(async (param?: string) => {
     setIsLoading(true);
     const parameters = param !== undefined ? param : '';
@@ -294,6 +319,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
   const contextValue = useMemo(
     () => ({
       militares,
+      militaresByAPI,
       hasMoreMilitar,
       currentPositionMilitar, // Incluído
       militarById,
@@ -303,6 +329,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
       handleOnChangeMilitar,
       handleOnSubmitMilitar,
       loadMilitarBySAPM,
+      loadMilitaresByAPI,
       uploadMilitar,
       uploadMilitaresEmLote,
       loadMilitarById,
@@ -310,6 +337,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
     }),
     [
       militares,
+      militaresByAPI,
       hasMoreMilitar,
       currentPositionMilitar, // Incluído
       militarById,
@@ -319,6 +347,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
       handleOnChangeMilitar,
       handleOnSubmitMilitar,
       loadMilitarBySAPM,
+      loadMilitaresByAPI,
       uploadMilitar,
       uploadMilitaresEmLote,
       loadMilitarById,

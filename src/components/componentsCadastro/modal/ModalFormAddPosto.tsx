@@ -26,9 +26,11 @@ export const ModalFormAddPosto: React.FC<IModal> = ({ isOpen, onClose }) => {
   const methodsInput = useForm<PostoForm>({
     resolver: yupResolver(postosSchema),
   });
+  const { reset } = useForm();
   const { uploadPosto } = usePostos();
   const onSubmit = async (data: PostoForm) => {
     await uploadPosto(data);
+    reset();
   };
   //console.log('',methodsInput.formState.errors)
   return (
@@ -52,6 +54,7 @@ export const ModalFormAddPosto: React.FC<IModal> = ({ isOpen, onClose }) => {
                   variant="ghost"
                   bgColor={' #38A169'}
                   color={'#fff'}
+                  //onClick={onClose}
                   type="submit"
                 >
                   Adicionar

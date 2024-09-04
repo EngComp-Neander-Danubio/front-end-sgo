@@ -19,10 +19,12 @@ export interface PostoForm {
   numero: number;
   bairro: string;
   cidade: string;
+  modalidade: string;
 }
 export interface IContextPostoData {
   postos: PostoForm[];
   postoById: PostoForm;
+  postosByAPI: PostoForm[];
   hasMore: boolean;
   currentPosition: number;
   handleClick: () => void;
@@ -31,6 +33,8 @@ export interface IContextPostoData {
   loadMore: () => void;
   loadLess: () => void;
   uploadPosto: (data: PostoForm) => Promise<void>;
+  uploadPostoEmLote: () => Promise<void>;
+  loadPostosByAPI: () => Promise<void>;
   updatePosto: (data: PostoForm, id: string) => Promise<void>;
 }
 
@@ -44,6 +48,7 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
   const toast = useToast();
   const [file, setFile] = useState<File | null>(null);
   const [postos, setPostos] = useState<PostoForm[]>([]);
+  const [postosByAPI, setPostosByAPI] = useState<PostoForm[]>([]);
   const [posto, setPosto] = useState<PostoForm[]>([]);
   const [postoById, setPostoById] = useState<PostoForm>();
   const [currentPosition, setCurrentPosition] = useState(0);
@@ -169,12 +174,35 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
       fileReader.readAsText(file, 'ISO-8859-1');
     }
   };
-
+  const loadPostosByAPI = useCallback(async (id: string) => {
+    setIsLoading(true);
+    //const parameters = param !== undefined ? param : '';
+    try {
+      const response = await api.get<{ items: PostoForm[] }>(
+        `/operacao/${id}/postos`,
+      );
+      setPostosByAPI((response.data as unknown) as PostoForm[]);
+      console.log(postosByAPI);
+      toast({
+        title: 'Sucesso',
+        description: 'Postos carregados com sucesso',
+        status: 'success',
+        position: 'top-right',
+        duration: 9000,
+        isClosable: true,
+      });
+      console.log('Dados carregados:', response.data);
+    } catch (error) {
+      console.error('Falha ao carregar os Postos:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
   const uploadPosto = useCallback(async (data: PostoForm) => {
     setIsLoading(true);
     //const parameters = param !== undefined ? param : '';
     try {
-      await api.post(`/postos`, data);
+      await api.post(`/posto`, data);
       //setPosto((response.data as unknown) as Posto[]);
       toast({
         title: 'Sucesso',
@@ -186,15 +214,57 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
       });
     } catch (error) {
       console.error('Falha ao salvar posto:', error);
+      toast({
+        title: 'Erro',
+        description: 'Falha ao salvar o posto',
+        status: 'error',
+        position: 'top-right',
+        duration: 9000,
+        isClosable: true,
+      });
     } finally {
       setIsLoading(false);
     }
   }, []);
+  const uploadPostoEmLote = useCallback(async () => {
+    setIsLoading(true);
+    //const postos: { [postos] };
+    console.log(postos);
+    try {
+      // Envia o array de postos para a API
+      await api.post('/postos/upload', postos);
+
+      // Exibe uma notificação de sucesso
+      toast({
+        title: 'Sucesso',
+        description: 'Postos salvos com sucesso',
+        status: 'success',
+        position: 'top-right',
+        duration: 9000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error('Falha ao salvar postos:', error);
+
+      // Exibe uma notificação de erro
+      toast({
+        title: 'Erro',
+        description: 'Falha ao salvar os postos',
+        status: 'error',
+        position: 'top-right',
+        duration: 9000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [postos, api, toast]);
+
   const updatePosto = useCallback(
     async (data: PostoForm, id: string) => {
       setIsLoading(true);
       try {
-        await api.put(`/postos/${id}`, data);
+        await api.put(`/posto/${id}`, data);
         // await loadTasks();
         toast({
           title: 'Sucesso',
@@ -227,7 +297,7 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
     async (id: string) => {
       setIsLoading(true);
       try {
-        await api.delete(`/postos/${id}`);
+        await api.delete(`/posto/${id}`);
         // await loadTasks();
         toast({
           title: 'Sucesso',
@@ -254,11 +324,11 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
-  
 
   const contextValue = useMemo(
     () => ({
       postos,
+      postosByAPI,
       postoById,
       hasMore,
       currentPosition, // Incluído
@@ -268,11 +338,14 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
       handleOnChange,
       handleOnSubmitP,
       uploadPosto,
+      uploadPostoEmLote,
       deletePosto,
       updatePosto,
+      loadPostosByAPI,
     }),
     [
       postos,
+      postosByAPI,
       postoById,
       hasMore,
       currentPosition, // Incluído
@@ -282,8 +355,10 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
       handleOnChange,
       handleOnSubmitP,
       uploadPosto,
+      uploadPostoEmLote,
       deletePosto,
       updatePosto,
+      loadPostosByAPI,
     ],
   );
 

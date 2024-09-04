@@ -49,7 +49,7 @@ import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
 import { ModalFormEditarMilitar } from '../formEfetivo/ModalFormEditarMilitar';
 import { ModalEditarSAPM } from '../modal/ModalEditarSAPM';
 interface IAccordion extends AccordionProps {
-  handleSubmit: () => void;
+  handleSubmit?: () => void;
   isOpen: boolean;
   handleToggle: () => void;
 }
@@ -99,15 +99,18 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
   } = useDisclosure();
   const {
     postos,
+    postosByAPI,
     loadMore,
     currentPosition,
     loadLess,
     handleClick,
     handleOnChange,
     handleOnSubmitP,
+    uploadPostoEmLote,
   } = usePostos();
   const {
     militares,
+    militaresByAPI,
     currentPositionMilitar,
     loadLessMilitar,
     loadMoreMilitar,
@@ -144,7 +147,7 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
   };
 
   // Primeiro, transforme os registros dos militares com as novas chaves
-  const transformedMiltitares = militares.map(militar => {
+  const transformedMiltitares = militaresByAPI.map(militar => {
     const transformedMilitar: {
       [key: string]: any;
     } = {};
@@ -154,7 +157,7 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
     return transformedMilitar;
   });
 
-  const transformedPostos = postos.map(posto => {
+  const transformedPostos = postosByAPI.map(posto => {
     const transformedPosto: {
       [key: string]: any;
     } = {};
@@ -169,9 +172,10 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
       <Accordion
         alignItems={'center'}
         w={{
-          lg: isOpen ? '80vw' : '90vw',
-          md: isOpen ? '80vw' : '90vw',
-          sm: isOpen ? '80vw' : '90vw',
+          xl: isOpen ? '85vw' : '92vw',
+          lg: isOpen ? '85vw' : '92vw',
+          md: isOpen ? '85vw' : '92vw',
+          sm: isOpen ? '85vw' : '92vw',
         }}
         //border={'1px solid black'}
       >
@@ -188,9 +192,9 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
           <AccordionPanel
             pb={4}
             w={{
-              lg: isOpen ? '78vw' : '88vw',
-              md: isOpen ? '78vw' : '88vw',
-              sm: isOpen ? '78vw' : '88vw',
+              lg: isOpen ? '85vw' : '90vw',
+              md: isOpen ? '85vw' : '90vw',
+              sm: isOpen ? '85vw' : '90vw',
             }}
           >
             <FormProvider {...methodsInput}>
@@ -198,33 +202,13 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                 <Flex
                   flexDirection={'column'}
                   align={'center'}
-                  justify={'center'}
+                  //justify={'center'}
+                  justifyContent={'space-between'}
                   gap={8}
                   h={'100%'}
+                  //border={'1px solid green'}
                 >
-                  <Flex
-                    flexDirection={'row'}
-                    justifyContent={'space-between'}
-                    w={{
-                      lg: isOpen ? '78vw' : '88vw',
-                      md: isOpen ? '78vw' : '78vw',
-                      sm: isOpen ? '78vw' : '78vw',
-                    }}
-                    //border={'1px solid red'}
-                    ml={6}
-                  >
-                    <Flex pl={2}>
-                      <FormEditarGrandeEvento />
-                    </Flex>
-                    {/* <Flex border={'1px solid green'} w={'60vw'}></Flex> */}
-                    <Flex
-                      align={'center'}
-                      justify={'right'}
-                      w={'500px'}
-                      pr={2}
-                      //border={'1px solid green'}
-                    ></Flex>
-                  </Flex>
+                  <FormEditarGrandeEvento />
                   <BotaoCadastrar
                     type="submit"
                     /* handleSubmit={() => onSubmit} */
@@ -247,32 +231,32 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
           </h2>
           <AccordionPanel
             pb={4}
-            gap={2}
-            /* w={{
-            lg: isOpen ? '78vw' : '88vw',
-            md: isOpen ? '78vw' : '88vw',
-            sm: isOpen ? '78vw' : '88vw',
-          }} */
+            w={{
+              lg: isOpen ? '85vw' : '90vw',
+              md: isOpen ? '85vw' : '90vw',
+              sm: isOpen ? '85vw' : '90vw',
+            }}
+            maxH={'40vh'}
+            overflowY={'auto'}
           >
             <Flex
               flexDirection={'row'}
               justifyContent={'space-between'}
               align={'center'}
               justify={'center'}
-              //w={'100%'}
             >
               <Flex
                 flexDirection={'row'}
-                align={'center'}
                 w={{
-                  lg: isOpen ? '78vw' : '88vw',
-                  md: isOpen ? '78vw' : '88vw',
-                  sm: isOpen ? '78vw' : '88vw',
+                  lg: isOpen ? '85vw' : '88vw',
+                  md: isOpen ? '85vw' : '88vw',
+                  sm: isOpen ? '85vw' : '88vw',
                 }}
                 gap={2}
                 //border={'1px solid red'}
                 justifyContent={'space-between'}
               >
+                {' '}
                 <Flex></Flex>
                 <Flex gap={2}>
                   <Flex flexDirection={'column'}>
@@ -292,20 +276,17 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                       </span>
                     </Tooltip>
                   </Flex>
-
                   <Button
                     color={'white'}
                     rightIcon={<BiPencil size={'16px'} />}
-                    bg=" #38A169"
-                    variant="outline"
+                    bgColor=" #38A169"
+                    variant="ghost"
                     onClick={onOpenFormAddPosto}
                   >
                     Adicionar Individual
                   </Button>
                 </Flex>
               </Flex>
-
-              <Flex></Flex>
             </Flex>
             <Flex
               pt={2}
@@ -320,21 +301,22 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
               overflowX={'auto'}
               // border={'1px solid red'}
             >
-              <TableFicha
-                isOpen={postos.length > 0}
-                columns={['Local', 'Rua', 'Número', 'Bairro', 'Cidade']}
-                registers={transformedPostos}
-                moreLoad={loadMore}
-                lessLoad={loadLess}
-                currentPosition={currentPosition}
-                rowsPerLoad={100}
-              />
+              {postosByAPI.length > 0 && (
+                <TableFicha
+                  isOpen={postosByAPI.length > 0}
+                  columns={['Local', 'Rua', 'Número', 'Bairro', 'Cidade']}
+                  registers={transformedPostos}
+                  moreLoad={loadMore}
+                  lessLoad={loadLess}
+                  currentPosition={currentPosition}
+                  rowsPerLoad={100}
+                />
+              )}
               <Divider />
               <BotaoCadastrar
-                handleSubmit={function(): void {
-                  throw new Error('Function not implemented.');
-                }}
+                handleSubmit={uploadPostoEmLote}
                 label="Atualizar"
+                type="submit"
               />
             </Flex>
           </AccordionPanel>
@@ -350,34 +332,36 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
           </h2>
           <AccordionPanel
             pb={4}
-            /* w={{
-              lg: isOpen ? '78vw' : '88vw',
-              md: isOpen ? '78vw' : '88vw',
-              sm: isOpen ? '78vw' : '88vw',
-            }} */
+            w={{
+              lg: isOpen ? '85vw' : '90vw',
+              md: isOpen ? '85vw' : '90vw',
+              sm: isOpen ? '85vw' : '90vw',
+            }}
+            maxH={'40vh'}
+            overflowY={'auto'}
           >
             <Flex
-              gap={4}
-              flexDirection={'column'}
+              //gap={4}
+              flexDirection={'row'}
               justifyContent={'space-between'}
               align={'center'}
               justify={'center'}
             >
-              <ButtonGroup variant="outline" spacing="6">
+              <Flex
+                flexDirection={'row'}
+                w={{
+                  lg: isOpen ? '85vw' : '88vw',
+                  md: isOpen ? '85vw' : '88vw',
+                  sm: isOpen ? '85vw' : '88vw',
+                }}
+                gap={2}
+                //border={'1px solid red'}
+                justifyContent={'space-between'}
+              >
+                {' '}
                 <Flex></Flex>
-                <Flex
-                  flexDirection={'row'}
-                  // align={'center'}
-                  // border={'1px solid black'}
-                  justifyContent={'space-between'}
-                  w={{
-                    lg: isOpen ? '78vw' : '88vw',
-                    md: isOpen ? '78vw' : '88vw',
-                    sm: isOpen ? '78vw' : '88vw',
-                  }}
-                >
-                  <Flex></Flex>
-                  <Flex gap={2}>
+                <Flex gap={2}>
+                  <Flex flexDirection={'column'}>
                     <Tooltip
                       label={`Campos essencias: Posto/Graduação, Matrícula, OPM, Nome Completo`}
                       aria-label="A tooltip"
@@ -393,55 +377,58 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                         />
                       </span>
                     </Tooltip>
-                    <Button
-                      //color={'white'}
-                      rightIcon={<FaFileUpload size={'16px'} />}
-                      bgColor=" #38A169"
-                      variant="ghost"
-                      color={'#fff'}
-                      onClick={onOpenModalSAPM}
-                    >
-                      Importar SAPM
-                    </Button>
                   </Flex>
+                  <Button
+                    //color={'white'}
+                    rightIcon={<FaFileUpload size={'16px'} />}
+                    bgColor=" #38A169"
+                    variant="ghost"
+                    color={'#fff'}
+                    onClick={onOpenModalSAPM}
+                  >
+                    Importar SAPM
+                  </Button>
                 </Flex>
-              </ButtonGroup>
-              <Flex
-                overflowX={'auto'}
-                overflowY={'auto'}
-                align={'center'}
-                w={'100%'}
-                //justify={'center'}
-                /* w={{
+              </Flex>
+            </Flex>
+
+            <Flex
+              pt={2}
+              gap={4}
+              flexDirection={'column'}
+              align={'center'}
+              /* w={{
               lg: isOpen ? '78vw' : '98vw',
               md: isOpen ? '78vw' : '98vw',
               sm: isOpen ? '78vw' : '98vw',
             }} */
-                // border={'1px solid red'}
-              >
+              overflowX={'auto'}
+              // border={'1px solid red'}
+            >
+              {militaresByAPI.length > 0 && (
                 <TableFicha
-                  isOpen={militares.length > 0}
+                  isOpen={militaresByAPI.length > 0}
                   columns={[
                     'Matrícula',
                     'Posto/Graduação',
                     'Nome Completo',
                     'Unidade',
                   ]}
-                  registers={handleSortByPostoGrad(transformedMiltitares)}
+                  registers={handleSortByPostoGrad(transformedMiltitares, '1')}
                   currentPosition={currentPositionMilitar}
                   rowsPerLoad={100}
                   lessLoad={loadLessMilitar}
                   moreLoad={loadMoreMilitar}
                 />
-              </Flex>
-              <Flex>
-                <BotaoCadastrar
-                  handleSubmit={function(): void {
-                    throw new Error('Function not implemented.');
-                  }}
-                  label="Atualizar"
-                />
-              </Flex>
+              )}
+
+              <Divider />
+              <BotaoCadastrar
+                handleSubmit={function(): void {
+                  throw new Error('Function not implemented.');
+                }}
+                label="Atualizar"
+              />
             </Flex>
           </AccordionPanel>
         </AccordionItem>
@@ -456,87 +443,93 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
           </h2>
           <AccordionPanel
             pb={4}
-            /* w={{
-              lg: isOpen ? '78vw' : '88vw',
-              md: isOpen ? '78vw' : '88vw',
-              sm: isOpen ? '78vw' : '88vw',
-            }} */
+            w={{
+              lg: isOpen ? '85vw' : '90vw',
+              md: isOpen ? '85vw' : '90vw',
+              sm: isOpen ? '85vw' : '90vw',
+            }}
           >
             <Flex
-              gap={4}
               flexDirection={'column'}
               justifyContent={'space-around'}
               align={'center'}
               justify={'center'}
               //border={'1px solid black'}
-              w={'100%'}
-
-              //overflowY={'scroll'}
             >
               <Flex
                 flexDirection={'row'}
                 //border={'1px solid black'}
                 justifyContent={'space-between'}
                 w={{
-                  lg: isOpen ? '80vw' : '90vw',
-                  md: isOpen ? '80vw' : '90vw',
-                  sm: isOpen ? '80vw' : '90vw',
+                  lg: isOpen ? '85vw' : '88vw',
+                  md: isOpen ? '85vw' : '88vw',
+                  sm: isOpen ? '85vw' : '88vw',
                 }}
+                gap={2}
                 h={'fit-content'}
               >
-                <Flex align={'center'} justify={'center'} gap={2} ml={8}>
-                  <Text fontWeight={'bold'}>Total:</Text>
-                  {totalMilitar}
-                  <Text fontWeight={'bold'}>Escalados: </Text>
-                  {totalMilitarEscalados}
-                  <Text
-                    _hover={{
-                      cursor: 'pointer',
-                      backgroundColor: '#ebf8ff',
-                      borderColor: '#2b6cb0',
-                      border: '1px solid #4299e1',
-                      borderRadius: '5px',
-                      borderWidth: '',
-                      padding: 1,
-                    }}
-                    onClick={onOpenModalRestantes}
-                    fontWeight={'bold'}
-                  >
-                    Restantes{' '}
-                  </Text>
-                  <Text>{militaresRestantes.length}</Text>
-                </Flex>
-                <Flex gap={2}>
-                  <Button
-                    //color={'white'}
-                    rightIcon={<CiCircleList size={'16px'} />}
-                    colorScheme="blue"
-                    variant="outline"
-                    onClick={onOpenRequesitos}
-                  >
-                    Requisitos
-                  </Button>
+                <Flex></Flex>
+                <Flex
+                  //gap={2}
+                  //border={'1px solid red'}
+                  //w={'100%'}
+                  align={'center'}
+                  justifyContent={'space-between'}
+                  w={{
+                    lg: isOpen ? '85vw' : '88vw',
+                    md: isOpen ? '85vw' : '88vw',
+                    sm: isOpen ? '85vw' : '88vw',
+                  }}
+                  p={4}
+                >
+                  <Flex gap={2}>
+                    <Text fontWeight={'bold'}>Total:</Text>
+                    {totalMilitar}
+                    <Text fontWeight={'bold'}>Escalados: </Text>
+                    {totalMilitarEscalados}
+                    <Text
+                      _hover={{
+                        cursor: 'pointer',
+                        //backgroundColor: '#ebf8ff',
+                        //borderColor: '#2b6cb0',
+                        //border: '1px solid #4299e1',
+                        borderRadius: '5px',
+                        borderWidth: '',
+                        padding: 1,
+                      }}
+                      onClick={onOpenModalRestantes}
+                      fontWeight={'bold'}
+                    >
+                      Restantes{' '}
+                    </Text>
+                    <Text>{militaresRestantes.length}</Text>
+                  </Flex>
+                  <Flex gap={2}>
+                    <Button
+                      //color={'white'}
+                      rightIcon={<CiCircleList size={'16px'} />}
+                      colorScheme="blue"
+                      variant="outline"
+                      onClick={onOpenRequesitos}
+                    >
+                      Requisitos
+                    </Button>
 
-                  <Button
-                    color={'white'}
-                    rightIcon={<BiPencil size={'16px'} />}
-                    bgColor=" #38A169"
-                    variant="ghost"
-                    onClick={() => {
-                      handleRandomServices(), onOpenModalServices();
-                    }}
-                  >
-                    Gerar Escala
-                  </Button>
+                    <Button
+                      color={'white'}
+                      rightIcon={<BiPencil size={'16px'} />}
+                      bgColor=" #38A169"
+                      variant="ghost"
+                      onClick={() => {
+                        handleRandomServices(), onOpenModalServices();
+                      }}
+                    >
+                      Gerar Escala
+                    </Button>
+                  </Flex>
                 </Flex>
               </Flex>
-              <Flex
-                align={'center'}
-                w={'100%'}
-                gap={2}
 
-                // border={'1px solid red'}
-              ></Flex>
               <Flex>
                 <BotaoCadastrar
                   handleSubmit={function(): void {
@@ -559,7 +552,7 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
         onOpen={onOpenFormAddPosto}
         onClose={onCloseFormAddPosto}
       />
-      <ModalFormEditarMilitar
+      <ModalFormAddMilitar
         isOpen={isOpenFormAddMilitar}
         onOpen={onOpenFormAddMilitar}
         onClose={onCloseFormAddMilitar}
@@ -575,7 +568,7 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
         onClose={onCloseModalRestantes}
         militaresRestantes={militaresRestantes}
       />
-      <ModalEditarSAPM
+      <ModalSAPM
         isOpen={isOpenModalSAPM}
         onOpen={onOpenModalSAPM}
         onClose={onCloseModalSAPM}

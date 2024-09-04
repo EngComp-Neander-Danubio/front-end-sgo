@@ -22,7 +22,7 @@ export type IForm = {
   aleatoriedade: boolean;
   efetivo_tipo: boolean;
   antiguidade: string[];
-  modalidade: string;
+  modalidade?: string;
   dateFirst: Date;
   dateFinish: Date;
   turnos: {
@@ -30,8 +30,10 @@ export type IForm = {
     finished: Date;
   }[];
 };
-
-export const FormSelectRequesitos: React.FC = () => {
+interface ISwicht {
+  isOpen: boolean;
+}
+export const FormSelectRequesitos: React.FC<ISwicht> = ({ isOpen }) => {
   const {
     control,
     setValue,
@@ -51,16 +53,18 @@ export const FormSelectRequesitos: React.FC = () => {
   const dateFirst = new Date(watch('dateFirst'));
   const dateFinish = new Date(watch('dateFinish'));
   const [quantityFolga, setQuantityFolga] = useState(0);
+
   const handleSwicth = (e: any) => {
+    //if (!isAleatorio) trigger('antiguidade');
     setSwicth(!swicth);
   };
   const handleSwicthGrad = (e: any) => {
     if (!isAleatorio) trigger('antiguidade');
 
-    setSwitchGrad(!switchGrad);
+    setSwicth(!switchGrad);
   };
-  const handleQuantityPlus = async() => {
-    if(!isAleatorio) await trigger('antiguidade')
+  const handleQuantityPlus = async () => {
+    if (!isAleatorio) await trigger('antiguidade');
     setQuantity(q => q + 1);
   };
 
@@ -110,19 +114,18 @@ export const FormSelectRequesitos: React.FC = () => {
   setValue('quantity_turnos', quantityTurnos);
   setValue('quantity_services', quantityServices);
   setValue('quantity_folgas', quantityFolga);
+  //setValue('aleatoriedade', isAleatorio);
 
   useEffect(() => {
     const differenceDates = dateFinish.getDate() - dateFirst.getDate();
-    console.log(
+    /* console.log(
       'differenceDates',
       differenceDates,
       'qtd folgas',
       quantityFolga,
-    );
+    ); */
     setValue('quantity_folgas', differenceDates);
   }, [dateFirst, dateFinish, setValue]);
-
-
 
   return (
     <FormControl>
@@ -174,28 +177,7 @@ export const FormSelectRequesitos: React.FC = () => {
             )}
           />
         </Flex>
-        <Flex flexDirection={'column'} justify={'center'}>
-          <FormLabel fontWeight={'bold'}>Modalidade</FormLabel>
-          <Controller
-            name="modalidade"
-            control={control}
-            render={({
-              field: { onChange, onBlur, value, ref },
-              fieldState: { error },
-            }) => (
-              <Flex gap={2} flexDirection={'column'}>
-                <SelectPattern
-                  value={value}
-                  options={optionsModalidade}
-                  placeholderSelect="Modalidade"
-                  onChange={onChange}
-                  onBlur={onBlur}
-                  error={error}
-                />
-              </Flex>
-            )}
-          />
-        </Flex>
+
         <Flex flexDirection={'column'} justify={'center'}>
           <FormLabel fontWeight={'bold'}>Distribuição aleatória?</FormLabel>
           <Controller
@@ -208,13 +190,10 @@ export const FormSelectRequesitos: React.FC = () => {
                 color={'#38A169'}
                 onChange={async e => {
                   field.onChange(e.target.checked);
-
-                    await trigger('antiguidade');
-
+                  await trigger('antiguidade');
                   handleSwicth(!field.value);
                 }}
-                isChecked={field.value ?? false}
-                //value={field.value}
+                isChecked={field.value ?? true}
               />
             )}
           />
@@ -265,8 +244,7 @@ export const FormSelectRequesitos: React.FC = () => {
                           placeholderSelect="Militares"
                           onChange={async e => {
                             onChange(e.currentTarget.value);
-                           await trigger(`aleatoriedade`)
-
+                            await trigger(`aleatoriedade`);
                           }}
                           onBlur={onBlur}
                           error={error}

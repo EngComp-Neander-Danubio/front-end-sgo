@@ -14,14 +14,13 @@ export const ToListEvents: React.FC<IFlexCadastrar> = ({
   isOpen,
   handleToggle,
 }) => {
-  const { handleSubmit } = useForm();
   return (
     <Flex h={'80vh'} flexDirection={'column'} gap={2}>
       <FlexMenor />
       <Flex
         pl={2}
         pr={2}
-        // border={'1px solid black'}
+        //border={'1px solid black'}
         borderRadius={'8px'}
         borderTopLeftRadius={0}
         w={isOpen ? '87vw' : '94vw'}

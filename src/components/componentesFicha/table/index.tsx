@@ -32,12 +32,14 @@ interface ITable {
   currentPosition: number;
   rowsPerLoad: number;
   label_tooltip?: string;
-  handleDelete?: (id: string) => Promise<void>;
+  handleDelete?: () => {};
   handleUpdate?: (data: any, id: string) => Promise<void>;
+  isCheckBox?: boolean;
 }
 
 export const TableFicha: React.FC<ITable> = ({
   isActions,
+  isCheckBox,
   columns,
   registers,
   moreLoad,
@@ -45,7 +47,7 @@ export const TableFicha: React.FC<ITable> = ({
   currentPosition,
   rowsPerLoad,
   label_tooltip,
-  handleDelete = async (id: string) => {},
+  handleDelete,
 }) => {
   const start = currentPosition > 0 ? currentPosition - rowsPerLoad + 1 : 0;
   const end = currentPosition;
@@ -54,8 +56,9 @@ export const TableFicha: React.FC<ITable> = ({
     onOpen: onOpenFormEditarEvent,
     onClose: onCloseFormEditarEvent,
   } = useDisclosure();
-  const { loadEventsById } = useEvents();
+  const { loadEventsById, deleteEvent } = useEvents();
   const navigate = useNavigate();
+
   return (
     <>
       <Flex overflowY={'auto'} w="100%">
@@ -104,6 +107,9 @@ export const TableFicha: React.FC<ITable> = ({
             </TableCaption>
 
             <Thead>
+              {/* {registers && registers.length > 0 && isCheckBox && (
+                <ThTable title="CheckBox" customIcon={undefined} />
+              )} */}
               <Tr
                 borderTop="1px solid rgba(234, 236, 240, 1)"
                 borderBottom="1px solid rgba(234, 236, 240, 1)"
@@ -139,30 +145,19 @@ export const TableFicha: React.FC<ITable> = ({
                     customIcons={
                       isActions
                         ? [
-                            <IconeBusca
-                              key="busca"
-                              label_tooltip={`${label_tooltip}`}
-                            />,
-                            <IconeRelatorio
-                              key="relatorio"
-                              label_tooltip={`${label_tooltip}`}
-                            />,
                             <IconeEditar
                               key="editar"
                               label_tooltip={`${label_tooltip}`}
                               onOpen={() => {
-                                loadEventsById(register.Ord);
+                                loadEventsById(register.id);
                                 //onOpenFormEditarEvent();
-                                navigate(`/servico/${register.Ord}`);
+                                navigate(`/servico/${register.id}`);
                               }}
                             />,
                             <IconeDeletar
                               key="deletar"
                               label_tooltip={`${label_tooltip}`}
-                              onClick={() => {
-                                console.log('delete', register.Ord);
-                                () => handleDelete(register.Ord);
-                              }}
+                              //handleDelete={() => handleDelete}
                             />,
                           ]
                         : undefined
@@ -182,3 +177,13 @@ export const TableFicha: React.FC<ITable> = ({
     </>
   );
 };
+{
+  /* <IconeBusca
+                              key="busca"
+                              label_tooltip={`${label_tooltip}`}
+                            />,
+                            <IconeRelatorio
+                              key="relatorio"
+                              label_tooltip={`${label_tooltip}`}
+                            />, */
+}

@@ -45,6 +45,7 @@ export type Postos = {
   rua: string;
   bairro: string;
   numero: number;
+  modalidade: string;
 };
 
 export type RequisitoServico = {
@@ -52,7 +53,7 @@ export type RequisitoServico = {
   quantity_turnos: number;
   aleatoriedade: boolean;
   antiguidade: string[];
-  modalidade: string;
+  //modalidade?: string;
   dateFirst: Date;
   dateFinish: Date;
   turnos: {
@@ -70,13 +71,18 @@ export type Service = {
 };
 
 export interface IContextRequisitoData {
+  dateFirst: Date;
+  dateFinished: Date;
   requisitoServico: RequisitoServico;
   militars: Militares_service[];
   militaresRestantes: Militares_service[];
   postosServices: Postos[];
   services: Service[];
+  searchServices: Service[];
+  searchServiceLoading: boolean;
   handleSubmitRequisitos: (data: RequisitoServico) => void;
   handleRandomServices: () => void;
+  searchServicesById: (param?: string) => Promise<Service>;
   //loadTotalMilitar: () => number;
   totalMilitar: number;
   totalMilitarEscalados: number;
@@ -102,8 +108,14 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
   >([]);
   const [postosServices, setPostosServices] = useState<Postos[]>(postos);
   const [totalMilitar, setTotalMilitar] = useState<number>(0);
+  const [dateFirst, setDateFirst] = useState<Date>();
+  const [dateFinished, setdateFinished] = useState<Date>();
+  const [searchServiceLoading, setSearchServiceLoading] = useState<boolean>(
+    false,
+  );
   const [totalMilitarEscalados, setTotalMilitarEscalados] = useState<number>(0);
   const [services, setServices] = useState<Service[]>([]);
+  const [searchServices, setsearchServices] = useState<Service[]>([]);
   const [requisitoServico, setRequisitoServico] = useState<RequisitoServico>();
 
   const handleSubmitRequisitos = useCallback((data: RequisitoServico) => {
@@ -133,6 +145,7 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
       setPostosServices([]); // Inicializa como array vazio se não for um array
     }
   }, [postos, postosServices]);
+
   const handleRandomServices = () => {
     const generateServices = () => {
       const services: Service[] = [];
@@ -141,6 +154,8 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
       const groupedMilitares: Record<string, Militares_service[]> = {};
 
       if (!requisitoServico || !postosServices) return;
+      setDateFirst(requisitoServico.dateFirst);
+      setdateFinished(requisitoServico.dateFinish);
 
       let currentDate = new Date(requisitoServico.dateFirst);
       if (!requisitoServico.aleatoriedade) {
@@ -171,8 +186,8 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
                       groupedMilitares[beforeAntiguidade][0].posto_grad,
                   )?.militarRank,
                 };
-                console.log('aux1', aux);
-                console.log('aux2', aux2);
+                //console.log('aux1', aux);
+                //console.log('aux2', aux2);
                 if (
                   aux?.militarRank &&
                   aux2?.militarRank &&
@@ -184,8 +199,8 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
                 return m.posto_grad === a; // Filtra militares que têm posto/graduação igual a 'a'
               }
             });
-            console.log(groupedMilitares[a]);
-            console.log(groupedMilitares[a]?.length);
+            //console.log(groupedMilitares[a]);
+            //console.log(groupedMilitares[a]?.length);
           });
 
           requisitoServico.turnos.forEach(turno => {
@@ -239,10 +254,10 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
 
               // Cria o objeto de serviço
               const service: Service = {
-                posto: `${posto?.Local} - ${posto?.Rua}-${posto?.Numero}, ${posto?.Bairro}, ${posto?.Cidade}`,
+                posto: `${posto?.local} - ${posto?.rua}-${posto.numero}, ${posto?.bairro}, ${posto?.cidade}`,
                 dia: new Date(currentDate), // Clone para evitar mutação
                 turno: [new Date(turno.initial), new Date(turno.finished)], // Hora do turno
-                modalidade: requisitoServico.modalidade,
+                modalidade: `${posto?.modalidade}`,
                 militares: handleSortByPostoGrad(selectedMilitares, '2'), // Adiciona os militares selecionados
               };
 
@@ -253,77 +268,106 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
 
           currentDate.setDate(currentDate.getDate() + 1);
         }
-      } else {
-        requisitoServico.turnos.forEach(turno => {
-          postosServices?.forEach(posto => {
-            const selectedMilitares: Militares_service[] = [];
-            let i = 0;
-            // Preenche militares conforme a antiguidade e lotação
-            while (i < requisitoServico.quantity_militars) {
-              //Agora separa por lotação os que já foram separados por antiguidade
-              const militaresComLotacao = remainingMilitares.filter(
-                m =>
-                  selectedMilitares.length > 0 &&
-                  m.opm === selectedMilitares[0].opm,
-              );
+      } else
+        while (currentDate <= requisitoServico.dateFinish) {
+          requisitoServico.turnos.forEach(turno => {
+            postosServices.forEach(posto => {
+              const selectedMilitares: Militares_service[] = [];
 
-              let militar;
-              if (militaresComLotacao.length > 0) {
-                militar = militaresComLotacao[0];
-              } else {
-                militar = remainingMilitares[0];
-              }
-
-              if (militar) {
-                selectedMilitares.push(militar);
-                //console.log(selectedMilitares);
-                remainingMilitares = remainingMilitares.filter(
-                  m => m.matricula !== militar.matricula,
-                );
-              }
-
-              i++;
-            }
-
-            /* requisitoServico.antiguidade.forEach((a, index) => {
-              if (
-                selectedMilitares.length < requisitoServico.quantity_militars &&
-                groupedMilitares[a].length === 0
+              // Filtra militares conforme a lotação e antiguidade, até atingir a quantidade necessária
+              while (
+                selectedMilitares.length < requisitoServico.quantity_militars
               ) {
-                const nextAntiguidade = requisitoServico.antiguidade[index + 1];
-                if (
-                  nextAntiguidade &&
-                  groupedMilitares[nextAntiguidade].length > 0
-                ) {
-                  selectedMilitares.push(
-                    groupedMilitares[nextAntiguidade].shift()!,
+                const militaresComLotacao = remainingMilitares.filter(
+                  m =>
+                    selectedMilitares.length > 0 &&
+                    m.opm === selectedMilitares[0].opm,
+                );
+
+                let militar;
+                if (militaresComLotacao.length > 0) {
+                  militar = militaresComLotacao[0];
+                } else {
+                  militar = remainingMilitares[0];
+                }
+
+                if (militar) {
+                  selectedMilitares.push(militar);
+                  remainingMilitares = remainingMilitares.filter(
+                    m => m.matricula !== militar.matricula,
                   );
+                } else {
+                  break; // Se não houver mais militares disponíveis, sai do loop
                 }
               }
-            }); */
 
-            // Cria o objeto de serviço
-            const service: Service = {
-              posto: `${posto?.Local} - ${posto?.Rua}-${posto?.Numero}, ${posto?.Bairro}, ${posto?.Cidade}`,
-              dia: new Date(currentDate), // Clone para evitar mutação
-              turno: [new Date(turno.initial), new Date(turno.finished)], // Hora do turno
-              modalidade: requisitoServico.modalidade,
-              militares: handleSortByPostoGrad(selectedMilitares, '2'), // Adiciona os militares selecionados
-            };
+              // Cria o objeto de serviço
+              const service: Service = {
+                posto: `${posto?.local} - ${posto?.rua}-${posto?.numero}, ${posto?.bairro}, ${posto?.cidade}`,
+                dia: new Date(currentDate), // Clone para evitar mutação
+                turno: [new Date(turno.initial), new Date(turno.finished)], // Hora do turno
+                modalidade: posto.modalidade,
+                militares: handleSortByPostoGrad(selectedMilitares, '2'), // Adiciona os militares selecionados
+              };
 
-            services.push(service);
-            loadTotalMilitarEscalados(service.militares.length);
+              services.push(service);
+              loadTotalMilitarEscalados(service.militares.length);
+            });
           });
-        });
-      }
+
+          // Avança para o próximo dia
+          currentDate.setDate(currentDate.getDate() + 1);
+        }
 
       setServices(services);
+      setsearchServices(services);
       setMilitaresRestantes(remainingMilitares);
       return services;
     };
 
     generateServices();
   };
+  const searchServicesById = useCallback(
+    async (param?: string) => {
+      if (!param) {
+        setsearchServices(services);
+        setSearchServiceLoading(true);
+        return;
+      }
+
+      const lowercasedParam = param.toLowerCase();
+
+      const result: Service[] = services.filter(service => {
+        const diaAsString = service.dia.toISOString().toLowerCase(); // Converte a data para string no formato ISO e para minúsculas
+        const turnoAsString = service.turno
+          .map(turno => turno.toISOString().toLowerCase())
+          .join(','); // Converte cada item de turno para string em minúsculas e os junta em uma única string
+
+        return (
+          diaAsString.includes(lowercasedParam) || // Verifica se a string da data inclui o parâmetro em minúsculas
+          service.militares.some(militar =>
+            militar.nome_completo.toLowerCase().includes(lowercasedParam),
+          ) || // Verifica o nome nos militares em minúsculas
+          service.militares.some(militar =>
+            militar.opm.toLowerCase().includes(lowercasedParam),
+          ) || // Verifica a OPM nos militares em minúsculas
+          service.militares.some(militar =>
+            militar.posto_grad.toLowerCase().includes(lowercasedParam),
+          ) || // Verifica o posto/graduação nos militares em minúsculas
+          service.militares.some(militar =>
+            militar.matricula.toLowerCase().includes(lowercasedParam),
+          ) || // Verifica a matrícula nos militares em minúsculas
+          service.modalidade.toLowerCase().includes(lowercasedParam) || // Verifica na modalidade em minúsculas
+          service.posto.toLowerCase().includes(lowercasedParam) || // Verifica no posto em minúsculas
+          turnoAsString.includes(lowercasedParam) // Verifica se a string do turno inclui o parâmetro em minúsculas
+        );
+      });
+
+      setsearchServices(result);
+      setSearchServiceLoading(true);
+    },
+    [services],
+  );
 
   const contextValue = useMemo(
     () => ({
@@ -331,22 +375,32 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
       postosServices,
       requisitoServico,
       services,
+      searchServices,
+      searchServiceLoading,
       totalMilitar,
       totalMilitarEscalados,
       militaresRestantes,
+      dateFirst,
+      dateFinished,
       handleSubmitRequisitos,
       handleRandomServices,
+      searchServicesById,
     }),
     [
       militars,
       postosServices,
       requisitoServico,
       services,
+      searchServices,
+      searchServiceLoading,
       totalMilitar,
       totalMilitarEscalados,
       militaresRestantes,
+      dateFirst,
+      dateFinished,
       handleSubmitRequisitos,
       handleRandomServices,
+      searchServicesById,
     ],
   );
 

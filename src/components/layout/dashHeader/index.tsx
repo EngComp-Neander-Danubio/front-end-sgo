@@ -14,7 +14,7 @@ interface IDashHeader {
 }
 
 export const DashHeader: React.FC<IDashHeader> = props => {
-  const { isTokenValid, token } = useAuth();
+  const { isTokenValid, token, logout } = useAuth();
   const u = isTokenValid();
   console.log(u);
   return (
@@ -67,7 +67,7 @@ export const DashHeader: React.FC<IDashHeader> = props => {
           pr={2}
         >
           <InputDashHeader width={'85%'} />
-          <IconeLogin />
+          <IconeLogin handleLogout={logout} />
           <IconeConfig />
           <IconeSino />
         </HStack>

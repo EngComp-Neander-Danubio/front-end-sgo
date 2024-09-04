@@ -2,12 +2,15 @@ import { Flex, Text, FormLabel, Input, FormControl } from '@chakra-ui/react';
 import React from 'react';
 import { Controller, useForm, useFormContext } from 'react-hook-form';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
+import { optionsModalidade } from '../../../types/typesModalidade';
+import { SelectPattern } from '../modal/SelectPattern';
 interface IForm {
   local: string;
   rua: string;
   numero: string;
   bairro: string;
   cidade: string;
+  modalidade: string;
 }
 export const FormPosto: React.FC = () => {
   const {
@@ -42,6 +45,28 @@ export const FormPosto: React.FC = () => {
                 error={error}
                 //{...field}
               />
+            )}
+          />
+        </Flex>
+        <Flex flexDirection={'column'} gap={1} w={'full'}>
+          <FormLabel fontWeight={'bold'}>Modalidade</FormLabel>
+          <Controller
+            name="modalidade"
+            control={control}
+            render={({
+              field: { onChange, onBlur, value, ref },
+              fieldState: { error },
+            }) => (
+              <Flex gap={2} flexDirection={'column'}>
+                <SelectPattern
+                  value={value}
+                  options={optionsModalidade}
+                  placeholderSelect="Modalidade"
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  error={error}
+                />
+              </Flex>
             )}
           />
         </Flex>

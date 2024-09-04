@@ -10,17 +10,18 @@ export const PostoServico: React.FC = () => {
 
   const handleToggle = () => {
     setIsOpen(prevIsOpen => !prevIsOpen);
-    console.log('isOpen', !isOpen); // Observe que isso sempre exibirá o valor antigo de `isOpen`
   };
 
   return (
     <>
       <Flex
         bgColor="rgba(248, 249, 250, 1)"
-        w={'content'}
+        //bgColor="#205b95"
+        w={'100%'}
         //h={'content'}
         // border={'1px solid red'}
         maxH={'100vh'}
+        overflow="hidden"
       >
         <Grid
           templateAreas={`"nav header"

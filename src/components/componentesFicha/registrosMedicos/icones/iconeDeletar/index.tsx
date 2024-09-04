@@ -5,7 +5,6 @@ interface IIcone extends IconProps {
   label_tooltip?: string;
   handleDelete?: (id: string) => Promise<void>;
 }
-
 export const IconeDeletar: React.FC<IIcone> = ({
   label_tooltip,
   handleDelete,

@@ -19,7 +19,7 @@ export const ConteinerEditarCadastro: React.FC<IFlexCadastrar> = ({
       <Flex
         pl={2}
         pr={2}
-        // border={'1px solid black'}
+        //border={'1px solid black'}
         borderRadius={'8px'}
         borderTopLeftRadius={0}
         w={isOpen ? '87vw' : '94vw'}
@@ -64,9 +64,7 @@ export const ConteinerEditarCadastro: React.FC<IFlexCadastrar> = ({
             gap={4}
             align={'center'}
             justify={'center'}
-          >
-            {/* <InputInlcuir handleSubmit={() => handleSubmit} /> */}
-          </Flex>
+          ></Flex>
 
           <Flex
             borderBottom="1px solid rgba(0, 0, 0, 0.5)"
@@ -78,16 +76,13 @@ export const ConteinerEditarCadastro: React.FC<IFlexCadastrar> = ({
             transitionDuration="1.0s"
             align={'center'}
             justifyContent={'center'}
+            pl={8}
+            pb={8}
           >
-            <Flex mb={10}>
-              <AccordinEditarCadastro
-                isOpen={isOpen}
-                handleToggle={handleToggle}
-                handleSubmit={function(): void {
-                  throw new Error('Function not implemented.');
-                }}
-              />
-            </Flex>
+            <AccordinEditarCadastro
+              isOpen={isOpen}
+              handleToggle={handleToggle}
+            />
           </Flex>
         </Flex>
       </Flex>

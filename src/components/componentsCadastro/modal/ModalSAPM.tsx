@@ -34,11 +34,21 @@ import {
   optionsEsp,
   optionsOPMs,
 } from '../../../types/typesOPM';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, FieldError, useForm } from 'react-hook-form';
 import { ModalFormAddMilitar } from './ModalFormAddMilitar';
 import { FormEfetivo } from '../formEfetivo/FormEfetivo';
 import { printValue } from 'yup';
 import { FormEditarEfetivo } from '../formEfetivo/FormEditarEfetivo';
+import {
+  columnsMapMilitar,
+  handleSortByPostoGrad,
+  OPMOption,
+} from '../../../types/typesMilitar';
+import { sapmSchema } from '../../../types/yupSAPM/yupSAPM';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { TableFicha } from '../../componentesFicha/table';
+import { Militares_service } from '../../../context/requisitosContext/RequisitosContext';
+import { useMilitares } from '../../../context/militares/useMilitares';
 
 interface IModal {
   isOpen: boolean;
@@ -46,12 +56,14 @@ interface IModal {
   onClose: () => void;
   opms: OPMs[];
   select_opm: OPMs;
+  militaresRestantes: Militares_service[];
 }
 
 export const ModalSAPM: React.FC<IModal> = ({
   isOpen,
   onClose,
   select_opm,
+  militaresRestantes,
 }) => {
   const { control, reset, getValues } = useForm();
   const [selectedCheckbox, setSelectedCheckbox] = useState<
@@ -67,80 +79,23 @@ export const ModalSAPM: React.FC<IModal> = ({
   ) => {
     setSelectedCheckbox(option);
   };
-  type OPMOption =
-    | 'cgo'
-    | '1crpm'
-    | '2crpm'
-    | '3crpm'
-    | '4crpm'
-    | 'cpe'
-    | 'bpre'
-    | 'bptur'
-    | 'bpma'
-    | 'rpmont'
-    | 'bpgep'
-    | 'cpchoque'
-    | 'cotam'
-    | 'bope'
-    | 'bepi'
-    | 'bpchoque'
-    | 'copac'
-    | 'cpraio'
-    | '1bpm'
-    | '2bpm'
-    | '3bpm'
-    | '4bpm'
-    | '5bpm'
-    | '6bpm'
-    | '7bpm'
-    | '8bpm'
-    | '9bpm'
-    | '10bpm'
-    | '11bpm'
-    | '12bpm'
-    | '13bpm'
-    | '14bpm'
-    | '15bpm'
-    | '16bpm'
-    | '17bpm'
-    | '18bpm'
-    | '19bpm'
-    | '20bpm'
-    | '21bpm'
-    | '22bpm'
-    | '23bpm'
-    | '24bpm'
-    | '25bpm'
-    | 'bsp'
-    | '1cpg'
-    | '2cpg'
-    | '3cpg'
-    | 'dpgi'
-    | 'cetic'
-    | 'codip'
-    | 'colog'
-    | 'coafi'
-    | 'cgp'
-    | 'cpmce'
-    | 'csas'
-    | 'cogepro'
-    | 'cogei'
-    | 'cpraio'
-    | '1bpraio'
-    | '2bpraio'
-    | '3bpraio'
-    | '4bpraio'
-    | '5bpraio'
-    | 'qcg'
-    | '1cpg'
-    | '2cpg'
-    | '3cpg'
-    | 'ccs'
-    | 'cbmpm'
-    | 'bsp'
-    | 'cpjm'
-    | null;
+  const headerKeysMilitar =
+    militaresRestantes.length > 0
+      ? Object.keys(militaresRestantes[0]).filter(key =>
+          ['matricula', 'posto_grad', 'nome_completo', 'opm'].includes(key),
+        )
+      : [];
+  const { loadLessMilitar, loadMoreMilitar } = useMilitares();
 
+  const transformedMiltitares = militaresRestantes.map(militar => {
+    const transformedMilitar: {
+      [key: string]: any;
+    } = {};
+    Object.entries(columnsMapMilitar).forEach(([newKey, originalKey]) => {
+      transformedMilitar[newKey] = militar[originalKey];
+    });
+    return transformedMilitar;
+  });
   const handleCheckboxChangeGrandeOPM = (
     option:
       | '1crpm'
@@ -198,7 +153,8 @@ export const ModalSAPM: React.FC<IModal> = ({
     try {
       if (opm.length > 0) {
         setOPM([]);
-        //reset();
+
+        reset();
         toast({
           title: 'Exclusão de OPMs.',
           description: 'OPMs excluída com sucesso.',
@@ -218,6 +174,14 @@ export const ModalSAPM: React.FC<IModal> = ({
         position: 'top-right',
       });
     }
+  };
+  const handleDeleteSelectAllOpmCancel = () => {
+    try {
+      if (opm.length > 0) {
+        setOPM([]);
+        //reset();
+      }
+    } catch (err) {}
   };
   const handleDeleteOpm = (option: OPMs) => {
     if (opm.some(o => o === option)) {
@@ -251,7 +215,7 @@ export const ModalSAPM: React.FC<IModal> = ({
         <ModalOverlay />
         <ModalContent maxW="80vw" minW="30vw" maxH="80vh" minH="40vh">
           <ModalHeader>
-            <Center>Adicionar/Excluir OPM</Center>
+            <Center>Adicionar OPM</Center>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody justifyContent="center" padding={4} gap={4}>
@@ -266,10 +230,15 @@ export const ModalSAPM: React.FC<IModal> = ({
                     <Checkbox
                       size="md"
                       //isChecked={selectedCheckbox === 'Todos'}
-                      onChange={() => handleCheckboxChange('Todos')}
+                      onChange={e => {
+                        handleCheckboxChange('Todos');
+                        handleCheckbox(e.currentTarget.checked, optionsOPMs);
+                        //console.log('', opm);
+                      }}
                     >
                       Todos
                     </Checkbox>
+
                     <Controller
                       name="checkboxespecializadas"
                       control={control}
@@ -491,17 +460,23 @@ export const ModalSAPM: React.FC<IModal> = ({
                         <Controller
                           name="select_opm"
                           control={control}
-                          render={({ field: { onChange, onBlur } }) => (
-                            <SelectPattern
-                              onChange={value => {
-                                onChange(value);
-                                //handleSelectOpm((value as unknown) as OPMs);
-                              }}
-                              onBlur={onBlur}
-                              w="30vw"
-                              options={optionsOPMs}
-                            />
-                          )}
+                          render={({
+                            field: { onChange, onBlur, value, ref },
+                            fieldState: { error },
+                          }) => {
+                            return (
+                              <SelectPattern
+                                onChange={value => {
+                                  onChange(value);
+                                  // handleSelectOpm(value as OPMs);
+                                }}
+                                onBlur={onBlur}
+                                w="30vw"
+                                options={optionsOPMs}
+                                error={error}
+                              />
+                            );
+                          }}
                         />
                       </Flex>
                       <Flex
@@ -533,16 +508,20 @@ export const ModalSAPM: React.FC<IModal> = ({
                         <Controller
                           name="button"
                           control={control}
-                          render={({ field: { onChange, onBlur } }) => (
+                          render={({
+                            field: { onChange, onBlur },
+                            formState,
+                          }) => (
                             <Button
-                              onClick={value => {
+                              onClick={() => {
                                 const v = getValues('select_opm');
-                                onChange(value);
-                                if (v !== undefined || v !== null || v !== '')
-                                  handleSelectOpm((v as unknown) as OPMs);
+                                if (v !== undefined && v !== null && v !== '') {
+                                  handleSelectOpm(v as OPMs);
+                                }
+                                onChange(v);
                               }}
-                              bgColor=" #38A169"
-                              color={'#fff'}
+                              bgColor="#38A169"
+                              color="#fff"
                               onBlur={onBlur}
                               variant="ghost"
                             >
@@ -558,7 +537,7 @@ export const ModalSAPM: React.FC<IModal> = ({
                   <Flex
                     border="1px solid rgba(0, 0, 0, 0.16)"
                     borderRadius="5px"
-                    minH="200px"
+                    minH="60px"
                     w={'full'}
                     overflowX={'auto'}
                     mt={4}
@@ -594,6 +573,42 @@ export const ModalSAPM: React.FC<IModal> = ({
                         );
                       })}
                   </Flex>
+                  <Flex
+                    border="1px solid rgba(0, 0, 0, 0.16)"
+                    borderRadius="5px"
+                    minH="200px"
+                    w={'full'}
+                    overflowX={'auto'}
+                    mt={4}
+                    p={2}
+                    gap={4}
+                  >
+                    {/* <TableFicha
+                      isOpen={militaresRestantes.length > 0}
+                      columns={headerKeysMilitar}
+                      registers={handleSortByPostoGrad()}
+                      currentPosition={50}
+                      rowsPerLoad={0}
+                    /> */}
+                    <TableFicha
+                      isOpen={militaresRestantes.length > 0}
+                      columns={[
+                        'Matrícula',
+                        'Posto/Graduação',
+                        'Nome Completo',
+                        'Unidade',
+                      ]}
+                      registers={handleSortByPostoGrad(
+                        transformedMiltitares,
+                        '1',
+                      )}
+                      currentPosition={0}
+                      rowsPerLoad={100}
+                      lessLoad={loadLessMilitar}
+                      moreLoad={loadMoreMilitar}
+                      isCheckBox={true}
+                    />
+                  </Flex>
                 </TabPanel>
                 <TabPanel>
                   <FormEditarEfetivo />
@@ -603,7 +618,15 @@ export const ModalSAPM: React.FC<IModal> = ({
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="yellow" mr={3} onClick={onClose}>
+            <Button
+              colorScheme="yellow"
+              mr={3}
+              onClick={() => {
+                onClose();
+                reset();
+                handleDeleteSelectAllOpmCancel();
+              }}
+            >
               Cancelar
             </Button>
             <Button

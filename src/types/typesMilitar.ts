@@ -44,7 +44,7 @@ export const optionsMilitares: Array<{ label: string; value: string; militarRank
 export const columnsMapMilitar: {
   [key: string]: string;
 } = {
-  //'Ord': 'id', // Exemplo: 'Ord' mapeia para 'id'
+  'id': 'id', // Exemplo: 'Ord' mapeia para 'id'
   'Matrícula': 'matricula',
   'Posto/Graduação': 'posto_grad',
   'Nome Completo': 'nome_completo',
@@ -119,4 +119,81 @@ export const handleSortByPostoGradTwoMilitar = (militarOne: any, militarTwo: any
     return false;
   }
 };
+
+
+
+export type OPMOption =
+  | 'cgo'
+  | '1crpm'
+  | '2crpm'
+  | '3crpm'
+  | '4crpm'
+  | 'cpe'
+  | 'bpre'
+  | 'bptur'
+  | 'bpma'
+  | 'rpmont'
+  | 'bpgep'
+  | 'cpchoque'
+  | 'cotam'
+  | 'bope'
+  | 'bepi'
+  | 'bpchoque'
+  | 'copac'
+  | 'cpraio'
+  | '1bpm'
+  | '2bpm'
+  | '3bpm'
+  | '4bpm'
+  | '5bpm'
+  | '6bpm'
+  | '7bpm'
+  | '8bpm'
+  | '9bpm'
+  | '10bpm'
+  | '11bpm'
+  | '12bpm'
+  | '13bpm'
+  | '14bpm'
+  | '15bpm'
+  | '16bpm'
+  | '17bpm'
+  | '18bpm'
+  | '19bpm'
+  | '20bpm'
+  | '21bpm'
+  | '22bpm'
+  | '23bpm'
+  | '24bpm'
+  | '25bpm'
+  | 'bsp'
+  | '1cpg'
+  | '2cpg'
+  | '3cpg'
+  | 'dpgi'
+  | 'cetic'
+  | 'codip'
+  | 'colog'
+  | 'coafi'
+  | 'cgp'
+  | 'cpmce'
+  | 'csas'
+  | 'cogepro'
+  | 'cogei'
+  | 'cpraio'
+  | '1bpraio'
+  | '2bpraio'
+  | '3bpraio'
+  | '4bpraio'
+  | '5bpraio'
+  | 'qcg'
+  | '1cpg'
+  | '2cpg'
+  | '3cpg'
+  | 'ccs'
+  | 'cbmpm'
+  | 'bsp'
+  | 'cpjm'
+  | null;
+
 

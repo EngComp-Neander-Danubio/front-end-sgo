@@ -17,8 +17,8 @@ export const Ficha: React.FC = () => {
         <Flex
           bg="rgba(248, 249, 250, 1)"
           //bg='green.100'
-          w={'content'}
-          h={'content'}
+          //w={'content'}
+          //h={'content'}
         >
           <Grid
             templateAreas={`"nav header"

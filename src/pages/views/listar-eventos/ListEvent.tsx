@@ -5,9 +5,10 @@ import { Flex, Grid, GridItem } from '@chakra-ui/react';
 import { FooterCetic } from '../../../components/componentsCadastro/footerImgCETIC';
 import { FlexConteudo } from '../../../components/componentsCadastro/flexCadastrar';
 import { ToListEvents } from '../../../components/componentsCadastro/listar-eventos/ToListEvents';
+import { GridPattern } from '../GridPattern';
 
 export const ListEvent: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   const handleToggle = () => {
     setIsOpen(prevIsOpen => !prevIsOpen);
@@ -17,10 +18,9 @@ export const ListEvent: React.FC = () => {
     <>
       <Flex
         bgColor="rgba(248, 249, 250, 1)"
-        w={'content'}
-        //h={'content'}
         // border={'1px solid red'}
         maxH={'100vh'}
+        overflow="hidden"
       >
         <Grid
           templateAreas={`"nav header"
@@ -39,7 +39,6 @@ export const ListEvent: React.FC = () => {
             <MenuLateral isOpen={isOpen} handleToggle={handleToggle} />
           </GridItem>
           <GridItem area={'main'}>
-            {/* <FlexConteudo isOpen={isOpen} handleToggle={handleToggle} /> */}
             <ToListEvents isOpen={isOpen} handleToggle={handleToggle} />
           </GridItem>
           <GridItem

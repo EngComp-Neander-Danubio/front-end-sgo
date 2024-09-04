@@ -28,10 +28,11 @@ export const ModalRequesitos: React.FC<IModal> = ({ isOpen, onClose }) => {
       aleatoriedade: true,
     },
   });
-
+  const { reset } = methodsRequisitos;
   const { handleSubmitRequisitos } = useRequisitos();
   const handle = (e: any) => {
     handleSubmitRequisitos(e);
+    reset();
     onClose();
   };
   return (
@@ -46,11 +47,18 @@ export const ModalRequesitos: React.FC<IModal> = ({ isOpen, onClose }) => {
               </ModalHeader>
               <ModalCloseButton />
               <ModalBody>
-                <FormSelectRequesitos />
+                <FormSelectRequesitos isOpen={isOpen} />
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="yellow" mr={3} onClick={onClose}>
+                <Button
+                  colorScheme="yellow"
+                  mr={3}
+                  onClick={() => {
+                    onClose();
+                    reset();
+                  }}
+                >
                   Cancelar
                 </Button>
                 <Button

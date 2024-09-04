@@ -26,7 +26,9 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
   const [endDate, setEndDate] = useState<Date>();
 
   return (
-    <FormControl {...props}>
+    <FormControl
+    //border={'1px solid green'}
+    {...props}>
       <Flex align="center" justify="center" gap={2}>
         <Flex
           align={'center'}

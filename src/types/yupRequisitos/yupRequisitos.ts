@@ -12,7 +12,7 @@ export const requisitosSchema = yup.object().shape({
         yup.string().required('Campo obrigatório')
     ).notRequired(),
     }),
-  modalidade: yup.string().nonNullable().required('Campo obrigatório'),
+  //modalidade: yup.string().nonNullable().required('Campo obrigatório'),
   dateFirst: yup.date().required('Campo obrigatório'),
   dateFinish: yup.date().required('Campo obrigatório'),
   turnos: yup.array().of(
