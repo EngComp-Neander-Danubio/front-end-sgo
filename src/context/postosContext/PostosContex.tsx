@@ -9,6 +9,8 @@ import React, {
 import { useToast } from '@chakra-ui/react';
 import { readString } from 'react-papaparse';
 import api from '../../services/api';
+import { useEvents } from '../eventContext/useEvents';
+import { number } from 'prop-types';
 export type Posto = {
   columns?: string[];
   registers?: { [key: string]: any }[];
@@ -16,11 +18,27 @@ export type Posto = {
 export interface PostoForm {
   local: string;
   rua: string;
-  numero: number;
+  numero: string;
   bairro: string;
   cidade: string;
   modalidade: string;
+  qtd_efetivo: number;
+  Cel?: number;
+  TenCel?: number;
+  Maj?: number;
+  Cap?: number;
+  PrimeiroTen?: number;
+  SegundoTen?: number;
+  St?: number;
+  PrimeiroSgt?: number;
+  SegundoSgt?: number;
+  TerceiroSgt?: number;
+  Cb?: number;
+  Sd?: number;
+  AlSd?: number;
+  [key: string]: any;
 }
+
 export interface IContextPostoData {
   postos: PostoForm[];
   postoById: PostoForm;
@@ -55,6 +73,7 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
   const [hasMore, setHasMore] = useState(true);
   const rowsPerLoad = 100; // Número de linhas para carregar por vez
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { eventById } = useEvents();
   const handleClick = () => {
     document.getElementById('postoInput')?.click();
   };
@@ -199,10 +218,19 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, []);
   const uploadPosto = useCallback(async (data: PostoForm) => {
+    const { rua, bairro, cidade, numero } = data;
     setIsLoading(true);
-    //const parameters = param !== undefined ? param : '';
+    const dataPosto = {
+      rua,
+      numero,
+      cidade,
+      bairro,
+      operacaoId: 202401,
+      //operacaoId: (eventById?.id as unknown) as number,
+    };
+
     try {
-      await api.post(`/posto`, data);
+      await api.post(`/posto`, dataPosto);
       //setPosto((response.data as unknown) as Posto[]);
       toast({
         title: 'Sucesso',

@@ -74,6 +74,8 @@ export const ModalRestantes: React.FC<IModal> = ({
               registers={handleSortByPostoGrad()}
               currentPosition={50}
               rowsPerLoad={0}
+              isActions={true}
+              label_tooltip='militar'
             />
           </ModalBody>
 

@@ -78,7 +78,6 @@ export const CardService: React.FC<ICard> = ({ services, isOpen }) => {
     return groupedDates;
   };
 
-
   const groupedServices = agruparDatas(
     !searchServiceLoading ? services : searchServices,
   );
@@ -191,7 +190,13 @@ export const CardService: React.FC<ICard> = ({ services, isOpen }) => {
                     }}
                     fontSize={'12px'}
                   >
-                    <Table variant="simple" size="sm">
+                    <Table
+                      variant="simple"
+                      size="sm"
+                      overflowX={'auto'}
+                      overflowY={'auto'}
+                      h={'100%'}
+                    >
                       <Thead>
                         <Tr>
                           <Th>Posto/Grad</Th>

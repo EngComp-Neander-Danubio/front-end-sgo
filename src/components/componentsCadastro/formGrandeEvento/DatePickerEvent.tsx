@@ -29,13 +29,13 @@ export const DatePickerEvent: React.FC<IDatePicker> = ({
         ref={customInputRef}
         portalId="root-portal" // se necessário, pode usar um portal para evitar problemas de sobreposição
         popperPlacement="bottom"
+        //withPortal
         locale={ptBR}
-        //open
         timeCaption="Hora"
         showTimeSelect
         timeFormat="p"
         timeIntervals={15}
-        //selected={new Date()}
+        showPopperArrow
         dateFormat="MM-dd-yyyy h:mm"
         customInput={
           <FormControl isInvalid={!!error}>

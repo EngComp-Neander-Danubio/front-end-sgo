@@ -46,6 +46,8 @@ import {
 import { columnsMapPostos } from '../../../types/yupPostos/yupPostos';
 import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
+import { ModalSolicitacarPostos } from '../modal/ModalSolicitarPostos';
+import { ModalSolicitarEfetivo } from '../modal/ModalSolicitarEfetivo';
 interface IAccordion extends AccordionProps {
   handleSubmit: () => void;
   isOpen: boolean;
@@ -91,6 +93,16 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
     onClose: onCloseModalSAPM,
   } = useDisclosure();
   const {
+    isOpen: isOpenModalSolicitarPostos,
+    onOpen: onOpenModalSolicitarPostos,
+    onClose: onCloseModalSolicitarPostos,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenModalSolicitarMilitares,
+    onOpen: onOpenModalSolicitarMilitares,
+    onClose: onCloseModalSolicitarMilitares,
+  } = useDisclosure();
+  const {
     isOpen: isOpenModalServices,
     onOpen: onOpenModalServices,
     onClose: onCloseModalServices,
@@ -119,6 +131,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
 
   const {
     handleRandomServices,
+    handleRandomServicesNewTable,
     services,
     totalMilitar,
     totalMilitarEscalados,
@@ -282,6 +295,16 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                     </Tooltip>
                   </Flex>
                   <Button
+                    //color={'white'}
+                    rightIcon={<FaFileUpload size={'16px'} />}
+                    bgColor="#3182CE"
+                    variant="ghost"
+                    color={'#fff'}
+                    onClick={onOpenModalSolicitarPostos}
+                  >
+                    Solicitar Postos
+                  </Button>
+                  <Button
                     color={'white'}
                     rightIcon={<BiPencil size={'16px'} />}
                     bgColor=" #38A169"
@@ -315,6 +338,20 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                   'Bairro',
                   'Cidade',
                   'Modalidade',
+                  'Qtd Efetivo',
+                  /* 'Coronel',
+                  'Ten Cel',
+                  'Major',
+                  'Capitão',
+                  '1º Ten',
+                  '2º Ten',
+                  'Sub tenente',
+                  '1º Sgt',
+                  '2º Sgt',
+                  '3º Sgt',
+                  'Cb',
+                  'Sd',
+                  'Al Sd', */
                 ]}
                 registers={transformedPostos}
                 moreLoad={loadMore}
@@ -389,6 +426,16 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                       </span>
                     </Tooltip>
                   </Flex>
+                  <Button
+                    //color={'white'}
+                    rightIcon={<FaFileUpload size={'16px'} />}
+                    bgColor="#3182CE"
+                    variant="ghost"
+                    color={'#fff'}
+                    onClick={onOpenModalSolicitarMilitares}
+                  >
+                    Solicitar Militares
+                  </Button>
                   <Button
                     //color={'white'}
                     rightIcon={<FaFileUpload size={'16px'} />}
@@ -509,7 +556,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                       onClick={onOpenModalRestantes}
                       fontWeight={'bold'}
                     >
-                      Restantes{' '}
+                      Restantes
                     </Text>
                     <Text>{militaresRestantes.length}</Text>
                   </Flex>
@@ -583,6 +630,22 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
         onClose={onCloseModalSAPM}
         opms={[]}
         select_opm={'' as OPMs}
+        militaresRestantes={[]}
+      />
+      <ModalSolicitacarPostos
+        isOpen={isOpenModalSolicitarPostos}
+        onOpen={onOpenModalSolicitarPostos}
+        onClose={onCloseModalSolicitarPostos}
+        opms={[]}
+        select_opm={'' as OPMs}
+        militaresRestantes={[]}
+      />
+      <ModalSolicitarEfetivo
+        isOpen={isOpenModalSolicitarMilitares}
+        onOpen={onOpenModalSolicitarMilitares}
+        onClose={onCloseModalSolicitarMilitares}
+        //opms={[]}
+        //select_opm={'' as OPMs}
         militaresRestantes={[]}
       />
       <ModalServices

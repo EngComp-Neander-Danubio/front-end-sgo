@@ -213,7 +213,13 @@ export const ModalSAPM: React.FC<IModal> = ({
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent maxW="80vw" minW="30vw" maxH="80vh" minH="40vh">
+        <ModalContent
+          w={'fit-content'}
+          maxW="80vw"
+          minW="30vw"
+          maxH="80vh"
+          minH="40vh"
+        >
           <ModalHeader>
             <Center>Adicionar OPM</Center>
           </ModalHeader>

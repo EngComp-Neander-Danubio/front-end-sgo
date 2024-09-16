@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Flex,
   Button,
@@ -8,19 +8,16 @@ import {
   Tbody,
   Thead,
   Tr,
-  border,
-  Td,
   useDisclosure,
 } from '@chakra-ui/react';
 import { AiOutlineArrowDown } from 'react-icons/ai';
 import './table.modules.css';
 import { ThTable } from './th';
 import { TdTable } from './td';
-import { IconeRelatorio, IconeEditar, IconeDeletar } from '../../ViewLogin';
-import { IconeBusca } from '../registrosMedicos/icones/iconeBusca';
+import { IconeEditar, IconeDeletar } from '../../ViewLogin';
 import { ModalFormAddEvent } from '../../componentsCadastro/modal/ModalFormAddEvent';
 import { useEvents } from '../../../context/eventContext/useEvents';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface ITable {
   isOpen?: boolean;
@@ -35,10 +32,10 @@ interface ITable {
   handleDelete?: () => {};
   handleUpdate?: (data: any, id: string) => Promise<void>;
   isCheckBox?: boolean;
-  customIcons?: React.ReactNode[];
+  //customIcons?: React.ReactNode[];
 }
 
-export const TableFicha: React.FC<ITable> = ({
+export const TableEvent: React.FC<ITable> = ({
   isActions,
   isCheckBox,
   columns,
@@ -49,7 +46,6 @@ export const TableFicha: React.FC<ITable> = ({
   rowsPerLoad,
   label_tooltip,
   handleDelete,
-  customIcons,
 }) => {
   const start = currentPosition > 0 ? currentPosition - rowsPerLoad + 1 : 0;
   const end = currentPosition;
@@ -146,7 +142,8 @@ export const TableFicha: React.FC<ITable> = ({
                   <TdTable
                     customIcons={
                       isActions
-                        ? /* <IconeEditar
+                        ? [
+                            <IconeEditar
                               key="editar"
                               label_tooltip={`${label_tooltip}`}
                               onOpen={() => {
@@ -158,9 +155,12 @@ export const TableFicha: React.FC<ITable> = ({
                             <IconeDeletar
                               key="deletar"
                               label_tooltip={`${label_tooltip}`}
-                              //handleDelete={() => handleDelete}
-                            />, */
-                          [[customIcons]]
+                              handleDelete={async () => {
+                                console.log('clicou no delete')
+                                await deleteEvent(register.Ord);
+                              }}
+                            />,
+                          ]
                         : undefined
                     }
                   />

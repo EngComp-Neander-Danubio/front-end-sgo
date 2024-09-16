@@ -46,6 +46,19 @@ export type Postos = {
   bairro: string;
   numero: number;
   modalidade: string;
+  Cel?: number;
+  TenCel?: number;
+  Maj?: number;
+  Cap?: number;
+  PrimeiroTen?: number;
+  SegundoTen?: number;
+  St?: number;
+  PrimeiroSgt?: number;
+  SegundoSgt?: number;
+  TerceiroSgt?: number;
+  Cb?: number;
+  Sd?: number;
+  AlSd?: number;
 };
 
 export type RequisitoServico = {
@@ -82,6 +95,7 @@ export interface IContextRequisitoData {
   searchServiceLoading: boolean;
   handleSubmitRequisitos: (data: RequisitoServico) => void;
   handleRandomServices: () => void;
+  handleRandomServicesNewTable: () => void;
   searchServicesById: (param?: string) => Promise<Service>;
   //loadTotalMilitar: () => number;
   totalMilitar: number;
@@ -196,7 +210,7 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
                   return Number(aux.militarRank) > Number(aux2.militarRank); // Incluir no grupo 'aleatorio' se a condição for atendida
                 }
               } else {
-                return m.posto_grad === a; // Filtra militares que têm posto/graduação igual a 'a'
+                return m.posto_grad === a;
               }
             });
             //console.log(groupedMilitares[a]);
@@ -327,6 +341,120 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
 
     generateServices();
   };
+
+  const handleRandomServicesNewTable = () => {
+    const generateServices = () => {
+      const services: Service[] = [];
+      let remainingMilitares = [...militars];
+      let postos_services = [...postos];
+      const grad = [
+        'Cel PM',
+        'Ten-Cel PM',
+        'Maj PM',
+        'Cap PM',
+        '1º Ten PM',
+        '2º Ten PM',
+        'St PM',
+        '1º Sgt PM',
+        '2º Sgt PM',
+        '3º Sgt PM',
+        'Cb PM',
+        'Sd PM',
+        'Al Sd PM',
+      ];
+      const groupedMilitares: Record<string, Militares_service[]> = {};
+
+      if (!requisitoServico || !postosServices) return;
+
+      setDateFirst(requisitoServico.dateFirst);
+      setdateFinished(requisitoServico.dateFinish);
+
+      // Agrupando os militares por graduação
+      grad.forEach(grade => {
+        groupedMilitares[grade] = remainingMilitares.filter(
+          m => m.posto_grad === grade,
+        );
+      });
+
+      let currentDate = new Date(requisitoServico.dateFirst);
+
+      while (currentDate <= requisitoServico.dateFinish) {
+        requisitoServico.turnos.forEach(turno => {
+          postos_services.forEach(posto => {
+            const selectedMilitares: Militares_service[] = []; // Resetar para cada posto
+
+            // Percorre as graduações, apenas se 'key' for uma graduação válida
+            for (const key in posto) {
+              const formattedKey = `${key} PM`; // Formata a chave como esperado
+              if (grad.includes(formattedKey)) {
+                let i = posto[key] as number; // Número de militares para aquela graduação
+
+                while (i > 0 && groupedMilitares[formattedKey]?.length > 0) {
+                  let militar: Militares_service | undefined;
+
+                  // 1. Tenta selecionar militares com a mesma lotação que já foram selecionados
+                  const militaresComLotacao = groupedMilitares[
+                    formattedKey
+                  ].filter(
+                    m =>
+                      selectedMilitares.length > 0 &&
+                      m.opm === selectedMilitares[0]?.opm,
+                  );
+
+                  if (militaresComLotacao.length > 0) {
+                    militar = militaresComLotacao[0];
+                  } else {
+                    // 2. Se não houver militares com a mesma lotação, seleciona o próximo disponível
+                    militar = groupedMilitares[formattedKey][0];
+                  }
+
+                  if (militar) {
+                    selectedMilitares.push(militar);
+
+                    // Remove o militar selecionado do agrupamento e dos restantes
+                    groupedMilitares[formattedKey] = groupedMilitares[
+                      formattedKey
+                    ].filter(m => m.matricula !== militar!.matricula);
+                    remainingMilitares = remainingMilitares.filter(
+                      m => m.matricula !== militar!.matricula,
+                    );
+                  }
+
+                  i--; // Reduz a contagem de militares necessários
+                }
+              }
+            }
+
+            // Cria o objeto de serviço
+            const service: Service = {
+              posto: `${posto.local} - ${posto.rua}-${posto.numero}, ${posto.bairro}, ${posto.cidade}`,
+              dia: new Date(currentDate), // Clone para evitar mutação
+              turno: [new Date(turno.initial), new Date(turno.finished)], // Hora do turno
+              modalidade: posto.modalidade,
+              militares: handleSortByPostoGrad(selectedMilitares, '2'), // Adiciona os militares selecionados
+            };
+
+            services.push(service);
+            loadTotalMilitarEscalados(service.militares.length);
+          });
+        });
+
+        // Avança para o próximo dia
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      setServices(services);
+      setsearchServices(services);
+      setMilitaresRestantes(remainingMilitares);
+      return services;
+    };
+
+    generateServices();
+  };
+
+
+
+
   const searchServicesById = useCallback(
     async (param?: string) => {
       if (!param) {
@@ -384,6 +512,7 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
       dateFinished,
       handleSubmitRequisitos,
       handleRandomServices,
+      handleRandomServicesNewTable,
       searchServicesById,
     }),
     [
@@ -400,6 +529,7 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
       dateFinished,
       handleSubmitRequisitos,
       handleRandomServices,
+      handleRandomServicesNewTable,
       searchServicesById,
     ],
   );

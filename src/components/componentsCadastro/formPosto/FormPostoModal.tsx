@@ -13,19 +13,23 @@ interface IForm {
   modalidade: string;
 }
 interface IModal extends FlexProps{}
-export const FormPosto: React.FC<IModal> = () => {
+export const FormPostoModal: React.FC<IModal> = ({...props}) => {
   const {
     control,
     formState: { errors },
   } = useFormContext<IForm>();
   return (
-    <FormControl>
+    <FormControl
+    //border={'1px solid red'}
+     {...props}>
       <Flex
         flexDirection={'column'}
         align={'center'}
         justify={'center'}
         justifyContent={'space-between'}
         gap={4}
+        //border={'1px solid red'}
+        w={'fit-content'}
       >
         <Flex flexDirection={'column'} gap={1} w={'full'}>
           <FormLabel fontWeight={'bold'}>Local</FormLabel>
@@ -38,7 +42,7 @@ export const FormPosto: React.FC<IModal> = () => {
             }) => (
               <InputPatternController
                 type="text"
-                w={'400px'}
+                w={'600px'}
                 placeholder="Informe o Local"
                 onChange={onChange}
                 onBlur={onBlur}
@@ -49,7 +53,7 @@ export const FormPosto: React.FC<IModal> = () => {
             )}
           />
         </Flex>
-        <Flex flexDirection={'column'} gap={1} w={'full'}>
+        {/* <Flex flexDirection={'column'} gap={1} w={'full'}>
           <FormLabel fontWeight={'bold'}>Modalidade</FormLabel>
           <Controller
             name="modalidade"
@@ -60,6 +64,7 @@ export const FormPosto: React.FC<IModal> = () => {
             }) => (
               <Flex gap={2} flexDirection={'column'}>
                 <SelectPattern
+                  w={'600px'}
                   value={value}
                   options={optionsModalidade}
                   placeholderSelect="Modalidade"
@@ -70,7 +75,7 @@ export const FormPosto: React.FC<IModal> = () => {
               </Flex>
             )}
           />
-        </Flex>
+        </Flex> */}
         <Flex flexDirection={'column'} gap={1} w={'full'}>
           <FormLabel fontWeight={'bold'}>Rua</FormLabel>
           <Controller
@@ -82,7 +87,7 @@ export const FormPosto: React.FC<IModal> = () => {
             }) => (
               <InputPatternController
                 type="text"
-                w={'400px'}
+                w={'600px'}
                 placeholder="Informe a rua"
                 onChange={onChange}
                 onBlur={onBlur}
@@ -104,7 +109,7 @@ export const FormPosto: React.FC<IModal> = () => {
             }) => (
               <InputPatternController
                 type="text"
-                w={'400px'}
+                w={'600px'}
                 placeholder="Informe o número"
                 onChange={onChange}
                 onBlur={onBlur}
@@ -126,7 +131,7 @@ export const FormPosto: React.FC<IModal> = () => {
             }) => (
               <InputPatternController
                 type="text"
-                w={'400px'}
+                w={'600px'}
                 placeholder="Informe o bairro"
                 onChange={onChange}
                 onBlur={onBlur}
@@ -148,7 +153,7 @@ export const FormPosto: React.FC<IModal> = () => {
             }) => (
               <InputPatternController
                 type="text"
-                w={'400px'}
+                w={'600px'}
                 placeholder="Informe a cidade"
                 onChange={onChange}
                 onBlur={onBlur}

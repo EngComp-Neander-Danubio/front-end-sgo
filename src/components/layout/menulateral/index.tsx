@@ -8,8 +8,10 @@ import { IconeCadastro } from '../../componentesGerais/iconesMenuLateral/iconeMe
 import '../../border.modules.css';
 import React from 'react';
 import { IconeBusca } from '../../componentesGerais/iconesMenuLateral/iconeMenulateralBusca';
-import { IconeRelatorio } from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralRelatorios';
 import { Link, useNavigate } from 'react-router-dom';
+import { IconePostos } from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralPostos';
+import { IconeRelatorio } from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralRelatorios';
+import { IconeOPMs } from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralOPMs';
 
 interface IMenuLateral {
   isOpen: boolean;
@@ -207,7 +209,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
           //border={"1px solid yellow"}
           flexDirection={'column'}
           //width={"25vh"}
-          height={'168px'}
+          //height={'168px'}
           align="center"
         >
           <AccordionMenuLateral
@@ -235,6 +237,30 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
             handleClick={() => navigate('/lista-de-eventos')}
           />
 
+          <AccordionMenuLateral
+            displayCustom={{
+              lg: props.isOpen ? 'block' : 'none',
+              md: props.isOpen ? 'block' : 'none',
+              sm: props.isOpen ? 'block' : 'none',
+            }}
+            namePrimary="Postos"
+            nameSecondary="Postos"
+            customIcon={<Icon as={IconePostos} boxSize={5} />}
+            handleToggle={!props.isOpen ? props.handleToggle : undefined}
+            //handleClick={() => navigate('/escalas')}
+          />
+          <AccordionMenuLateral
+            displayCustom={{
+              lg: props.isOpen ? 'block' : 'none',
+              md: props.isOpen ? 'block' : 'none',
+              sm: props.isOpen ? 'block' : 'none',
+            }}
+            namePrimary="OPMs"
+            nameSecondary="OPMs"
+            customIcon={<Icon as={IconeOPMs} boxSize={5} />}
+            handleToggle={!props.isOpen ? props.handleToggle : undefined}
+            //handleClick={() => navigate('/escalas')}
+          />
           <AccordionMenuLateral
             displayCustom={{
               lg: props.isOpen ? 'block' : 'none',
@@ -270,9 +296,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
             h={'100%'}
           >
             <GridItem area={'header'}></GridItem>
-            <GridItem area={'footer'}>
-              {/* <Relogio /> */}
-            </GridItem>
+            <GridItem area={'footer'}>{/* <Relogio /> */}</GridItem>
           </Grid>
         </Flex>
       </Flex>

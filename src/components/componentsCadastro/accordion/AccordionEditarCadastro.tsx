@@ -573,8 +573,7 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
         onOpen={onOpenModalSAPM}
         onClose={onCloseModalSAPM}
         opms={[]}
-        select_opm={'' as OPMs}
-      />
+        select_opm={'' as OPMs} militaresRestantes={[]}      />
       <ModalServices
         isOpen={isOpenModalServices}
         onOpen={onOpenModalServices}

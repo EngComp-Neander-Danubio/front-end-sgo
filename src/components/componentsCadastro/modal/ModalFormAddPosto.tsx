@@ -32,7 +32,6 @@ export const ModalFormAddPosto: React.FC<IModal> = ({ isOpen, onClose }) => {
     await uploadPosto(data);
     reset();
   };
-  //console.log('',methodsInput.formState.errors)
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
