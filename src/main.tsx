@@ -7,6 +7,7 @@ import { PostosProvider } from './context/postosContext/PostosContex.tsx';
 import { MilitaresProvider } from './context/militares/MilitarContext.tsx';
 import { RequisitosProvider } from './context/requisitosContext/RequisitosContext.tsx';
 import { EventsProvider } from './context/eventContext/EventsContex.tsx';
+import { TotalEfetivoOPMsContext, TotalEfetivoOPMsProvider } from './context/efetivoOPMs/EfetivoOPMsContext.tsx';
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
@@ -23,16 +24,18 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ChakraProvider>
       <AuthProvider>
-        <MilitaresProvider>
-          <EventsProvider>
-            <PostosProvider>
-              <RequisitosProvider>
-                <CSSReset />
-                <App />
-              </RequisitosProvider>
-            </PostosProvider>
-          </EventsProvider>
-        </MilitaresProvider>
+        <TotalEfetivoOPMsProvider>
+          <MilitaresProvider>
+            <EventsProvider>
+              <PostosProvider>
+                <RequisitosProvider>
+                  <CSSReset />
+                  <App />
+                </RequisitosProvider>
+              </PostosProvider>
+            </EventsProvider>
+          </MilitaresProvider>
+        </TotalEfetivoOPMsProvider>
       </AuthProvider>
     </ChakraProvider>
   </React.StrictMode>,

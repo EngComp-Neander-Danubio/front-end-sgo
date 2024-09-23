@@ -45,7 +45,7 @@ export type IForm = {
   dateFinish: Date;
   input: string[];
 };
-export const TableOPMs: React.FC<ITable> = ({
+export const NewTableOPMs: React.FC<ITable> = ({
   isActions,
   isCheckBox,
   columns,
@@ -61,7 +61,19 @@ export const TableOPMs: React.FC<ITable> = ({
   customIcons,
 }) => {
   const { control } = useFormContext();
-
+  const {
+    fields,
+    append,
+    prepend,
+    remove,
+    swap,
+    move,
+    insert,
+    replace,
+  } = useFieldArray({
+    control,
+    name: 'input',
+  });
   const [inputItems, setInputItems] = useState<string[]>(
     Array(registers.length).fill(''), // Inicializa com strings vazias
   );
@@ -99,7 +111,6 @@ export const TableOPMs: React.FC<ITable> = ({
     // Se todos os itens estão selecionados, também marca o checkbox geral
     setIsAllChecked(updatedCheckedItems.every(Boolean));
   };
-  //console.log('registers', registers);
 
   const transformedOpm = registers.map(opm => {
     const transformedOPM: { [key: string]: any } = {};
@@ -189,8 +200,8 @@ export const TableOPMs: React.FC<ITable> = ({
             </Thead>
 
             <Tbody>
-              {transformedOpm.map((register, index) => (
-                <Tr key={index}>
+              {fields.map((item, index) => (
+                <Tr key={item.id}>
                   <Td>
                     <Flex
                       align={'center'}
@@ -226,15 +237,7 @@ export const TableOPMs: React.FC<ITable> = ({
 
                   {columns.map((column, index) => (
                     <>
-                      <TdTable
-                        key={column}
-                        text={
-                          typeof register[column] === 'string' ||
-                          typeof register[column] === 'number'
-                            ? register[column]
-                            : register[index]
-                        }
-                      />
+                      <TdTable key={column} text={register[index]} />
                     </>
                   ))}
                   {isActions &&
@@ -245,8 +248,8 @@ export const TableOPMs: React.FC<ITable> = ({
                           <IconeDeletar
                             label_tooltip="OPM"
                             handleDelete={async (): Promise<void> => {
-                              console.log(register.value);
-                              handleDeleteOpm(register.value);
+                              console.log(register);
+                              remove(index);
                             }}
                           />,
                         ]}
