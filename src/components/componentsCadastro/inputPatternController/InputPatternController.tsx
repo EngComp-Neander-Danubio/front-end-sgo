@@ -1,10 +1,12 @@
 import {
+  Flex,
   FormControl,
   FormErrorMessage,
   Input,
   InputGroup,
   InputLeftElement,
   InputProps,
+  InputRightElement,
 } from '@chakra-ui/react';
 import { FieldError } from 'react-hook-form';
 
@@ -19,13 +21,15 @@ export const InputPatternController: React.FC<IInput> = ({
   ...props
 }) => {
   return (
-    <FormControl isInvalid={!!error}>
+    <FormControl flexDirection={'column'} isInvalid={!!error}>
       <InputGroup>
         {children && (
-          <InputLeftElement pointerEvents="none">{children}</InputLeftElement>
+          <InputRightElement pointerEvents="none">{children}</InputRightElement>
         )}
-        <Input type={props.type} placeholder={props.placeholder} {...props} />
-        <FormErrorMessage>{error?.message}</FormErrorMessage>
+        <Flex flexDirection={'column'}>
+          <Input type={props.type} placeholder={props.placeholder} {...props} />
+          <FormErrorMessage>{error?.message}</FormErrorMessage>
+        </Flex>
       </InputGroup>
     </FormControl>
   );

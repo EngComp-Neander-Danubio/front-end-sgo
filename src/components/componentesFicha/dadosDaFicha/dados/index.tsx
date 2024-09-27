@@ -1,63 +1,46 @@
-import React from "react";
-import { Flex, HStack, Text, VStack } from "@chakra-ui/react";
-
-export const DadosFicha = (props) => {
+import React from 'react';
+import { Flex, FlexProps, HStack, Text, VStack } from '@chakra-ui/react';
+interface IDados extends FlexProps {}
+export const DadosFicha: React.FC<IDados> = () => {
   return (
     <>
-      <HStack
+      <Flex
         gap={5}
         align={'center'}
         fontSize={{ base: '16px', lg: '16px', md: '16px', sm: '12px' }}
-        {...props}
+        flexDirection={'column'}
+        alignContent={'flex-start'}
+        h={'fit-content'}
       >
-
-        <VStack
-          align={'flex-start'}
-          //justifyContent={'center'}
-          //border={'1px solid black'}
-          //paddingLeft={6}
-        >
-          <Flex>
-            <Text fontWeight={700}>Posto/Grad: </Text>
-            <Text>Cel QOPM</Text>
+        <Flex flexDirection={'row'} gap={4} w={'100%'}>
+          <Flex gap={2}>
+            <Text fontWeight={700}>OPM: </Text>
+            <Text>CETIC</Text>
           </Flex>
-          <Flex >
-            <Text fontWeight={700}>Nome:</Text>
-            <Text>Viviane Caxias</Text>
+          <Flex gap={2}>
+            <Text fontWeight={700}>Comandante:</Text>
+            <Text>Ten-Cel PM Issac Newton</Text>
           </Flex>
-          <Flex>
-            <Text fontWeight={700}>Matrícula:</Text>
-            <Text>999.99-9-9</Text>
+          <Flex gap={2}>
+            <Text fontWeight={700}>Sub Comandante:</Text>
+            <Text>Major PM Leibiniz</Text>
           </Flex>
-          <Flex>
-            <Text fontWeight={700}>OPM:</Text>
-            <Text>SELVA</Text>
+        </Flex>
+        <Flex flexDirection={'row'} gap={4} w={'100%'}>
+          <Flex gap={2}>
+            <Text fontWeight={700}>Operação:</Text>
+            <Text>Evangelizar</Text>
           </Flex>
-        </VStack>
-
-        <VStack
-          align={'flex-start'}
-          //paddingLeft={6}
-        >
-          <Flex>
-            <Text fontWeight={700}>Capacidade Laborativa:</Text>
-            <Text>Disponível Total</Text>
+          <Flex gap={2}>
+            <Text fontWeight={700}>Solicitante:</Text>
+            <Text>CGO</Text>
           </Flex>
-          <Flex>
-            <Text fontWeight={700}>Documento médico vigente:</Text>
-            <Text>Não</Text>
+          <Flex gap={2}>
+            <Text fontWeight={700}>Prazo Final:</Text>
+            <Text>20.01.2012</Text>
           </Flex>
-          <Flex>
-            <Text fontWeight={700}>Último afastamento:</Text>
-            <Text>20.01.2012 - 02 dias</Text>
-          </Flex>
-          <Flex>
-            <Text fontWeight={700}>Afastamento em 360 dias:</Text>
-            <Text>20 registros - 100 dias</Text>
-          </Flex>
-        </VStack>
-
-      </HStack>
+        </Flex>
+      </Flex>
     </>
   );
 };

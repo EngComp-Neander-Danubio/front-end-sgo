@@ -26,12 +26,12 @@ export const PostoServico: React.FC = () => {
         <Grid
           templateAreas={`"nav header"
                                     "nav main"
-                                    "nav footer"`}
+                                    "nav main"`}
           gap={{ lg: 4, md: 2, sm: 2 }}
           mt={{ lg: 2, md: 2, sm: 2 }}
           ml={{ lg: 4, md: 4, sm: 0 }}
           mr={{ lg: 4, md: 4, sm: 0 }}
-          gridTemplateRows={'80px 1fr 35px'}
+          gridTemplateRows={'80px 1fr'}
         >
           <GridItem area={'header'} h={'fit-content'}>
             <DashHeader isOpen={isOpen} handleToggle={handleToggle} />
@@ -41,15 +41,6 @@ export const PostoServico: React.FC = () => {
           </GridItem>
           <GridItem area={'main'}>
             <FlexConteudo isOpen={isOpen} handleToggle={handleToggle} />
-          </GridItem>
-          <GridItem
-            area={'footer'}
-            alignContent={'center'}
-            // border={'1px solid red'}
-          >
-            <Flex justify={'center'}>
-              <FooterCetic />
-            </Flex>
           </GridItem>
         </Grid>
       </Flex>

@@ -1,4 +1,11 @@
-import { Flex, Text, FormLabel, Input, FormControl, FlexProps } from '@chakra-ui/react';
+import {
+  Flex,
+  Text,
+  FormLabel,
+  Input,
+  FormControl,
+  FlexProps,
+} from '@chakra-ui/react';
 import React from 'react';
 import { Controller, useForm, useFormContext } from 'react-hook-form';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
@@ -12,7 +19,7 @@ interface IForm {
   cidade: string;
   modalidade: string;
 }
-interface IModal extends FlexProps{}
+interface IModal extends FlexProps {}
 export const FormPosto: React.FC<IModal> = () => {
   const {
     control,
@@ -28,7 +35,7 @@ export const FormPosto: React.FC<IModal> = () => {
         gap={4}
       >
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>Local</FormLabel>
+          <FormLabel>Local</FormLabel>
           <Controller
             name={'local'}
             control={control}
@@ -50,7 +57,7 @@ export const FormPosto: React.FC<IModal> = () => {
           />
         </Flex>
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>Modalidade</FormLabel>
+          <FormLabel>Modalidade</FormLabel>
           <Controller
             name="modalidade"
             control={control}
@@ -72,7 +79,7 @@ export const FormPosto: React.FC<IModal> = () => {
           />
         </Flex>
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>Rua</FormLabel>
+          <FormLabel>Rua</FormLabel>
           <Controller
             name={'rua'}
             control={control}
@@ -94,7 +101,7 @@ export const FormPosto: React.FC<IModal> = () => {
           />
         </Flex>
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>Número</FormLabel>
+          <FormLabel>Número</FormLabel>
           <Controller
             name={'numero'}
             control={control}
@@ -116,7 +123,7 @@ export const FormPosto: React.FC<IModal> = () => {
           />
         </Flex>
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>Bairro</FormLabel>
+          <FormLabel>Bairro</FormLabel>
           <Controller
             name={'bairro'}
             control={control}
@@ -138,7 +145,7 @@ export const FormPosto: React.FC<IModal> = () => {
           />
         </Flex>
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>Cidade</FormLabel>
+          <FormLabel>Cidade</FormLabel>
           <Controller
             name={'cidade'}
             control={control}

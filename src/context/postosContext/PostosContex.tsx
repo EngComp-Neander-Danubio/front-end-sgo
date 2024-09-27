@@ -10,7 +10,6 @@ import { useToast } from '@chakra-ui/react';
 import { readString } from 'react-papaparse';
 import api from '../../services/api';
 import { useEvents } from '../eventContext/useEvents';
-import { number } from 'prop-types';
 export type Posto = {
   columns?: string[];
   registers?: { [key: string]: any }[];
@@ -18,24 +17,11 @@ export type Posto = {
 export interface PostoForm {
   local: string;
   rua: string;
-  numero: string;
+  numero: number;
   bairro: string;
   cidade: string;
   modalidade: string;
-  qtd_efetivo: number;
-  Cel?: number;
-  TenCel?: number;
-  Maj?: number;
-  Cap?: number;
-  PrimeiroTen?: number;
-  SegundoTen?: number;
-  St?: number;
-  PrimeiroSgt?: number;
-  SegundoSgt?: number;
-  TerceiroSgt?: number;
-  Cb?: number;
-  Sd?: number;
-  AlSd?: number;
+  qtd_efetivo?: number;
   [key: string]: any;
 }
 

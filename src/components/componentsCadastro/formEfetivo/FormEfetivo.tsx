@@ -7,13 +7,13 @@ import {
   FlexboxProps,
 } from '@chakra-ui/react';
 import React from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useFormContext } from 'react-hook-form';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
 interface IForm {
-  name: string;
-  grad: string;
+  nome_completo: string;
   opm: string;
   matricula: string;
+  posto_grad: string;
 }
 interface IFormProps extends FlexboxProps {
   widthSelect?: string;
@@ -29,14 +29,7 @@ export const FormEfetivo: React.FC<IFormProps> = ({
   const {
     control,
     formState: { errors },
-  } = useForm<IForm>({
-    defaultValues: {
-      name: '',
-      grad: '',
-      matricula: '',
-      opm: '',
-    },
-  });
+  } = useFormContext<IForm>();
   return (
     <FormControl {...props}>
       <Flex
@@ -47,9 +40,9 @@ export const FormEfetivo: React.FC<IFormProps> = ({
         gap={4}
       >
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>Nome Completo</FormLabel>
+          <FormLabel>Nome Completo</FormLabel>
           <Controller
-            name={'name'}
+            name={'nome_completo'}
             control={control}
             render={({ field, fieldState: { error } }) => (
               <InputPatternController
@@ -63,7 +56,7 @@ export const FormEfetivo: React.FC<IFormProps> = ({
           />
         </Flex>
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>Matrícula</FormLabel>
+          <FormLabel>Matrícula</FormLabel>
           <Controller
             name={'matricula'}
             control={control}
@@ -79,9 +72,9 @@ export const FormEfetivo: React.FC<IFormProps> = ({
           />
         </Flex>
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>Posto/Graduação</FormLabel>
+          <FormLabel>Posto/Graduação</FormLabel>
           <Controller
-            name={'grad'}
+            name={'posto_grad'}
             control={control}
             render={({ field, fieldState: { error } }) => (
               <InputPatternController
@@ -95,7 +88,7 @@ export const FormEfetivo: React.FC<IFormProps> = ({
           />
         </Flex>
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>OPM</FormLabel>
+          <FormLabel>OPM</FormLabel>
           <Controller
             name={'opm'}
             control={control}

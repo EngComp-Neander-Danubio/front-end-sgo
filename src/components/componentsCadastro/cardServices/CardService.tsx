@@ -17,7 +17,7 @@ import { Service } from '../../../context/requisitosContext/RequisitosContext';
 import React from 'react';
 import { optionsModalidade } from '../../../types/typesModalidade';
 import { TdTable } from '../../componentesFicha/table/td';
-import { IconeEditar, IconeDeletar } from '../../ViewLogin';
+import { IconeDeletar, IconeEditar } from '../../ViewLogin';
 import { IconePermutar } from '../../componentesFicha/registrosMedicos/icones/iconePermuta/IconePermuta';
 import { IconeMore } from '../../componentesFicha/registrosMedicos/icones/iconeMais/IconeMore';
 import { handleSortByPostoGrad } from '../../../types/typesMilitar';

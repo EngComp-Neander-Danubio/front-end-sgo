@@ -5,7 +5,6 @@ import { FlexConteudo } from '../../../components/componentsCadastro/flexCadastr
 import { Center, Flex, Grid, GridItem, useDisclosure } from '@chakra-ui/react';
 import { FooterCetic } from '../../../components/componentsCadastro/footerImgCETIC';
 
-
 export const HomePrincipal: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -26,11 +25,12 @@ export const HomePrincipal: React.FC = () => {
         <Grid
           templateAreas={`"nav header"
                                     "nav main"
-                                    "nav footer"`}
+                                    "nav main"`}
           gap={{ lg: 8, md: 2, sm: 2 }}
           mt={{ lg: 2, md: 2, sm: 2 }}
           ml={{ lg: 4, md: 4, sm: 0 }}
           mr={{ lg: 4, md: 4, sm: 0 }}
+          gridTemplateRows={'80px 1fr'}
           //maxH={'100vh'}
         >
           <GridItem area={'header'}>
@@ -40,11 +40,6 @@ export const HomePrincipal: React.FC = () => {
             <MenuLateral isOpen={isOpen} handleToggle={handleToggle} />
           </GridItem>
           <GridItem area={'main'}>Home</GridItem>
-          <GridItem area={'footer'}>
-            <Center>
-              <FooterCetic />
-            </Center>
-          </GridItem>
         </Grid>
       </Flex>
     </>

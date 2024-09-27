@@ -57,11 +57,13 @@ export const TableInput: React.FC<ITable> = ({
   const {
     control,
     formState: { defaultValues },
+    watch,
   } = useFormContext();
   const { fields, remove, append, insert } = useFieldArray({
     control,
     name: 'input',
   });
+
   useEffect(() => {
     if (fields.length < opmDatas.length) {
       // Adiciona novos fields até que o tamanho de fields corresponda a opms
@@ -82,6 +84,7 @@ export const TableInput: React.FC<ITable> = ({
   const [checkedItems, setCheckedItems] = useState<boolean[]>(
     Array(opmDatas.length).fill(false),
   );
+  useEffect(() => {}, [isAllChecked]);
 
   // Handler para selecionar/desmarcar todos os checkboxes
   const handleCheckAll = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,7 +116,7 @@ export const TableInput: React.FC<ITable> = ({
         overflowY="auto"
       >
         <Table variant="simple">
-          <TableCaption textAlign="left" p={0}>
+          {/* <TableCaption textAlign="left" p={0}>
             <Flex justify="space-between">
               {start}-{end} de {opmDatas.length} itens
               <Flex p={0} color="rgba(52, 64, 84, 1)">
@@ -146,7 +149,7 @@ export const TableInput: React.FC<ITable> = ({
                 </Button>
               </Flex>
             </Flex>
-          </TableCaption>
+          </TableCaption> */}
           <Thead>
             <Tr
               borderTop="1px solid rgba(234, 236, 240, 1)"
@@ -172,10 +175,20 @@ export const TableInput: React.FC<ITable> = ({
                 <Tr key={item.id}>
                   <Td>
                     <Flex align="center" justify="center" gap={2}>
-                      <Checkbox
-                        isChecked={checkedItems[index]}
-                        onChange={handleCheck(index)}
+                      <Controller
+                        name={`checkbox.${index}` as const}
+                        control={control}
+                        render={({ field }) => (
+                          <Checkbox
+                            isChecked={field.value || checkedItems[index]}
+                            onChange={e => {
+                              field.onChange(e.target.checked);
+                              handleCheck(index)(e);
+                            }}
+                          />
+                        )}
                       />
+
                       <Controller
                         name={`input.${index}` as const}
                         control={control}
@@ -183,6 +196,9 @@ export const TableInput: React.FC<ITable> = ({
                           <Input
                             w="5.5vw"
                             h="30px"
+                            isDisabled={
+                              watch(`checkbox.${index}`) || isAllChecked
+                            }
                             value={field.value || ''}
                             onChange={field.onChange}
                             onBlur={field.onBlur}
@@ -192,6 +208,7 @@ export const TableInput: React.FC<ITable> = ({
                       />
                     </Flex>
                   </Td>
+
                   <Td>
                     <Flex align="center" justify="center" gap={2}>
                       {optionsOPMs

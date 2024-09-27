@@ -73,7 +73,9 @@ export const FormGrandeEventoVertical: React.FC<IForm> = () => {
           // w={'60vw'}
         >
           {' '}
-          <Text fontWeight={'bold'} fontSize={'20px'}>Novo Evento/Operação</Text>
+          <Text fontWeight={'bold'} fontSize={'20px'}>
+            Novo Evento/Operação
+          </Text>
           <Flex flexDirection={'column'} gap={1}>
             <FormLabel fontWeight={'bold'}>Título do Evento</FormLabel>
             <Controller

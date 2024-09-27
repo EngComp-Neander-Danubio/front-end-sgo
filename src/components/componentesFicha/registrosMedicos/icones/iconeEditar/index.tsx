@@ -1,7 +1,6 @@
 import { IconProps, Tooltip } from '@chakra-ui/react';
 import React from 'react';
-import { BiPencil } from 'react-icons/bi';
-import { ModalFormAddPosto } from '../../../../componentsCadastro/modal/ModalFormAddPosto';
+import { AiOutlinePlusCircle } from 'react-icons/ai';
 interface IIcone extends IconProps {
   label_tooltip?: string;
   isOpen?: boolean;
@@ -16,7 +15,7 @@ export const IconeEditar: React.FC<IIcone> = ({ label_tooltip, onOpen }) => {
         placement="top"
       >
         <span>
-          <BiPencil color="#A0AEC0" size="20px" onClick={onOpen} />
+          <AiOutlinePlusCircle color="#A0AEC0" size="20px" onClick={onOpen} />
         </span>
       </Tooltip>
     </>

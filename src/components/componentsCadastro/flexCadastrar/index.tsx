@@ -16,7 +16,8 @@ export const FlexConteudo: React.FC<IFlexCadastrar> = ({
 }) => {
   return (
     <Flex
-      h={'80vh'}
+      //h={'80vh'}
+      h={'98%'}
       flexDirection={'column'}
       gap={2}
       //border={'1px solid black'}
@@ -30,7 +31,8 @@ export const FlexConteudo: React.FC<IFlexCadastrar> = ({
         borderTopLeftRadius={0}
         w={isOpen ? '87vw' : '94vw'}
         transitionDuration="1.0s"
-        h={'80vh'}
+        //h={'80vh'}
+        h={'100%'}
         position="relative"
         borderBottom="1px solid rgba(0, 0, 0, 0.5)"
         boxShadow="0px 4px 4px -2px rgba(0, 0, 0, 0.5)"

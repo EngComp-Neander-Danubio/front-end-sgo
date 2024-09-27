@@ -13,6 +13,8 @@ import { CalendarIcon } from '@chakra-ui/icons';
 //import { Locale } from 'date-fns';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import { FieldError } from 'react-hook-form';
+import './styles.css';
+
 type IDatePicker = InputProps &
   DatePickerProps & {
     error?: FieldError | { message?: string };
@@ -27,9 +29,8 @@ export const DatePickerEvent: React.FC<IDatePicker> = ({
       <DatePicker
         {...props}
         ref={customInputRef}
-        portalId="root-portal" // se necessário, pode usar um portal para evitar problemas de sobreposição
+        //portalId="root-portal"
         popperPlacement="bottom"
-        //withPortal
         locale={ptBR}
         timeCaption="Hora"
         showTimeSelect

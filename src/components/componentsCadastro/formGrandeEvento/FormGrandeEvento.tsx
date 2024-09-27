@@ -27,8 +27,9 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
 
   return (
     <FormControl
-    //border={'1px solid green'}
-    {...props}>
+      //border={'1px solid green'}
+      {...props}
+    >
       <Flex align="center" justify="center" gap={2}>
         <Flex
           align={'center'}
@@ -75,6 +76,7 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <DatePickerEvent
+                  portalId="root-portal"
                   selectsStart
                   onChange={date => {
                     field.onChange(date);
@@ -95,6 +97,7 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <DatePickerEvent
+                  portalId="root-portal"
                   selectsEnd
                   onChange={date => {
                     field.onChange(date);

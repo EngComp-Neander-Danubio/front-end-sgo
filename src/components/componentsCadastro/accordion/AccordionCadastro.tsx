@@ -549,9 +549,9 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                         //backgroundColor: '#ebf8ff',
                         //borderColor: '#2b6cb0',
                         //border: '1px solid #4299e1',
-                        borderRadius: '5px',
-                        borderWidth: '',
-                        padding: 1,
+                        //borderRadius: '5px',
+                        //borderWidth: '',
+                        //padding: 1,
                       }}
                       onClick={onOpenModalRestantes}
                       fontWeight={'bold'}

@@ -197,3 +197,20 @@ export type OPMOption =
   | null;
 
 
+/* const transformedMiltitares = militaresRestantes.map(militar => {
+  const transformedMilitar: {
+    [key: string]: any;
+  } = {};
+  Object.entries(columnsMapMilitar).forEach(([newKey, originalKey]) => {
+    transformedMilitar[newKey] = militar[originalKey];
+  });
+  return transformedMilitar;
+}); */
+
+/*   const headerKeysMilitar =
+    militaresRestantes.length > 0
+      ? Object.keys(militaresRestantes[0]).filter(key =>
+          ['matricula', 'posto_grad', 'nome_completo', 'opm'].includes(key),
+        )
+      : [];
+ */

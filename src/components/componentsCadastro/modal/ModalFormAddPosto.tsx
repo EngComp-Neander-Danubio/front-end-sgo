@@ -26,7 +26,7 @@ export const ModalFormAddPosto: React.FC<IModal> = ({ isOpen, onClose }) => {
   const methodsInput = useForm<PostoForm>({
     resolver: yupResolver(postosSchema),
   });
-  const { reset } = useForm();
+  const { reset } = methodsInput;
   const { uploadPosto } = usePostos();
   const onSubmit = async (data: PostoForm) => {
     await uploadPosto(data);
@@ -46,7 +46,14 @@ export const ModalFormAddPosto: React.FC<IModal> = ({ isOpen, onClose }) => {
               </ModalBody>
 
               <ModalFooter>
-                <Button colorScheme="yellow" mr={3} onClick={onClose}>
+                <Button
+                  colorScheme="yellow"
+                  mr={3}
+                  onClick={() => {
+                    onClose();
+                    reset();
+                  }}
+                >
                   Cancelar
                 </Button>
                 <Button

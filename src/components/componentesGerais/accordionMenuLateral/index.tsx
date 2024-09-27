@@ -11,15 +11,17 @@ import {
   AccordionProps,
   ResponsiveValue,
   Text,
+  Divider,
 } from '@chakra-ui/react';
 
 interface IAccordionMenu extends AccordionProps {
   namePrimary: string;
   nameSecondary: string;
+  nameLabels?: string[];
   displayCustom?: any; // Display deve estar importado corretamente
   customIcon: React.ReactNode; // Propriedade para o ícone personalizado
   handleToggle?: () => void;
-  handleClick?: () => void;
+  handleClick?: Array<() => void>;
 }
 
 export const AccordionMenuLateral: React.FC<IAccordionMenu> = props => {
@@ -50,7 +52,7 @@ export const AccordionMenuLateral: React.FC<IAccordionMenu> = props => {
             <AccordionIcon />
           </AccordionButton>
         </h2>
-        <AccordionPanel
+        {/* <AccordionPanel
           bg="rgb(226, 232, 240)"
           width="100%"
           height="100%"
@@ -59,7 +61,20 @@ export const AccordionMenuLateral: React.FC<IAccordionMenu> = props => {
           onClick={props.handleClick}
         >
           <Center fontSize="14px">{props.nameSecondary}</Center>
-        </AccordionPanel>
+        </AccordionPanel> */}
+        {props.nameLabels?.map((name, index) => (
+          <AccordionPanel
+            key={index}
+            bg="rgb(226, 232, 240)"
+            width="100%"
+            height="100%"
+            marginBottom={0}
+            display={props.displayCustom}
+            onClick={props.handleClick ? props.handleClick[index] : undefined}
+          >
+            <Center fontSize="14px">{name}</Center>
+          </AccordionPanel>
+        ))}
       </AccordionItem>
     </Accordion>
   );
