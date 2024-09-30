@@ -54,7 +54,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       console.log('Chamou o post de evento', data);
       try {
         const response = await api.post('/operacao', data);
-        console.log('resposta: ', response.data);
+        //console.log('resposta: ', response.data);
         toast({
           title: 'Sucesso',
           description: 'Evento/Operação atualizada com sucesso',
@@ -64,7 +64,15 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
           isClosable: true,
         });
       } catch (error) {
-        console.error('error:', error);
+        //console.error('error:', error);
+        toast({
+          title: 'Erro',
+          description: 'Falha ao Criar Operação',
+          status: 'error',
+          position: 'top-right',
+          duration: 9000,
+          isClosable: true,
+        });
       } finally {
         setIsLoading(false);
       }

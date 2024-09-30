@@ -10,7 +10,7 @@ export const ToListSolicitacoesPostosContent = () => {
   // Defina as colunas desejadas e o mapeamento para as chaves dos eventos
   const columnsMap: { [key: string]: string } = {
     Solicitação: 'solicitacao',
-    Prazo: 'prazo',
+    'Prazo Final': 'prazo',
     'Quantidade de postos': 'qtd_postos',
     Status: 'status',
   };

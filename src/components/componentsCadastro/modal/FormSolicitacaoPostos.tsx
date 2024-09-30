@@ -3,21 +3,16 @@ import {
   Text,
   FormControl,
   FormLabel,
-  Switch,
-  Input,
   Button,
   Checkbox,
   Divider,
   useToast,
+  Input,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { Controller, useForm, useFormContext } from 'react-hook-form';
-import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
-import { DatePickerRequisitos } from './DatePickerRequisitos';
-import { DatePickerTime } from './DatePickerTime';
+import { Controller, useFormContext } from 'react-hook-form';
 import { OptionType, SelectPattern } from './SelectPattern';
-import { optionsModalidade } from '../../../types/typesModalidade';
-import { OPMOption, optionsMilitares } from '../../../types/typesMilitar';
+import { OPMOption } from '../../../types/typesMilitar';
 import {
   optionsOPMs,
   optionsEsp,
@@ -32,25 +27,7 @@ import {
   OPMs,
 } from '../../../types/typesOPM';
 import { DatePickerEvent } from '../formGrandeEvento/DatePickerEvent';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { Militares_service } from '../../../context/requisitosContext/RequisitosContext';
-
-export type IForm = {
-  quantity_militars: number;
-  quantity_services: number;
-  quantity_folgas: number;
-  quantity_turnos: number;
-  aleatoriedade: boolean;
-  efetivo_tipo: boolean;
-  antiguidade: string[];
-  modalidade?: string;
-  dateFirst: Date;
-  dateFinish: Date;
-  turnos: {
-    initial: Date;
-    finished: Date;
-  }[];
-};
 
 interface IModal {
   isOpen: boolean;
@@ -60,27 +37,12 @@ interface IModal {
   select_opm: OPMs;
   militaresRestantes: Militares_service[];
 }
-/* interface SolicitacaoForm {
-  dataInicio: Date;
-  dataFinal: Date;
-  checkboxespecializadas: boolean;
-  checkboxdgpi: boolean;
-  checkbox1crpm: boolean;
-  checkbox2crpm: boolean;
-  checkbox3crpm: boolean;
-  checkbox4crpm: boolean;
-  checkboxcpchoque: boolean;
-  checkboxcpraio: boolean;
-  checkboxcpe: boolean;
-  select_opm: string[];
-  button_apagar: any;
-  button: any;
-  opmsLabel: string[];
-} */
+
 interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
   opmsLabel: OPMs[];
+  select_opm: OPMs;
 }
 export const FormSolicitacaoPostos: React.FC = () => {
   const {
@@ -104,6 +66,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
     OPMOption
   >(null);
   const [opm, setOPM] = useState<OPMs[]>([]);
+
   const toast = useToast();
   const handleCheckboxChange = (
     option: 'Todos' | 'especializadas' | 'POG' | 'Setores Administrativos',
@@ -284,18 +247,25 @@ export const FormSolicitacaoPostos: React.FC = () => {
       <Divider />
 
       <Flex gap={4} flexDirection="row" h="50px">
-        <Checkbox
-          size="md"
-          //isChecked={selectedCheckbox === 'Todos'}
-          onChange={e => {
-            handleCheckboxChange('Todos');
-            handleCheckbox(e.currentTarget.checked, optionsOPMs);
-            //console.log('', opm);
-          }}
-        >
-          Todos
-        </Checkbox>
-
+        <Controller
+          name="todos"
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <Checkbox
+              size="md"
+              //isChecked={selectedCheckbox === 'Todos'}
+              onChange={e => {
+                handleCheckboxChange('Todos');
+                handleCheckbox(e.currentTarget.checked, optionsOPMs);
+                //console.log('', opm);
+              }}
+              onBlur={onBlur}
+              //value={value}
+            >
+              Todos
+            </Checkbox>
+          )}
+        />
         <Controller
           name="checkboxespecializadas"
           control={control}
@@ -504,7 +474,8 @@ export const FormSolicitacaoPostos: React.FC = () => {
                   <SelectPattern
                     onChange={value => {
                       onChange(value);
-                      // handleSelectOpm(value as OPMs);
+                      handleSelectOpm((value as unknown) as OPMs);
+                      //setOPM(value);
                     }}
                     onBlur={onBlur}
                     w="30vw"
@@ -518,50 +489,34 @@ export const FormSolicitacaoPostos: React.FC = () => {
           <Flex
           //border={'1px solid red'}
           >
-            <Controller
-              name="button_apagar"
-              control={control}
-              render={({ field: { onChange, onBlur } }) => (
-                <Button
-                  onClick={value => {
-                    //const v = getValues('select_opm');
-                    onChange(value);
-                    handleDeleteSelectAllOpm();
-                  }}
-                  colorScheme="blue"
-                  variant="outline"
-                  //color={'#fff'}
-                  onBlur={onBlur}
-                >
-                  Limpar
-                </Button>
-              )}
-            />
+            <Button
+              onClick={value => {
+                handleDeleteSelectAllOpm();
+              }}
+              colorScheme="blue"
+              variant="outline"
+              //color={'#fff'}
+            >
+              Limpar
+            </Button>
           </Flex>
           <Flex
           //border={'1px solid red'}
           >
-            <Controller
-              name="button"
-              control={control}
-              render={({ field: { onChange, onBlur }, formState }) => (
-                <Button
-                  onClick={() => {
-                    const v = getValues('select_opm');
-                    if (v !== undefined && v !== null && v !== '') {
-                      handleSelectOpm((v as unknown) as OPMs);
-                    }
-                    onChange(v);
-                  }}
-                  bgColor="#38A169"
-                  color="#fff"
-                  onBlur={onBlur}
-                  variant="ghost"
-                >
-                  Incluir
-                </Button>
-              )}
-            />
+            <Button
+              onClick={() => {
+                const v = getValues('select_opm');
+                if (v !== undefined && v !== null && v !== ('' as OPMs)) {
+                  handleSelectOpm((v as unknown) as OPMs);
+                }
+                //onChange(v);
+              }}
+              bgColor="#38A169"
+              color="#fff"
+              variant="ghost"
+            >
+              Incluir
+            </Button>
           </Flex>
         </Flex>
       </Flex>
@@ -590,15 +545,29 @@ export const FormSolicitacaoPostos: React.FC = () => {
                 <Controller
                   name={`opmsLabel.${index}`}
                   control={control}
-                  render={({ field: { onBlur } }) => (
+                  defaultValue={(option?.label || '') as OPMs}
+                  render={({ field: { onBlur, value, onChange } }) => (
                     <>
                       <Checkbox
                         size="md"
                         isChecked
                         onBlur={onBlur}
-                        onChange={() => handleDeleteOpm(item)}
+                        onChange={e => {
+                          const isChecked = e.target.checked;
+                          onChange(isChecked ? option?.label : '');
+                          if (!isChecked) {
+                            () => handleDeleteOpm(item);
+                          }
+                        }}
+                        //value={option?.value}
                       >
-                        {option?.label || 'Item não encontrado'}
+                        <Input
+                          value={option?.label || 'Item não encontrado'}
+                          onChange={e => onChange(e.target.value)}
+                          border={'none'}
+                          w={'50vw'}
+                          h={'2vh'}
+                        />
                       </Checkbox>
                     </>
                   )}

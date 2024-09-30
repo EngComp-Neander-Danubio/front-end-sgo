@@ -233,18 +233,28 @@ export const ModalSAPM: React.FC<IModal> = ({
               <TabPanels>
                 <TabPanel>
                   <Flex gap={4} flexDirection="row" h="50px">
-                    <Checkbox
-                      size="md"
-                      //isChecked={selectedCheckbox === 'Todos'}
-                      onChange={e => {
-                        handleCheckboxChange('Todos');
-                        handleCheckbox(e.currentTarget.checked, optionsOPMs);
-                        //console.log('', opm);
-                      }}
-                    >
-                      Todos
-                    </Checkbox>
-
+                    <Controller
+                      name="todos"
+                      control={control}
+                      render={({ field: { onChange, onBlur, value } }) => (
+                        <Checkbox
+                          size="md"
+                          //isChecked={selectedCheckbox === 'Todos'}
+                          onChange={e => {
+                            handleCheckboxChange('Todos');
+                            handleCheckbox(
+                              e.currentTarget.checked,
+                              optionsOPMs,
+                            );
+                            //console.log('', opm);
+                          }}
+                          onBlur={onBlur}
+                          value={value}
+                        >
+                          Todos
+                        </Checkbox>
+                      )}
+                    />
                     <Controller
                       name="checkboxespecializadas"
                       control={control}

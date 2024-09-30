@@ -196,31 +196,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
           align={'center'} // Adicionado para centralizar verticalmente
           justify={'center'} // Adicionado para centralizar horizontalmente
           //className="gradient-border"
-        >
-          {/* <Text
-            fontWeight={800}
-            whiteSpace="nowrap" // Adicionado para evitar quebras de linha
-
-            width={'186px'}
-            height={'28px'}
-            fontSize={'16px'}
-            display={props.isOpen ? 'visibility' : 'none'}
-            //display={props.isOpen ? { base: "none", lg: 'block', md: "none", sm: 'none' } : "none"}
-          >
-            SISTEMAS INTEGRADOS
-          </Text> */}
-          {/* <Text
-            fontWeight={800}
-            whiteSpace="nowrap" // Adicionado para evitar quebras de linha
-            width={'60vw'}
-            //height={'8vh'}
-            display={!props.isOpen ? 'visibility' : 'none'}
-            //className="gradient-border"
-            //display={!props.isOpen ? { base: "none", lg: 'block', md: "none", sm: 'none' } : "none"}
-          >
-            SI
-          </Text> */}
-        </Flex>
+        ></Flex>
         <Flex
           color={'white'}
           //border={"1px solid yellow"}

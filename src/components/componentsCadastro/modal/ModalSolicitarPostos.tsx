@@ -8,52 +8,21 @@ import {
   ModalBody,
   ModalFooter,
   Center,
-  Checkbox,
-  Flex,
-  Text,
-  Divider,
   useToast,
-  FormLabel,
-  FormControl,
 } from '@chakra-ui/react';
-import { OptionType, SelectPattern } from './SelectPattern';
 import React, { useState } from 'react';
-import {
-  OPMs,
-  options1CRPM,
-  options2CRPM,
-  options3CRPM,
-  options4CRPM,
-  optionsCPCHOQUE,
-  optionsCPE,
-  optionsCPRAIO,
-  optionsDPGI,
-  optionsEsp,
-  optionsOPMs,
-} from '../../../types/typesOPM';
-import {
-  Controller,
-  FormProvider,
-  useForm,
-  useFormContext,
-} from 'react-hook-form';
-import { OPMOption } from '../../../types/typesMilitar';
+import { OPMs, optionsOPMs } from '../../../types/typesOPM';
+import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Militares_service } from '../../../context/requisitosContext/RequisitosContext';
-import { postosSchema } from '../../../types/yupPostos/yupPostos';
-import { PostoForm } from '../../../context/postosContext/PostosContex';
-import { usePostos } from '../../../context/postosContext/usePostos';
-import { DatePickerEvent } from '../formGrandeEvento/DatePickerEvent';
 import { FormSolicitacaoPostos } from './FormSolicitacaoPostos';
 import { solicitacaoPostosSchema } from '../../../types/yupSolicitacaoPostos/yupSolicitacaoPostos';
+import api from '../../../services/api';
 
 interface IModal {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
-  opms: OPMs[];
-  select_opm: OPMs;
-  militaresRestantes: Militares_service[];
 }
 interface SolicitacaoForm {
   dataInicio: Date;
@@ -79,18 +48,44 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
   });
   const { reset } = methodsInput;
   const onSubmit = async (data: SolicitacaoForm) => {
-    console.log('postos-solicitação', data);
-    reset();
-    onClose();
-    toast({
-      title: 'Solicitações de Postos.',
-      description: 'Solicitação Salva.',
-      status: 'success',
-      duration: 5000,
-      isClosable: true,
-      position: 'top-right',
-    });
+    // Mapeia os valores de opmsLabel e busca o valor correspondente em optionsOPMs
+    const opms = data.opmsLabel
+      .map(op => {
+        const option = optionsOPMs.find(o => o.label === op.valueOf());
+        return option ? option.value : null;
+      })
+      .filter(Boolean); // Remove valores nulos
+
+    const dados = {
+      opms,
+      prazoInicio: data.dataInicio,
+      prazoFinal: data.dataFinal,
+    };
+
+    console.log('Dados de solicitação de postos mapeados:', dados);
+    console.log('Dados de solicitação de postos originais:', data);
+    try {
+      await api.post('/solicitacao', dados);
+      toast({
+        title: 'Solicitações de Postos.',
+        description: 'Solicitação Salva.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+        position: 'top-right',
+      });
+    } catch (err) {
+      toast({
+        title: 'Erro',
+        description: 'Falha ao atualizar a solicitação',
+        status: 'error',
+        position: 'top-right',
+        duration: 9000,
+        isClosable: true,
+      });
+    }
   };
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
