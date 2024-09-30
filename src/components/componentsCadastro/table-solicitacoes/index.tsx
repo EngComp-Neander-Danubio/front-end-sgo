@@ -14,7 +14,7 @@ import { AiOutlineArrowDown } from 'react-icons/ai';
 import './table.modules.css';
 import { ThTable } from './th';
 import { TdTable } from './td';
-import { BotaoAlert, IconeDeletar } from '../../ViewLogin';
+import { BotaoAlert, IconeDeletar, IconeEditar } from '../../ViewLogin';
 import { ModalFormAddEvent } from '../modal/ModalFormAddEvent';
 import { useEvents } from '../../../context/eventContext/useEvents';
 import { useNavigate } from 'react-router-dom';
@@ -189,13 +189,21 @@ export const TableSolicitacoes: React.FC<ITable> = ({
                           label_tooltip?.includes('Solicitações de Postos')
                         ? [
                             <IconeDeletar
-                              key="deletar"
+                              key="Deletar"
+                              label_tooltip={label_tooltip}
+                            />,
+                            <IconeEditar
+                              key="Editar"
                               label_tooltip={label_tooltip}
                             />,
                           ]
                         : [
                             <IconeDeletar
-                              key="deletar"
+                              key="Deletar"
+                              label_tooltip={label_tooltip}
+                            />,
+                            <IconeEditar
+                              key="Editar"
                               label_tooltip={label_tooltip}
                             />,
                           ]

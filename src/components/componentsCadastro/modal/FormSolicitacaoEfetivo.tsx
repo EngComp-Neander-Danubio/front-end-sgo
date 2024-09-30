@@ -554,8 +554,8 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
         justifyContent={'space-between'}
       >
         <Flex justify={'center'} align={'center'}>
-          <Flex flexDirection={'column'}>
-            <FormLabel w={'7vw'}>Total Efetivo</FormLabel>
+          <Flex flexDirection={'row'} align={'center'} justify={'center'}>
+            <FormLabel w={'7vw'}>Total Efetivo:</FormLabel>
             <Controller
               name={'totalEfetivo'}
               control={methodsInput.control}

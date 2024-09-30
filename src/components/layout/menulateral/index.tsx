@@ -18,10 +18,14 @@ import React from 'react';
 import { IconeBusca } from '../../componentesGerais/iconesMenuLateral/iconeMenulateralBusca';
 import { Link, useNavigate } from 'react-router-dom';
 import { IconePostos } from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralPostos';
-import { IconeRelatorio } from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralRelatorios';
+import {
+  IconeLogout,
+  IconeRelatorio,
+} from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralRelatorios';
 import { IconeOPMs } from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralOPMs';
 import { IconeSolicitacoes } from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralSolicitacoes';
 import { FooterCetic } from '../../componentsCadastro/footerImgCETIC';
+import { IconeLogOut } from '../../componentesGerais/iconesMenuLateral/iconeMenulateralLogout';
 
 interface IMenuLateral {
   isOpen: boolean;
@@ -88,7 +92,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
               width={'224px'}
               height={'88px'}
               //fontSize={'0.9vw'}
-              mb={6}
+              mb={10}
               fontSize={'20px'}
               textAlign={'center'}
               fontWeight={500}
@@ -100,7 +104,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
             >
               SISTEMA DE GERENCIAMENTO
               <br />
-              DE OPERAÇÔES
+              DE OPERAÇÕES
             </Text>
             {/* <Link to="/"></Link> */}
 
@@ -112,7 +116,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
               height={'88px'}
               //fontSize={'0.9vw'}
               fontSize={'20px'}
-              //fontWeight={800}
+              fontWeight={800}
               display={!props.isOpen ? 'visibility' : 'none'}
               textAlign={'center'}
             >
@@ -123,10 +127,10 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
           <Flex
             color={'white'}
             gap="8px"
-            className="gradient-border"
+            //className="gradient-border"
             display={'-ms-inline-flexbox'}
           >
-            <Flex
+            {/* <Flex
               p={6}
               pl={4}
               //width={"25vh"}
@@ -151,7 +155,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
               >
                 Sistemas
               </Text>
-            </Flex>
+            </Flex> */}
 
             {/* <Link to="/ficha">
               <Flex
@@ -191,14 +195,12 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
           textAlign={'center'}
           align={'center'} // Adicionado para centralizar verticalmente
           justify={'center'} // Adicionado para centralizar horizontalmente
-          className="gradient-border"
+          //className="gradient-border"
         >
-          <Text
+          {/* <Text
             fontWeight={800}
             whiteSpace="nowrap" // Adicionado para evitar quebras de linha
-            /* width={'60vw'}
-                        height={"8vh"}
-                        fontSize={'0.8vw'} */
+
             width={'186px'}
             height={'28px'}
             fontSize={'16px'}
@@ -206,8 +208,8 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
             //display={props.isOpen ? { base: "none", lg: 'block', md: "none", sm: 'none' } : "none"}
           >
             SISTEMAS INTEGRADOS
-          </Text>
-          <Text
+          </Text> */}
+          {/* <Text
             fontWeight={800}
             whiteSpace="nowrap" // Adicionado para evitar quebras de linha
             width={'60vw'}
@@ -217,24 +219,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
             //display={!props.isOpen ? { base: "none", lg: 'block', md: "none", sm: 'none' } : "none"}
           >
             SI
-          </Text>
-
-          {/*  <Flexs
-            p={6}
-            pl={4}
-            //width={"25vh"}
-            _hover={{
-              transform: 'scale(1.0)',
-              bgColor: 'white',
-              textColor: 'black',
-              cursor: 'pointer',
-              transition: '.9s',
-            }}
-            className="gradient-border"
-            align="center"
-            justify={!props.isOpen ? 'center' : 'left'}
-            display={!props.isOpen ? 'none' : 'block'}
-          ></Flex> */}
+          </Text> */}
         </Flex>
         <Flex
           color={'white'}
@@ -245,87 +230,39 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
           align="center"
         >
           <AccordionMenuLateral
-            displayCustom={{
-              lg: props.isOpen ? 'block' : 'none',
-              md: props.isOpen ? 'block' : 'none',
-              sm: props.isOpen ? 'block' : 'none',
-            }}
-            namePrimary="Cadastro"
-            nameSecondary="Cadastrar operação"
-            nameLabels={['Cadastrar Eventos']}
-            customIcon={<Icon as={IconeCadastro} boxSize={5} />}
-            handleToggle={!props.isOpen ? props.handleToggle : undefined}
-            handleClick={[() => navigate('/servico')]}
-          />
-          <AccordionMenuLateral
-            displayCustom={{
-              lg: props.isOpen ? 'block' : 'none',
-              md: props.isOpen ? 'block' : 'none',
-              sm: props.isOpen ? 'block' : 'none',
-            }}
-            namePrimary="Consulta"
-            nameSecondary="Lista de Eventos"
-            nameLabels={['Lista de Eventos']}
-            customIcon={<Icon as={IconeBusca} boxSize={5} />}
-            handleToggle={!props.isOpen ? props.handleToggle : undefined}
-            handleClick={[() => navigate('/lista-de-eventos')]}
-          />
-
-          <AccordionMenuLateral
-            displayCustom={{
-              lg: props.isOpen ? 'block' : 'none',
-              md: props.isOpen ? 'block' : 'none',
-              sm: props.isOpen ? 'block' : 'none',
-            }}
-            namePrimary="Solicitações"
-            nameSecondary="Postos"
-            nameLabels={['Postos', 'PMs']}
-            customIcon={<Icon as={IconeSolicitacoes} boxSize={5} />}
-            handleToggle={!props.isOpen ? props.handleToggle : undefined}
-            //handleClick={() => navigate('/escalas')}
-            handleClick={[
-              () => navigate('/solicitacoes-postos'),
-              () => navigate('/solicitacoes-pms'),
+            customIcons={[
+              <Icon as={IconeCadastro} boxSize={5} />,
+              <Icon as={IconeBusca} boxSize={5} />,
+              <Icon as={IconeSolicitacoes} boxSize={5} />,
+              <Icon as={IconeRelatorio} boxSize={5} />,
             ]}
-          />
-          {/* <AccordionMenuLateral
+            nameLabels={['Cadastro', 'Consulta', 'Solicitacões', 'Escalas']}
+            handleClick={[
+              () => navigate('/servico'),
+              () => navigate('/lista-de-eventos'),
+              [
+                () => navigate('/solicitacoes-postos'),
+                () => navigate('/solicitacoes-pms'),
+              ],
+              () => navigate('/escalas'),
+            ]}
+            nameLabelSecundarys={[
+              ['Cadastrar Operação'],
+              ['Lista de Operações'],
+              ['Postos', 'PMs'],
+              ['Escalas'],
+            ]}
             displayCustom={{
               lg: props.isOpen ? 'block' : 'none',
               md: props.isOpen ? 'block' : 'none',
               sm: props.isOpen ? 'block' : 'none',
             }}
-            namePrimary="OPMs"
-            nameSecondary="OPMs"
-            customIcon={<Icon as={IconeOPMs} boxSize={5} />}
+            isOpen={props.isOpen}
             handleToggle={!props.isOpen ? props.handleToggle : undefined}
-            //handleClick={() => navigate('/escalas')}
-          /> */}
-          <AccordionMenuLateral
-            displayCustom={{
-              lg: props.isOpen ? 'block' : 'none',
-              md: props.isOpen ? 'block' : 'none',
-              sm: props.isOpen ? 'block' : 'none',
-            }}
-            namePrimary="Escalas"
-            nameSecondary="Escala"
-            nameLabels={['Escala']}
-            customIcon={<Icon as={IconeRelatorio} boxSize={5} />}
-            handleToggle={!props.isOpen ? props.handleToggle : undefined}
-            handleClick={[() => navigate('/escalas')]}
           />
         </Flex>
 
-        <Flex
-          display={props.isOpen ? 'flex' : 'none'}
-          align={'center'}
-          justify={'flex-end'}
-          //border={'1px solid red'}
-          flexDirection={'column'}
-          h={'40vh'}
-          pb={4}
-        >
-          <FooterCetic />
-        </Flex>
+        <FooterCetic isOpen={props.isOpen} />
       </Flex>
     </>
   );

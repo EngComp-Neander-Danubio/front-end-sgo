@@ -29,7 +29,7 @@ export const FormEditarEfetivo: React.FC = () => {
         gap={4}
       >
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>Nome Completo</FormLabel>
+          <FormLabel>Nome Completo</FormLabel>
           <Controller
             name={'name'}
             control={control}
@@ -44,7 +44,7 @@ export const FormEditarEfetivo: React.FC = () => {
           />
         </Flex>
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>Matrícula</FormLabel>
+          <FormLabel>Matrícula</FormLabel>
           <Controller
             name={'matricula'}
             control={control}
@@ -60,7 +60,7 @@ export const FormEditarEfetivo: React.FC = () => {
           />
         </Flex>
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>Posto/Graduação</FormLabel>
+          <FormLabel>Posto/Graduação</FormLabel>
           <Controller
             name={'grad'}
             control={control}
@@ -76,7 +76,7 @@ export const FormEditarEfetivo: React.FC = () => {
           />
         </Flex>
         <Flex flexDirection={'column'} gap={1} w={'full'}>
-          <FormLabel fontWeight={'bold'}>OPM</FormLabel>
+          <FormLabel>OPM</FormLabel>
           <Controller
             name={'opm'}
             control={control}

@@ -1,22 +1,7 @@
-import {
-  Button,
-  Flex,
-  FlexProps,
-  HStack,
-  Spacer,
-  Tooltip,
-} from '@chakra-ui/react';
+import { Button, Flex, Tooltip } from '@chakra-ui/react';
 import React from 'react';
-import { ButtonExportar } from '../buttons/butttonExportar';
 import { InputBuscaFicha } from '../inputs/inputBusca';
-import { ButtonFilter } from '../buttons/buttonFilter';
-import { ButtonSelecionar } from '../buttons/buttonSelecionar';
-import { IconeCadastrarSol } from '../icones/iconeCadastrarSolicitacao';
-import { IconeEnviar } from '../icones/iconeEnviar';
-import { IconeVisualizar } from '../icones/iconeVisualizarSolicitacao';
-import { IconeDeletar } from '../icones/iconeDeletar';
 import { InputCSVpapparse } from '../../../componentsCadastro/inputCSVpapaparse/InputCSVpapaparse';
-import { usePostos } from '../../../../context/postosContext/usePostos';
 import { BiPencil } from 'react-icons/bi';
 interface IFunction {
   openModalAdd?: () => void;

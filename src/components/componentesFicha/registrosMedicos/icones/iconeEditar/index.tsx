@@ -1,6 +1,6 @@
 import { IconProps, Tooltip } from '@chakra-ui/react';
 import React from 'react';
-import { AiOutlinePlusCircle } from 'react-icons/ai';
+import { BsPencilSquare } from 'react-icons/bs';
 interface IIcone extends IconProps {
   label_tooltip?: string;
   isOpen?: boolean;
@@ -15,7 +15,7 @@ export const IconeEditar: React.FC<IIcone> = ({ label_tooltip, onOpen }) => {
         placement="top"
       >
         <span>
-          <AiOutlinePlusCircle color="#A0AEC0" size="20px" onClick={onOpen} />
+          <BsPencilSquare color="#A0AEC0" size="20px" onClick={onOpen} />
         </span>
       </Tooltip>
     </>

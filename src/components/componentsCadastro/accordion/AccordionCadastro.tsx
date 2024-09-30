@@ -161,7 +161,7 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
 
   const onSubmit = async (data: IForm) => {
     await uploadEvent(data);
-    reset();
+    //reset();
   };
 
   // Primeiro, transforme os registros dos militares com as novas chaves

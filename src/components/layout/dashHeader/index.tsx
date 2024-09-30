@@ -66,10 +66,12 @@ export const DashHeader: React.FC<IDashHeader> = props => {
           ml={'auto'}
           pr={2}
         >
-          <InputDashHeader width={'85%'} />
-          <IconeLogin handleLogout={logout} />
-          <IconeConfig />
-          <IconeSino />
+          {/* <InputDashHeader width={'85%'} /> */}
+          <Flex ml={'auto'} pr={2}>
+            <IconeLogin handleLogout={logout} />
+          </Flex>
+          {/* <IconeConfig />
+          <IconeSino /> */}
         </HStack>
       </HStack>
     </Flex>

@@ -7,75 +7,124 @@ import {
   AccordionIcon,
   AccordionPanel,
   Center,
-  Icon,
   AccordionProps,
-  ResponsiveValue,
   Text,
-  Divider,
+  Icon,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
+import { IconeLogOut } from '../iconesMenuLateral/iconeMenulateralLogout';
+import { useAuth } from '../../../context/AuthProvider/useAuth';
 
 interface IAccordionMenu extends AccordionProps {
-  namePrimary: string;
-  nameSecondary: string;
-  nameLabels?: string[];
+  isOpen?: boolean;
+  nameLabels: string[]; // Array que contém tanto os principais quanto secundários
+  nameLabelSecundarys: string[][]; // Array de arrays de labels secundárias
+  customIcons: React.ReactNode[]; // Array de ícones personalizados
   displayCustom?: any; // Display deve estar importado corretamente
-  customIcon: React.ReactNode; // Propriedade para o ícone personalizado
   handleToggle?: () => void;
-  handleClick?: Array<() => void>;
+  handleClick?: Array<(() => void) | (() => void)[]>; // Funções de clique
 }
 
 export const AccordionMenuLateral: React.FC<IAccordionMenu> = props => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   return (
-    <Accordion
-      allowToggle
-      color="white"
-      _hover={{
-        transform: 'scale(1.0)',
-        bgColor: 'white',
-        textColor: 'black',
-        cursor: 'pointer',
-        transition: '.9s',
-      }}
-      w="100%"
-      pt={2}
+    <Flex
+      w={'100%'}
+      pl={4}
+      pr={4}
+      align={'center'}
+      justify={'center'}
+      flexDirection={'column'}
     >
-      <AccordionItem border="none" onClick={props.handleToggle}>
-        <h2>
-          <AccordionButton _hover={{ focus: 'none' }} pr={6}>
-            <Flex align="center" as="span" flex="1" fontSize="1em">
-              {props.customIcon}{' '}
-              {/* Utilize o ícone personalizado passado como prop */}
-              <Text pl={6} fontSize="14px" display={props.displayCustom}>
-                {props.namePrimary}
-              </Text>
-            </Flex>
-            <AccordionIcon />
-          </AccordionButton>
-        </h2>
-        {/* <AccordionPanel
-          bg="rgb(226, 232, 240)"
-          width="100%"
-          height="100%"
-          marginBottom={0}
-          display={props.displayCustom}
-          onClick={props.handleClick}
-        >
-          <Center fontSize="14px">{props.nameSecondary}</Center>
-        </AccordionPanel> */}
-        {props.nameLabels?.map((name, index) => (
-          <AccordionPanel
-            key={index}
-            bg="rgb(226, 232, 240)"
-            width="100%"
-            height="100%"
-            marginBottom={0}
-            display={props.displayCustom}
-            onClick={props.handleClick ? props.handleClick[index] : undefined}
-          >
-            <Center fontSize="14px">{name}</Center>
-          </AccordionPanel>
+      <Accordion allowToggle color="white" w="100%">
+        {props.nameLabels.map((label, index) => (
+          <AccordionItem border="none" key={index} onClick={props.handleToggle}>
+            <h2>
+              <AccordionButton
+                pr={6}
+                _hover={{
+                  bgColor: 'rgba(0, 0, 0, 0.24)',
+                  cursor: 'pointer',
+                  transition: '.5s',
+                  borderRadius: '10px',
+                }}
+              >
+                <Flex align="center" as="span" flex="1" fontSize="1em">
+                  {/* Ícone do array customIcons correspondente */}
+                  {props.customIcons[index]}{' '}
+                  <Text pl={6} fontSize="14px" display={props.displayCustom}>
+                    {label}
+                  </Text>
+                </Flex>
+                <AccordionIcon display={props.displayCustom} />
+              </AccordionButton>
+            </h2>
+
+            {/* Renderização de labels secundárias e funções de clique */}
+            {props.nameLabelSecundarys[index]?.map(
+              (secondaryLabel, subIndex) => (
+                <AccordionPanel
+                  key={subIndex}
+                  width="100%"
+                  height="100%"
+                  display={props.displayCustom}
+                  onClick={() => {
+                    if (Array.isArray(props.handleClick?.[index])) {
+                      (props.handleClick?.[index] as (() => void)[])[
+                        subIndex
+                      ]?.();
+                    } else {
+                      props.handleClick?.[index]?.();
+                    }
+                  }}
+                  color="white"
+                  _hover={{
+                    bgColor: 'rgba(0, 0, 0, 0.24)',
+                    cursor: 'pointer',
+                    transition: '.9s',
+                    borderRadius: '10px',
+                  }}
+                >
+                  <Center fontSize="14px" justifyContent={'center'}>
+                    {secondaryLabel}
+                  </Center>
+                </AccordionPanel>
+              ),
+            )}
+          </AccordionItem>
         ))}
-      </AccordionItem>
-    </Accordion>
+      </Accordion>
+
+      <Flex
+        height="4vh"
+        w={'100%'}
+        gap={6}
+        pl={4}
+        mt={2}
+        onClick={() => {
+          logout();
+          navigate('/');
+        }}
+        _hover={{
+          bgColor: 'rgba(0, 0, 0, 0.24)',
+          cursor: 'pointer',
+          transition: '.9s',
+          borderRadius: '10px',
+        }}
+        align={'center'}
+      >
+        <IconeLogOut isOpen={undefined} />
+        <Text
+          display={{
+            lg: props.isOpen ? 'block' : 'none',
+            md: props.isOpen ? 'block' : 'none',
+            sm: props.isOpen ? 'block' : 'none',
+          }}
+        >
+          Sair
+        </Text>
+      </Flex>
+    </Flex>
   );
 };

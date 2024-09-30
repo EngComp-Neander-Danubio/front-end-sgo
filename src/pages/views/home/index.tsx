@@ -26,7 +26,7 @@ export const HomePrincipal: React.FC = () => {
           templateAreas={`"nav header"
                                     "nav main"
                                     "nav main"`}
-          gap={{ lg: 8, md: 2, sm: 2 }}
+          gap={{ lg: 4, md: 2, sm: 2 }}
           mt={{ lg: 2, md: 2, sm: 2 }}
           ml={{ lg: 4, md: 4, sm: 0 }}
           mr={{ lg: 4, md: 4, sm: 0 }}
