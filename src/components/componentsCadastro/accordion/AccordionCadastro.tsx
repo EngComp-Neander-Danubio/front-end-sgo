@@ -48,6 +48,7 @@ import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
 import { ModalSolicitacarPostos } from '../modal/ModalSolicitarPostos';
 import { ModalSolicitarEfetivo } from '../modal/ModalSolicitarEfetivo';
+import { HiPencil } from 'react-icons/hi';
 interface IAccordion extends AccordionProps {
   handleSubmit: () => void;
   isOpen: boolean;
@@ -198,148 +199,162 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
         //border={'1px solid black'}
       >
         <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box as="span" flex="1" textAlign="left" fontWeight={'bold'}>
-                Evento/Operação
-              </Box>
-
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel
-            pb={4}
-            w={{
-              lg: isOpen ? '85vw' : '90vw',
-              md: isOpen ? '85vw' : '90vw',
-              sm: isOpen ? '85vw' : '90vw',
-            }}
-          >
-            <FormProvider {...methodsInput}>
-              <form onSubmit={methodsInput.handleSubmit(onSubmit)}>
-                <Flex
-                  flexDirection={'column'}
-                  align={'center'}
-                  //justify={'center'}
-                  justifyContent={'space-between'}
-                  gap={8}
-                  h={'100%'}
-                  //border={'1px solid green'}
+          {({ isExpanded }) => (
+            <>
+              <h2>
+                <AccordionButton
+                  _expanded={{
+                    bgColor: isExpanded ? '#EAECF0' : 'transparent',
+                  }}
                 >
-                  <FormGrandeEvento />
-                  <BotaoCadastrar
-                    type="submit"
-                    /* handleSubmit={() => onSubmit} */
-                    label="Salvar"
-                  />
-                </Flex>
-              </form>
-            </FormProvider>
-          </AccordionPanel>
+                  <Box as="span" flex="1" textAlign="left" fontWeight={'bold'}>
+                    Operação
+                  </Box>
+
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel
+                pb={4}
+                w={{
+                  lg: isOpen ? '85vw' : '90vw',
+                  md: isOpen ? '85vw' : '90vw',
+                  sm: isOpen ? '85vw' : '90vw',
+                }}
+              >
+                <FormProvider {...methodsInput}>
+                  <form onSubmit={methodsInput.handleSubmit(onSubmit)}>
+                    <Flex
+                      flexDirection={'column'}
+                      align={'center'}
+                      //justify={'center'}
+                      justifyContent={'space-between'}
+                      gap={8}
+                      h={'100%'}
+                      //border={'1px solid green'}
+                    >
+                      <FormGrandeEvento />
+                      <BotaoCadastrar
+                        type="submit"
+                        /* handleSubmit={() => onSubmit} */
+                        label="Salvar"
+                      />
+                    </Flex>
+                  </form>
+                </FormProvider>
+              </AccordionPanel>
+            </>
+          )}
         </AccordionItem>
 
         <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box as="span" flex="1" textAlign="left" fontWeight={'bold'}>
-                Postos de Serviço
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel
-            pb={4}
-            w={{
-              lg: isOpen ? '85vw' : '90vw',
-              md: isOpen ? '85vw' : '90vw',
-              sm: isOpen ? '85vw' : '90vw',
-            }}
-            maxH={'48vh'}
-            overflowY={'auto'}
-          >
-            <Flex
-              flexDirection={'row'}
-              justifyContent={'space-between'}
-              align={'center'}
-              justify={'center'}
-            >
-              <Flex
-                flexDirection={'row'}
+          {({ isExpanded }) => (
+            <>
+              <h2>
+                <AccordionButton
+                  _expanded={{
+                    bgColor: isExpanded ? '#EAECF0' : 'transparent',
+                  }}
+                >
+                  <Box as="span" flex="1" textAlign="left" fontWeight={'bold'}>
+                    Postos de Serviço
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel
+                pb={4}
                 w={{
-                  lg: isOpen ? '85vw' : '88vw',
-                  md: isOpen ? '85vw' : '88vw',
-                  sm: isOpen ? '85vw' : '88vw',
+                  lg: isOpen ? '85vw' : '90vw',
+                  md: isOpen ? '85vw' : '90vw',
+                  sm: isOpen ? '85vw' : '90vw',
                 }}
-                gap={2}
-                //border={'1px solid red'}
-                justifyContent={'space-between'}
+                maxH={'48vh'}
+                overflowY={'auto'}
               >
-                {' '}
-                <Flex></Flex>
-                <Flex gap={2}>
-                  <Flex flexDirection={'column'}>
-                    <Tooltip
-                      label={`Campos essencias: Local, Rua, Número, Bairro, Cidade, Modalidade`}
-                      aria-label="A tooltip"
-                      placement="top"
-                      borderRadius={'5px'}
-                    >
-                      <span>
-                        <InputCSVpapparse
-                          nameInput="postoInput"
-                          handleClick={handleClick}
-                          handleOnChange={handleOnChange}
-                          handleOnSubmit={handleOnSubmitP}
-                        />
-                      </span>
-                    </Tooltip>
+                <Flex
+                  flexDirection={'row'}
+                  justifyContent={'space-between'}
+                  align={'center'}
+                  justify={'center'}
+                >
+                  <Flex
+                    flexDirection={'row'}
+                    w={{
+                      lg: isOpen ? '85vw' : '88vw',
+                      md: isOpen ? '85vw' : '88vw',
+                      sm: isOpen ? '85vw' : '88vw',
+                    }}
+                    gap={2}
+                    //border={'1px solid red'}
+                    justifyContent={'space-between'}
+                  >
+                    {' '}
+                    <Flex></Flex>
+                    <Flex gap={2}>
+                      <Flex flexDirection={'column'}>
+                        <Tooltip
+                          label={`Campos essencias: Local, Rua, Número, Bairro, Cidade, Modalidade`}
+                          aria-label="A tooltip"
+                          placement="top"
+                          borderRadius={'5px'}
+                        >
+                          <span>
+                            <InputCSVpapparse
+                              nameInput="postoInput"
+                              handleClick={handleClick}
+                              handleOnChange={handleOnChange}
+                              handleOnSubmit={handleOnSubmitP}
+                            />
+                          </span>
+                        </Tooltip>
+                      </Flex>
+                      <Button
+                        //color={'white'}
+                        rightIcon={<FaFileUpload size={'16px'} />}
+                        bgColor="#3182CE"
+                        variant="ghost"
+                        color={'#fff'}
+                        onClick={onOpenModalSolicitarPostos}
+                      >
+                        Solicitar Postos
+                      </Button>
+                      <Button
+                        color={'white'}
+                        rightIcon={<HiPencil size={'16px'} />}
+                        bgColor=" #38A169"
+                        variant="ghost"
+                        onClick={onOpenFormAddPosto}
+                      >
+                        Adicionar Individual
+                      </Button>
+                    </Flex>
                   </Flex>
-                  <Button
-                    //color={'white'}
-                    rightIcon={<FaFileUpload size={'16px'} />}
-                    bgColor="#3182CE"
-                    variant="ghost"
-                    color={'#fff'}
-                    onClick={onOpenModalSolicitarPostos}
-                  >
-                    Solicitar Postos
-                  </Button>
-                  <Button
-                    color={'white'}
-                    rightIcon={<BiPencil size={'16px'} />}
-                    bgColor=" #38A169"
-                    variant="ghost"
-                    onClick={onOpenFormAddPosto}
-                  >
-                    Adicionar Individual
-                  </Button>
                 </Flex>
-              </Flex>
-            </Flex>
-            <Flex
-              pt={2}
-              gap={4}
-              flexDirection={'column'}
-              align={'center'}
-              /* w={{
+                <Flex
+                  pt={2}
+                  gap={4}
+                  flexDirection={'column'}
+                  align={'center'}
+                  /* w={{
               lg: isOpen ? '78vw' : '98vw',
               md: isOpen ? '78vw' : '98vw',
               sm: isOpen ? '78vw' : '98vw',
             }} */
-              //overflowX={'auto'}
-              // border={'1px solid red'}
-            >
-              <TableFicha
-                isOpen={postos.length > 0}
-                columns={[
-                  'Local',
-                  'Rua',
-                  'Número',
-                  'Bairro',
-                  'Cidade',
-                  'Modalidade',
-                  'Qtd Efetivo',
-                  /* 'Coronel',
+                  //overflowX={'auto'}
+                  // border={'1px solid red'}
+                >
+                  <TableFicha
+                    isOpen={postos.length > 0}
+                    columns={[
+                      'Local',
+                      'Rua',
+                      'Número',
+                      'Bairro',
+                      'Cidade',
+                      'Modalidade',
+                      'Qtd Efetivo',
+                      /* 'Coronel',
                   'Ten Cel',
                   'Major',
                   'Capitão',
@@ -352,250 +367,271 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                   'Cb',
                   'Sd',
                   'Al Sd', */
-                ]}
-                registers={transformedPostos}
-                moreLoad={loadMore}
-                lessLoad={loadLess}
-                currentPosition={currentPosition}
-                rowsPerLoad={100}
-              />
+                    ]}
+                    registers={transformedPostos}
+                    moreLoad={loadMore}
+                    lessLoad={loadLess}
+                    currentPosition={currentPosition}
+                    rowsPerLoad={100}
+                  />
 
-              <Divider />
-              <BotaoCadastrar
-                handleSubmit={uploadPostoEmLote}
-                label="Salvar"
-                type="submit"
-              />
-            </Flex>
-          </AccordionPanel>
+                  <Divider />
+                  <BotaoCadastrar
+                    handleSubmit={uploadPostoEmLote}
+                    label="Salvar"
+                    type="submit"
+                  />
+                </Flex>
+              </AccordionPanel>
+            </>
+          )}
         </AccordionItem>
         <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box as="span" flex="1" textAlign="left" fontWeight={'bold'}>
-                Efetivo Policial
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel
-            pb={4}
-            w={{
-              lg: isOpen ? '85vw' : '90vw',
-              md: isOpen ? '85vw' : '90vw',
-              sm: isOpen ? '85vw' : '90vw',
-            }}
-            maxH={'48vh'}
-            overflowY={'auto'}
-          >
-            <Flex
-              //gap={4}
-              flexDirection={'row'}
-              justifyContent={'space-between'}
-              align={'center'}
-              justify={'center'}
-            >
-              <Flex
-                flexDirection={'row'}
+          {({ isExpanded }) => (
+            <>
+              <h2>
+                <AccordionButton
+                  _expanded={{
+                    bgColor: isExpanded ? '#EAECF0' : 'transparent',
+                  }}
+                >
+                  <Box as="span" flex="1" textAlign="left" fontWeight={'bold'}>
+                    Efetivo Policial
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel
+                pb={4}
                 w={{
-                  lg: isOpen ? '85vw' : '88vw',
-                  md: isOpen ? '85vw' : '88vw',
-                  sm: isOpen ? '85vw' : '88vw',
+                  lg: isOpen ? '85vw' : '90vw',
+                  md: isOpen ? '85vw' : '90vw',
+                  sm: isOpen ? '85vw' : '90vw',
                 }}
-                gap={2}
-                //border={'1px solid red'}
-                justifyContent={'space-between'}
+                maxH={'48vh'}
+                overflowY={'auto'}
               >
-                {' '}
-                <Flex></Flex>
-                <Flex gap={2}>
-                  <Flex flexDirection={'column'}>
-                    <Tooltip
-                      label={`Campos essencias: Posto/Graduação, Matrícula, OPM, Nome Completo`}
-                      aria-label="A tooltip"
-                      placement="top"
-                      borderRadius={'5px'}
-                    >
-                      <span>
-                        <InputCSVpapparse
-                          nameInput="militarInput"
-                          handleClick={handleClick}
-                          handleOnChange={handleOnChangeMilitar}
-                          handleOnSubmit={handleOnSubmitMilitar}
-                        />
-                      </span>
-                    </Tooltip>
+                <Flex
+                  //gap={4}
+                  flexDirection={'row'}
+                  justifyContent={'space-between'}
+                  align={'center'}
+                  justify={'center'}
+                >
+                  <Flex
+                    flexDirection={'row'}
+                    w={{
+                      lg: isOpen ? '85vw' : '88vw',
+                      md: isOpen ? '85vw' : '88vw',
+                      sm: isOpen ? '85vw' : '88vw',
+                    }}
+                    gap={2}
+                    //border={'1px solid red'}
+                    justifyContent={'space-between'}
+                  >
+                    {' '}
+                    <Flex></Flex>
+                    <Flex gap={2}>
+                      <Flex flexDirection={'column'}>
+                        <Tooltip
+                          label={`Campos essencias: Posto/Graduação, Matrícula, OPM, Nome Completo`}
+                          aria-label="A tooltip"
+                          placement="top"
+                          borderRadius={'5px'}
+                        >
+                          <span>
+                            <InputCSVpapparse
+                              nameInput="militarInput"
+                              handleClick={handleClick}
+                              handleOnChange={handleOnChangeMilitar}
+                              handleOnSubmit={handleOnSubmitMilitar}
+                            />
+                          </span>
+                        </Tooltip>
+                      </Flex>
+                      <Button
+                        //color={'white'}
+                        rightIcon={<FaFileUpload size={'16px'} />}
+                        bgColor="#3182CE"
+                        variant="ghost"
+                        color={'#fff'}
+                        onClick={onOpenModalSolicitarMilitares}
+                      >
+                        Solicitar Militares
+                      </Button>
+                      <Button
+                        //color={'white'}
+                        rightIcon={<FaFileUpload size={'16px'} />}
+                        bgColor=" #38A169"
+                        variant="ghost"
+                        color={'#fff'}
+                        onClick={onOpenModalSAPM}
+                      >
+                        Importar SAPM
+                      </Button>
+                    </Flex>
                   </Flex>
-                  <Button
-                    //color={'white'}
-                    rightIcon={<FaFileUpload size={'16px'} />}
-                    bgColor="#3182CE"
-                    variant="ghost"
-                    color={'#fff'}
-                    onClick={onOpenModalSolicitarMilitares}
-                  >
-                    Solicitar Militares
-                  </Button>
-                  <Button
-                    //color={'white'}
-                    rightIcon={<FaFileUpload size={'16px'} />}
-                    bgColor=" #38A169"
-                    variant="ghost"
-                    color={'#fff'}
-                    onClick={onOpenModalSAPM}
-                  >
-                    Importar SAPM
-                  </Button>
                 </Flex>
-              </Flex>
-            </Flex>
 
-            <Flex
-              pt={2}
-              gap={4}
-              flexDirection={'column'}
-              align={'center'}
-              /* w={{
+                <Flex
+                  pt={2}
+                  gap={4}
+                  flexDirection={'column'}
+                  align={'center'}
+                  /* w={{
               lg: isOpen ? '78vw' : '98vw',
               md: isOpen ? '78vw' : '98vw',
               sm: isOpen ? '78vw' : '98vw',
             }} */
-              //overflowX={'auto'}
-              // border={'1px solid red'}
-            >
-              <TableFicha
-                isOpen={militares.length > 0}
-                columns={[
-                  'Matrícula',
-                  'Posto/Graduação',
-                  'Nome Completo',
-                  'Unidade',
-                ]}
-                registers={handleSortByPostoGrad(transformedMiltitares, '1')}
-                currentPosition={currentPositionMilitar}
-                rowsPerLoad={100}
-                lessLoad={loadLessMilitar}
-                moreLoad={loadMoreMilitar}
-              />
+                  //overflowX={'auto'}
+                  // border={'1px solid red'}
+                >
+                  <TableFicha
+                    isOpen={militares.length > 0}
+                    columns={[
+                      'Matrícula',
+                      'Posto/Graduação',
+                      'Nome Completo',
+                      'Unidade',
+                    ]}
+                    registers={handleSortByPostoGrad(
+                      transformedMiltitares,
+                      '1',
+                    )}
+                    currentPosition={currentPositionMilitar}
+                    rowsPerLoad={100}
+                    lessLoad={loadLessMilitar}
+                    moreLoad={loadMoreMilitar}
+                  />
 
-              <Divider />
-              <BotaoCadastrar
-                handleSubmit={function(): void {
-                  throw new Error('Function not implemented.');
-                }}
-                label="Salvar"
-              />
-            </Flex>
-          </AccordionPanel>
+                  <Divider />
+                  <BotaoCadastrar
+                    handleSubmit={function(): void {
+                      throw new Error('Function not implemented.');
+                    }}
+                    label="Salvar"
+                  />
+                </Flex>
+              </AccordionPanel>
+            </>
+          )}
         </AccordionItem>
         <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box as="span" flex="1" textAlign="left" fontWeight={'bold'}>
-                Escala
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel
-            pb={4}
-            w={{
-              lg: isOpen ? '85vw' : '90vw',
-              md: isOpen ? '85vw' : '90vw',
-              sm: isOpen ? '85vw' : '90vw',
-            }}
-          >
-            <Flex
-              flexDirection={'column'}
-              justifyContent={'space-around'}
-              align={'center'}
-              justify={'center'}
-              //border={'1px solid black'}
-            >
-              <Flex
-                flexDirection={'row'}
-                //border={'1px solid black'}
-                justifyContent={'space-between'}
-                w={{
-                  lg: isOpen ? '85vw' : '88vw',
-                  md: isOpen ? '85vw' : '88vw',
-                  sm: isOpen ? '85vw' : '88vw',
-                }}
-                gap={2}
-                h={'fit-content'}
-              >
-                <Flex></Flex>
-                <Flex
-                  //gap={2}
-                  //border={'1px solid red'}
-                  //w={'100%'}
-                  align={'center'}
-                  justifyContent={'space-between'}
-                  w={{
-                    lg: isOpen ? '85vw' : '88vw',
-                    md: isOpen ? '85vw' : '88vw',
-                    sm: isOpen ? '85vw' : '88vw',
+          {({ isExpanded }) => (
+            <>
+              <h2>
+                <AccordionButton
+                  _expanded={{
+                    bgColor: isExpanded ? '#EAECF0' : 'transparent',
                   }}
-                  p={4}
                 >
-                  <Flex gap={2}>
-                    <Text fontWeight={'bold'}>Total:</Text>
-                    {totalMilitar}
-                    <Text fontWeight={'bold'}>Escalados: </Text>
-                    {totalMilitarEscalados}
-                    <Text
-                      _hover={{
-                        cursor: 'pointer',
-                        //backgroundColor: '#ebf8ff',
-                        //borderColor: '#2b6cb0',
-                        //border: '1px solid #4299e1',
-                        //borderRadius: '5px',
-                        //borderWidth: '',
-                        //padding: 1,
+                  <Box as="span" flex="1" textAlign="left" fontWeight={'bold'}>
+                    Escala
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel
+                pb={4}
+                w={{
+                  lg: isOpen ? '85vw' : '90vw',
+                  md: isOpen ? '85vw' : '90vw',
+                  sm: isOpen ? '85vw' : '90vw',
+                }}
+              >
+                <Flex
+                  flexDirection={'column'}
+                  justifyContent={'space-around'}
+                  align={'center'}
+                  justify={'center'}
+                  //border={'1px solid black'}
+                >
+                  <Flex
+                    flexDirection={'row'}
+                    //border={'1px solid black'}
+                    justifyContent={'space-between'}
+                    w={{
+                      lg: isOpen ? '85vw' : '88vw',
+                      md: isOpen ? '85vw' : '88vw',
+                      sm: isOpen ? '85vw' : '88vw',
+                    }}
+                    gap={2}
+                    h={'fit-content'}
+                  >
+                    <Flex></Flex>
+                    <Flex
+                      //gap={2}
+                      //border={'1px solid red'}
+                      //w={'100%'}
+                      align={'center'}
+                      justifyContent={'space-between'}
+                      w={{
+                        lg: isOpen ? '85vw' : '88vw',
+                        md: isOpen ? '85vw' : '88vw',
+                        sm: isOpen ? '85vw' : '88vw',
                       }}
-                      onClick={onOpenModalRestantes}
-                      fontWeight={'bold'}
+                      p={4}
                     >
-                      Restantes
-                    </Text>
-                    <Text>{militaresRestantes.length}</Text>
-                  </Flex>
-                  <Flex gap={2}>
-                    <Button
-                      //color={'white'}
-                      rightIcon={<CiCircleList size={'16px'} />}
-                      colorScheme="blue"
-                      variant="outline"
-                      onClick={onOpenRequesitos}
-                    >
-                      Requisitos
-                    </Button>
+                      <Flex gap={2}>
+                        <Text fontWeight={'bold'}>Total:</Text>
+                        {totalMilitar}
+                        <Text fontWeight={'bold'}>Escalados: </Text>
+                        {totalMilitarEscalados}
+                        <Text
+                          _hover={{
+                            cursor: 'pointer',
+                            //backgroundColor: '#ebf8ff',
+                            //borderColor: '#2b6cb0',
+                            //border: '1px solid #4299e1',
+                            //borderRadius: '5px',
+                            //borderWidth: '',
+                            //padding: 1,
+                          }}
+                          onClick={onOpenModalRestantes}
+                          fontWeight={'bold'}
+                        >
+                          Restantes
+                        </Text>
+                        <Text>{militaresRestantes.length}</Text>
+                      </Flex>
+                      <Flex gap={2}>
+                        <Button
+                          //color={'white'}
+                          rightIcon={<CiCircleList size={'16px'} />}
+                          colorScheme="blue"
+                          variant="outline"
+                          onClick={onOpenRequesitos}
+                        >
+                          Requisitos
+                        </Button>
 
-                    <Button
-                      color={'white'}
-                      rightIcon={<BiPencil size={'16px'} />}
-                      bgColor=" #38A169"
-                      variant="ghost"
-                      onClick={() => {
-                        handleRandomServices(), onOpenModalServices();
+                        <Button
+                          color={'white'}
+                          rightIcon={<BiPencil size={'16px'} />}
+                          bgColor=" #38A169"
+                          variant="ghost"
+                          onClick={() => {
+                            handleRandomServices(), onOpenModalServices();
+                          }}
+                        >
+                          Gerar Escala
+                        </Button>
+                      </Flex>
+                    </Flex>
+                  </Flex>
+
+                  <Flex>
+                    <BotaoCadastrar
+                      handleSubmit={function(): void {
+                        throw new Error('Function not implemented.');
                       }}
-                    >
-                      Gerar Escala
-                    </Button>
+                      label="Salvar"
+                    />
                   </Flex>
                 </Flex>
-              </Flex>
-
-              <Flex>
-                <BotaoCadastrar
-                  handleSubmit={function(): void {
-                    throw new Error('Function not implemented.');
-                  }}
-                  label="Salvar"
-                />
-              </Flex>
-            </Flex>
-          </AccordionPanel>
+              </AccordionPanel>
+            </>
+          )}
         </AccordionItem>
       </Accordion>
       <ModalRequesitos

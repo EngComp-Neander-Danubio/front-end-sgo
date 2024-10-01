@@ -3,6 +3,7 @@ import React from 'react';
 import { InputBuscaFicha } from '../inputs/inputBusca';
 import { InputCSVpapparse } from '../../../componentsCadastro/inputCSVpapaparse/InputCSVpapaparse';
 import { BiPencil } from 'react-icons/bi';
+import { HiPencil } from 'react-icons/hi';
 interface IFunction {
   openModalAdd?: () => void;
   openModalSend?: () => void;
@@ -32,7 +33,7 @@ export const DashButtons: React.FC<IFunction> = ({
           {/* <IconeCadastrarSol onOpen={openModalAdd} /> */}
           <Button
             color={'white'}
-            rightIcon={<BiPencil size={'16px'} />}
+            rightIcon={<HiPencil size={'16px'} />}
             bgColor=" #38A169"
             variant="ghost"
             onClick={openModalAdd}

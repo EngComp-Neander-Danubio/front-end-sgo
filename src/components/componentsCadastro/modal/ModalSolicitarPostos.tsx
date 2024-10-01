@@ -94,10 +94,11 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
           <form onSubmit={methodsInput.handleSubmit(onSubmit)}>
             <ModalContent
               maxW="80vw"
-              minW="30vw"
+              minW="40vw"
               w={'fit-content'}
-              maxH="80vh"
-              minH="40vh"
+              //h={'90vh'}
+              maxH="100vh"
+              minH="85vh"
             >
               <ModalHeader>
                 <Center>Solicitação de Postos</Center>

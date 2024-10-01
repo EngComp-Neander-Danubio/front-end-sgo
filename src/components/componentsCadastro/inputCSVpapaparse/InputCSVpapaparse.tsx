@@ -14,7 +14,7 @@ export const InputCSVpapparse: React.FC<IInput> = ({
   //handleOnSubmit,
   nameInput,
 }) => {
- const inputRef = useRef < HTMLInputElement| null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <Flex flexDirection={'row'} gap={2}>

@@ -13,6 +13,7 @@ import { CalendarIcon } from '@chakra-ui/icons';
 //import { Locale } from 'date-fns';
 import { ptBR } from 'date-fns/locale/pt-BR';
 import { FieldError } from 'react-hook-form';
+import { RiCalendarLine } from 'react-icons/ri';
 import './styles.css';
 
 type IDatePicker = InputProps &
@@ -54,7 +55,7 @@ export const DatePickerEvent: React.FC<IDatePicker> = ({
                 placeholder="Selecione data e horário"
               />
               <InputRightElement>
-                <CalendarIcon />
+                <RiCalendarLine />
               </InputRightElement>
             </InputGroup>
             <FormErrorMessage>{error?.message}</FormErrorMessage>
