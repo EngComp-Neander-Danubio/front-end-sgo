@@ -3,21 +3,15 @@ import {
   Text,
   FormControl,
   FormLabel,
-  Switch,
-  Input,
   Button,
   Checkbox,
   Divider,
   useToast,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
-import { Controller, useForm, useFormContext } from 'react-hook-form';
-import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
-import { DatePickerRequisitos } from './DatePickerRequisitos';
-import { DatePickerTime } from './DatePickerTime';
+import { Controller, useFormContext } from 'react-hook-form';
 import { OptionType, SelectPattern } from './SelectPattern';
-import { optionsModalidade } from '../../../types/typesModalidade';
-import { OPMOption, optionsMilitares } from '../../../types/typesMilitar';
+import { OPMOption } from '../../../types/typesMilitar';
 import {
   optionsOPMs,
   optionsEsp,
@@ -32,8 +26,6 @@ import {
   OPMs,
 } from '../../../types/typesOPM';
 import { DatePickerEvent } from '../formGrandeEvento/DatePickerEvent';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Militares_service } from '../../../context/requisitosContext/RequisitosContext';
 import { TableInput } from '../tableInput/TableInput';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
 
@@ -274,6 +266,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
             handleCheckbox(e.currentTarget.checked, optionsOPMs);
             //console.log('', opm);
           }}
+          colorScheme={'green'}
         >
           Todos
         </Checkbox>
@@ -292,6 +285,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                 //console.log('', opm);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               Especializadas
@@ -302,6 +296,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
           size="md"
           //isChecked={selectedCheckbox === 'POG'}
           onChange={() => handleCheckboxChange('POG')}
+          colorScheme={'green'}
         >
           POG
         </Checkbox>
@@ -320,6 +315,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                 //console.log('', opm);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               Setores Administrativos
@@ -342,6 +338,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                 //console.log('', opm);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               1° CRPM
@@ -360,6 +357,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                 handleCheckbox(e.currentTarget.checked, options2CRPM);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               2° CRPM
@@ -378,6 +376,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                 handleCheckbox(e.currentTarget.checked, options3CRPM);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               3° CRPM
@@ -396,6 +395,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                 handleCheckbox(e.currentTarget.checked, options4CRPM);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               4° CRPM
@@ -413,6 +413,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                 handleCheckbox(e.currentTarget.checked, optionsCPCHOQUE);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               CPCHOQUE
@@ -430,6 +431,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                 handleCheckbox(e.currentTarget.checked, optionsCPRAIO);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               CPRAIO
@@ -447,6 +449,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                 handleCheckbox(e.currentTarget.checked, optionsCPE);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               CPE
@@ -484,7 +487,6 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                   <SelectPattern
                     onChange={value => {
                       onChange(value);
-                      // handleSelectOpm(value as OPMs);
                     }}
                     onBlur={onBlur}
                     w="30vw"
@@ -530,9 +532,14 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                     if (v !== undefined && v !== null && v !== '') {
                       handleSelectOpm((v as unknown) as OPMs);
                     }
-                    onChange(v);
+                    //onChange(v);
                   }}
-                  bgColor="#38A169"
+                  bgColor=" #38A169"
+                  _hover={{
+                    bgColor: 'green',
+                    cursor: 'pointer',
+                    transition: '.5s',
+                  }}
                   color="#fff"
                   onBlur={onBlur}
                   variant="ghost"
@@ -555,7 +562,9 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
       >
         <Flex justify={'center'} align={'center'}>
           <Flex flexDirection={'row'} align={'center'} justify={'center'}>
-            <FormLabel w={'7vw'}>Total Efetivo:</FormLabel>
+            <FormLabel w={'12vw'} flexWrap={'nowrap'} fontWeight={400}>
+              Total Efetivo por OPM:
+            </FormLabel>
             <Controller
               name={'totalEfetivo'}
               control={methodsInput.control}
@@ -591,7 +600,12 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                 opm.map(() => methodsInput.watch('totalEfetivo')),
               );
             }}
-            bgColor="#38A169"
+            bgColor=" #38A169"
+            _hover={{
+              bgColor: 'green',
+              cursor: 'pointer',
+              transition: '.5s',
+            }}
             color="#fff"
             variant="ghost"
           >

@@ -62,7 +62,13 @@ export const ModalRestantes: React.FC<IModal> = ({
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
 
-        <ModalContent maxW="50vw" minW="30vw" maxH="100vh" minH="40vh" overflowY={'auto'}>
+        <ModalContent
+          maxW="50vw"
+          minW="30vw"
+          maxH="100vh"
+          minH="40vh"
+          overflowY={'auto'}
+        >
           <ModalHeader>
             <Center>Militares Restantes</Center>
           </ModalHeader>
@@ -75,12 +81,12 @@ export const ModalRestantes: React.FC<IModal> = ({
               currentPosition={50}
               rowsPerLoad={0}
               isActions={true}
-              label_tooltip='militar'
+              label_tooltip="militar"
             />
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="yellow" mr={3} onClick={onClose}>
+            <Button colorScheme="red" mr={3} onClick={onClose}>
               Fechar
             </Button>
           </ModalFooter>

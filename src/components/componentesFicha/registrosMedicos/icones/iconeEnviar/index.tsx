@@ -15,7 +15,12 @@ export const IconeEnviar: React.FC<IIcone> = ({ label_tooltip, onOpen }) => {
         aria-label="A tooltip"
         placement="top"
       >
-        <span>
+        <span
+          style={{
+            cursor: 'pointer',
+            transition: '.5s',
+          }}
+        >
           <IoIosSend color="#A0AEC0" size="20px" onClick={onOpen} />
         </span>
       </Tooltip>

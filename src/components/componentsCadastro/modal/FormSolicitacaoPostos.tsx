@@ -260,6 +260,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
                 //console.log('', opm);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               Todos
@@ -280,6 +281,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
                 //console.log('', opm);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               Especializadas
@@ -308,6 +310,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
                 //console.log('', opm);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               Setores Administrativos
@@ -331,6 +334,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
                 //console.log('', opm);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               1° CRPM
@@ -349,6 +353,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
                 handleCheckbox(e.currentTarget.checked, options2CRPM);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               2° CRPM
@@ -367,6 +372,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
                 handleCheckbox(e.currentTarget.checked, options3CRPM);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               3° CRPM
@@ -385,6 +391,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
                 handleCheckbox(e.currentTarget.checked, options4CRPM);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               4° CRPM
@@ -402,6 +409,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
                 handleCheckbox(e.currentTarget.checked, optionsCPCHOQUE);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               CPCHOQUE
@@ -419,6 +427,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
                 handleCheckbox(e.currentTarget.checked, optionsCPRAIO);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               CPRAIO
@@ -436,6 +445,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
                 handleCheckbox(e.currentTarget.checked, optionsCPE);
               }}
               onBlur={onBlur}
+              colorScheme={'green'}
               //value={value}
             >
               CPE
@@ -474,8 +484,6 @@ export const FormSolicitacaoPostos: React.FC = () => {
                   <SelectPattern
                     onChange={value => {
                       onChange(value);
-                      handleSelectOpm((value as unknown) as OPMs);
-                      //setOPM(value);
                     }}
                     onBlur={onBlur}
                     w="30vw"
@@ -503,20 +511,32 @@ export const FormSolicitacaoPostos: React.FC = () => {
           <Flex
           //border={'1px solid red'}
           >
-            <Button
-              onClick={() => {
-                const v = getValues('select_opm');
-                if (v !== undefined && v !== null && v !== ('' as OPMs)) {
-                  handleSelectOpm((v as unknown) as OPMs);
-                }
-                //onChange(v);
-              }}
-              bgColor="#38A169"
-              color="#fff"
-              variant="ghost"
-            >
-              Incluir
-            </Button>
+            <Controller
+              name="button"
+              control={control}
+              render={({ field: { onChange, onBlur }, formState }) => (
+                <Button
+                  onClick={() => {
+                    const v = getValues('select_opm');
+                    if (v !== undefined && v !== null && v !== ('' as OPMs)) {
+                      handleSelectOpm((v as unknown) as OPMs);
+                    }
+                    //onChange(v);
+                  }}
+                  bgColor="#38A169"
+                  _hover={{
+                    bgColor: 'green',
+                    cursor: 'pointer',
+                    transition: '.5s',
+                  }}
+                  color="#fff"
+                  onBlur={onBlur}
+                  variant="ghost"
+                >
+                  Incluir
+                </Button>
+              )}
+            />
           </Flex>
         </Flex>
       </Flex>
@@ -552,13 +572,15 @@ export const FormSolicitacaoPostos: React.FC = () => {
                         size="md"
                         isChecked
                         onBlur={onBlur}
-                        onChange={e => {
+                        /* onChange={e => {
                           const isChecked = e.target.checked;
                           onChange(isChecked ? option?.label : '');
+                          () => handleDeleteOpm(item);
                           if (!isChecked) {
-                            () => handleDeleteOpm(item);
                           }
-                        }}
+                        }} */
+                        onChange={() => handleDeleteOpm(item)}
+                        colorScheme={'green'}
                         //value={option?.value}
                       >
                         <Input

@@ -1,27 +1,39 @@
 import { TableSolicitacoes } from '../table-solicitacoes';
-import soli_data from '../../../assets/solicitacoes_pms.json';
-import { useDisclosure } from '@chakra-ui/react';
+import { Flex, useDisclosure } from '@chakra-ui/react';
 import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
 import { ModalAlertSolicitacaoPMs } from '../modal/ModalAlertSolicitacaoPMs';
+import { Pagination } from '../pagination/Pagination';
+import { useSolicitacoesPMs } from '../../../context/solicitacoesPMsContext/useSolicitacoesPMs';
 
+// lista as solicitacoes da OPM no que se refere ao efetivo policial
 export const ToListSolicitacoesPMsContent = () => {
+  const {
+    solicitacoesPMs,
+    totalData,
+    loadLessSolicitacoesPMs,
+    loadMoreSolicitacoesPMs,
+    firstDataIndex,
+    lastDataIndex,
+  } = useSolicitacoesPMs();
+  const totalPages = totalData;
   // Defina as colunas desejadas e o mapeamento para as chaves dos eventos
   const columnsMap: { [key: string]: string } = {
+    Operação: 'operacao',
     Solicitação: 'solicitacao',
     Prazo: 'prazo',
     'Quantidade Total Efetivo': 'qtd_efetivo',
     'Quantidade Parcial Efetivo': 'qtd_parcial_efetivo',
+    OPM: 'OPM',
     Status: 'status',
   };
-
   // Use o mapeamento para criar as colunas a serem exibidas
   const columns = Object.keys(columnsMap);
 
   // Transforme os registros dos eventos com as novas chaves
-  const transformedSolis = soli_data.map(solicitacao => {
+  const transformedSolis = solicitacoesPMs.map(p => {
     const transformedSoli: { [key: string]: any } = {};
     Object.entries(columnsMap).forEach(([newKey, originalKey]) => {
-      transformedSoli[newKey] = solicitacao[originalKey];
+      transformedSoli[newKey] = p[originalKey];
     });
     return transformedSoli;
   });
@@ -35,28 +47,42 @@ export const ToListSolicitacoesPMsContent = () => {
     onOpen: onOpenAlertSolicitacao,
     onClose: onCloseAlertSolicitacao,
   } = useDisclosure();
+
   return (
     <>
-      <TableSolicitacoes
-        columns={columns} // Use as colunas personalizadas
-        registers={transformedSolis} // Use os registros transformados
-        currentPosition={0}
-        rowsPerLoad={0}
-        isActions={true}
-        label_tooltip={'Solicitação de PMs'}
-        openModalAdd={onOpenFormAddMilitar}
-        openModalSend={onOpenAlertSolicitacao}
-      />
-      <ModalFormAddMilitar
-        isOpen={isOpenFormAddMilitar}
-        onOpen={onOpenFormAddMilitar}
-        onClose={onCloseFormAddMilitar}
-      />
-      <ModalAlertSolicitacaoPMs
-        isOpen={isOpenAlertSolicitacao}
-        onOpen={onOpenAlertSolicitacao}
-        onClose={onCloseAlertSolicitacao}
-      />
+      <Flex flexDirection={'column'} w={'100%'}>
+        <TableSolicitacoes
+          columns={columns} // Use as colunas personalizadas
+          registers={transformedSolis} // Use os registros transformados
+          isActions={true}
+          label_tooltip={'Solicitação de PMs'}
+          openModalAdd={onOpenFormAddMilitar}
+          openModalSend={onOpenAlertSolicitacao}
+          height={''}
+        />
+        {/* Componente de paginação */}
+        <Pagination
+          totalPages={totalPages}
+          dataPerPage={10}
+          firstDataIndex={firstDataIndex}
+          lastDataIndex={lastDataIndex}
+          loadLess={loadLessSolicitacoesPMs}
+          loadMore={loadMoreSolicitacoesPMs}
+        />
+        <ModalFormAddMilitar
+          isOpen={isOpenFormAddMilitar}
+          onOpen={onOpenFormAddMilitar}
+          onClose={onCloseFormAddMilitar}
+          uploadPM={function(data: any): Promise<void> {
+            throw new Error('Function not implemented.');
+          }}
+        />
+        <ModalAlertSolicitacaoPMs
+          isOpen={isOpenAlertSolicitacao}
+          onOpen={onOpenAlertSolicitacao}
+          onClose={onCloseAlertSolicitacao}
+        />
+      </Flex>
     </>
   );
 };

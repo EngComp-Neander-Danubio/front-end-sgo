@@ -24,7 +24,7 @@ export const TitleLogin = () => {
           sm: 'none',
         }}
       >
-        SISTEMA INTEGRADO DE GERENCIAMENTO
+        SISTEMA DE GERENCIAMENTO
       </Text>
       <Text
         color={'rgba(255, 255, 255, 1)'}
@@ -44,8 +44,7 @@ export const TitleLogin = () => {
         align={'center'}
         justify={'center'}
         w={'max-content'}
-      >
-      </Flex>
+      ></Flex>
     </Flex>
   );
 };

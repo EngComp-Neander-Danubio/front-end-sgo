@@ -9,9 +9,9 @@ import {
   InputProps,
   InputRightElement,
 } from '@chakra-ui/react';
-import { CalendarIcon } from '@chakra-ui/icons';
 import { ptBR } from 'date-fns/locale'; // Corrigido o import do locale para pt-BR
 import { FieldError } from 'react-hook-form';
+import { RiCalendarLine } from 'react-icons/ri';
 
 type IDatePicker = InputProps &
   DatePickerProps & {
@@ -43,7 +43,7 @@ export const DatePickerRequisitos: React.FC<IDatePicker> = ({
                 onChange={() => {}} // Removido o valor de data no input
               />
               <InputRightElement>
-                <CalendarIcon />
+                <RiCalendarLine />
               </InputRightElement>
             </InputGroup>
             <FormErrorMessage>{error?.message}</FormErrorMessage>

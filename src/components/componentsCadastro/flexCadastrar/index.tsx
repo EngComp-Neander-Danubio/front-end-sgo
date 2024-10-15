@@ -1,9 +1,9 @@
 import { Flex } from '@chakra-ui/react';
 import React from 'react';
 import { TitleCadastro } from '../tilteCadastro';
-import { FlexMenor } from '../flexMenor';
 import { useForm } from 'react-hook-form';
 import { AccordinCadastro } from '../accordion/AccordionCadastro';
+import { BreadCrumb } from '../flexMenor/BreadCrumb';
 
 interface IFlexCadastrar {
   isOpen: boolean;
@@ -17,19 +17,23 @@ export const FlexConteudo: React.FC<IFlexCadastrar> = ({
   return (
     <Flex
       //h={'80vh'}
-      h={'98%'}
+      h={'99.5%'}
       flexDirection={'column'}
       gap={2}
       //border={'1px solid black'}
     >
-      <FlexMenor />
+      <BreadCrumb />
       <Flex
         pl={2}
         pr={2}
         //border={'1px solid black'}
         borderRadius={'8px'}
         borderTopLeftRadius={0}
-        w={isOpen ? '87vw' : '94vw'}
+        w={{
+          lg: isOpen ? '86vw' : '94vw',
+          md: isOpen ? '86vw' : '94vw',
+          sm: isOpen ? '86vw' : '94vw',
+        }}
         transitionDuration="1.0s"
         //h={'80vh'}
         h={'100%'}
@@ -42,7 +46,7 @@ export const FlexConteudo: React.FC<IFlexCadastrar> = ({
         <Flex
           position="absolute"
           top={'32px'}
-          ml={4}
+          pl={4}
           //left={'32px'}
           //border={'1px solid black'}
           fontWeight={'700'}
@@ -72,12 +76,17 @@ export const FlexConteudo: React.FC<IFlexCadastrar> = ({
             borderRadius={'8px'}
             bg={'white'}
             //w={isOpen ? '86vw' : '93vw'} //don't change
+            /* w={{
+              lg: isOpen ? '85vw' : '92vw',
+              md: isOpen ? '85vw' : '92vw',
+              sm: isOpen ? '85vw' : '92vw',
+            }} */
             transitionDuration="1.0s"
             align={'center'}
             justifyContent={'center'}
             //pl={8}
             pb={8}
-            ml={4}
+            pl={4}
             //maxH={'60vh'}
             //border={'1px solid black'}
           >

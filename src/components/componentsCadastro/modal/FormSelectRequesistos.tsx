@@ -187,7 +187,8 @@ export const FormSelectRequesitos: React.FC<ISwicht> = ({ isOpen }) => {
               <Switch
                 id="aleatoriedade"
                 //colorScheme={'#38A169'}
-                color={'#38A169'}
+                //color={'#38A169'}
+                colorScheme={'green'}
                 onChange={async e => {
                   field.onChange(e.target.checked);
                   await trigger('antiguidade');

@@ -4,12 +4,12 @@ import React, {
   ReactNode,
   useMemo,
   useCallback,
+  useEffect,
 } from 'react';
 
 import { useToast } from '@chakra-ui/react';
 import { readString } from 'react-papaparse';
 import api from '../../services/api';
-import { useEvents } from '../eventContext/useEvents';
 export type Posto = {
   columns?: string[];
   registers?: { [key: string]: any }[];
@@ -27,6 +27,7 @@ export interface PostoForm {
 
 export interface IContextPostoData {
   postos: PostoForm[];
+  postosLocal: PostoForm[];
   postoById: PostoForm;
   postosByAPI: PostoForm[];
   hasMore: boolean;
@@ -36,10 +37,17 @@ export interface IContextPostoData {
   handleOnSubmitP: (e: React.FormEvent) => void;
   loadMore: () => void;
   loadLess: () => void;
+  loadPostoForAccordion: (data: PostoForm) => Promise<void>;
   uploadPosto: (data: PostoForm) => Promise<void>;
   uploadPostoEmLote: () => Promise<void>;
   loadPostosByAPI: () => Promise<void>;
   updatePosto: (data: PostoForm, id: string) => Promise<void>;
+  deletePostoByOPM: (id?: string, index?: string) => Promise<void>;
+  currentDataIndex: number;
+  dataPerPage: number;
+  lastDataIndex: number;
+  firstDataIndex: number;
+  totalData: number;
 }
 
 export const PostosContext = createContext<IContextPostoData | undefined>(
@@ -55,11 +63,99 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
   const [postosByAPI, setPostosByAPI] = useState<PostoForm[]>([]);
   const [posto, setPosto] = useState<PostoForm[]>([]);
   const [postoById, setPostoById] = useState<PostoForm>();
-  const [currentPosition, setCurrentPosition] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const rowsPerLoad = 100; // Número de linhas para carregar por vez
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { eventById } = useEvents();
+  // Verifique as mudanças no estado `pms`
+  const [postosLocal, setPostosLocal] = useState<PostoForm[]>([]);
+  const [postosDaPlanilha, setPostosDaPlanilha] = useState<PostoForm[]>([]);
+  const [currentDataIndex, setCurrentDataIndex] = useState(0);
+  const [dataPerPage] = useState(5); // Defina o número de registros por página
+
+  const lastDataIndex = (currentDataIndex + 1) * dataPerPage;
+  const firstDataIndex = lastDataIndex - dataPerPage;
+  const totalData = postosLocal.length;
+  const currentData = postosLocal.slice(firstDataIndex, lastDataIndex);
+  const hasMore = lastDataIndex < postosLocal.length;
+  const loadPostoForAccordion = (data: PostoForm) => {
+    console.log(data);
+    setPostosLocal(prevArray => [...prevArray, data]);
+    console.log('postos de serviço do perfil de OPM', postos);
+  };
+
+  // Função para carregar o CSV completo
+  const loadCompleteCSV = (text: string) => {
+    readString(text, {
+      header: true,
+      delimiter: ';',
+      skipEmptyLines: true,
+      complete: result => {
+        if (result.errors.length > 0) {
+          console.error('Erro ao processar CSV:', result.errors);
+          return;
+        }
+
+        const parsedArray = result.data as PostoForm[];
+
+        // Atualize o estado com os novos dados sem concatenar
+        setPostosDaPlanilha(prevArray => [...prevArray, ...parsedArray]);
+        setPostosLocal(prevArray => [...prevArray, ...postosDaPlanilha]);
+
+        console.log('planilha', parsedArray);
+      },
+    });
+  };
+  useEffect(() => {
+    //console.log('postos de serviço do perfil de OPM', postos);
+    if (postosDaPlanilha.length > 0) {
+      setPostosLocal(prevArray => [...prevArray, ...postosDaPlanilha]); // Usar spread operator
+    }
+  }, [postosDaPlanilha]);
+
+  const loadMore = () => {
+    if (hasMore) {
+      setCurrentDataIndex(prevIndex => prevIndex + 1);
+    } else {
+      toast({
+        title: 'Fim dos dados',
+        description: 'Não há mais postos para carregar.',
+        status: 'info',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+    }
+  };
+
+  const loadLess = () => {
+    if (firstDataIndex > 0) {
+      setCurrentDataIndex(prevIndex => prevIndex - 1);
+    } else {
+      toast({
+        title: 'Início dos dados',
+        description: 'Você está na primeira página.',
+        status: 'info',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+    }
+  };
+
+  const handleOnSubmitP = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (file) {
+      const fileReader = new FileReader();
+      fileReader.onload = posto => {
+        const text = posto.target?.result;
+        if (typeof text === 'string') {
+          loadCompleteCSV(text);
+          setCurrentDataIndex(dataPerPage);
+        }
+      };
+      fileReader.readAsText(file, 'ISO-8859-1');
+    }
+  };
+
+  useEffect(() => {}, [postosLocal]);
   const handleClick = () => {
     document.getElementById('postoInput')?.click();
   };
@@ -67,118 +163,18 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       setFile(e.target.files[0]);
-
       const fileReader = new FileReader();
-
       fileReader.onload = posto => {
         const text = posto.target?.result;
         if (typeof text === 'string') {
-          loadCSVChunk(text, 1, rowsPerLoad);
-          setCurrentPosition(rowsPerLoad);
+          loadCompleteCSV(text);
+          setCurrentDataIndex(0);
         }
       };
-
-      fileReader.readAsText(e.target.files?.[0], 'ISO-8859-1'); // Usando encoding para suportar acentos
-
-      setCurrentPosition(0);
-      setHasMore(true);
+      fileReader.readAsText(e.target.files[0], 'ISO-8859-1');
     }
   };
 
-  const loadCSVChunk = (text: string, start: number, end: number) => {
-    const lines = text.split('\n');
-
-    // Garantir que o header seja corretamente identificado
-    const headerLine = lines[0];
-    const csvRows = lines.slice(start, end);
-
-    if (!headerLine || csvRows.length === 0) {
-      setHasMore(false);
-      return;
-    }
-
-    // Parse the header to get the column names
-    const results = readString([headerLine, ...csvRows].join('\n'), {
-      header: true,
-      delimiter: ';',
-      skipEmptyLines: true,
-      complete: result => {
-        // Verifique se há problemas com o parsing
-        if (result.errors.length > 0) {
-          console.error('Erro ao processar CSV:', result.errors);
-          return;
-        }
-        const parsedArray = result.data as any[];
-
-        // Atualizar o estado com os novos dados
-        setPostos(prevArray => [...prevArray, ...parsedArray]);
-
-        //console.log('Postos', parsedArray);
-
-        // Checar se há mais dados para carregar
-        if (parsedArray.length < end - start) {
-          setHasMore(false);
-        }
-      },
-    });
-    return results;
-  };
-
-  const handleOnSubmitP = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (file) {
-      const fileReader = new FileReader();
-
-      fileReader.onload = posto => {
-        const text = posto.target?.result;
-        if (typeof text === 'string') {
-          loadCSVChunk(text, 1, rowsPerLoad);
-          setCurrentPosition(rowsPerLoad);
-        }
-      };
-
-      fileReader.readAsText(file, 'ISO-8859-1'); // Usando encoding para suportar acentos
-    }
-  };
-
-  const loadMore = () => {
-    if (file) {
-      const fileReader = new FileReader();
-
-      fileReader.onload = posto => {
-        const text = posto.target?.result;
-        if (typeof text === 'string') {
-          loadCSVChunk(
-            text,
-            currentPosition + 1,
-            currentPosition + rowsPerLoad,
-          );
-          setCurrentPosition(currentPosition + rowsPerLoad);
-        }
-      };
-
-      fileReader.readAsText(file, 'ISO-8859-1');
-    }
-  };
-  const loadLess = () => {
-    if (file && currentPosition > rowsPerLoad) {
-      const fileReader = new FileReader();
-
-      fileReader.onload = posto => {
-        const text = posto.target?.result;
-        if (typeof text === 'string') {
-          const newStart = Math.max(0, currentPosition - 2 * rowsPerLoad);
-          const newEnd = currentPosition - rowsPerLoad;
-
-          loadCSVChunk(text, newStart, newEnd);
-
-          setCurrentPosition(newStart + rowsPerLoad);
-        }
-      };
-
-      fileReader.readAsText(file, 'ISO-8859-1');
-    }
-  };
   const loadPostosByAPI = useCallback(async (id: string) => {
     setIsLoading(true);
     //const parameters = param !== undefined ? param : '';
@@ -338,14 +334,85 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
+  const deletePostoByOPM = useCallback(
+    async (id?: string, index?: string) => {
+      setIsLoading(true);
+
+      if (id) {
+        try {
+          console.log('delete com id');
+          await api.delete(`/postos-opm/${id}`);
+          toast({
+            title: 'Sucesso',
+            description: 'Posto deletado com sucesso',
+            status: 'success',
+            position: 'top-right',
+            duration: 9000,
+            isClosable: true,
+          });
+        } catch (error) {
+          console.error('Falha ao deletar o posto:', error);
+          toast({
+            title: 'Erro',
+            description: 'Falha ao deletar o posto',
+            status: 'error',
+            position: 'top-right',
+            duration: 9000,
+            isClosable: true,
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      } else if (index) {
+        //console.log('delete com index');
+        const indexDeletedOpm =
+          currentDataIndex * (lastDataIndex - firstDataIndex) + Number(index);
+        /* console.log('index', indexDeletedOpm);
+        console.log('currentDataIndex', currentDataIndex);
+        console.log('currentData.length', currentData.length); */
+        if (indexDeletedOpm < 0 || indexDeletedOpm >= postosLocal.length) {
+          toast({
+            title: 'Erro!',
+            description: 'Posto não encontrado na lista.',
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+            position: 'top-right',
+          });
+          setIsLoading(false);
+          return;
+        }
+        const updatedOpm = postosLocal.filter((_, i) => i !== indexDeletedOpm);
+
+        setPostosLocal(updatedOpm);
+        if (updatedOpm.length !== postosLocal.length) {
+          toast({
+            title: 'Exclusão de Posto.',
+            description: 'Posto excluído com sucesso.',
+            status: 'success',
+            duration: 5000,
+            isClosable: true,
+            position: 'top-right',
+          });
+        }
+        setIsLoading(false);
+      }
+    },
+    [postosLocal, currentDataIndex, currentData.length],
+  );
 
   const contextValue = useMemo(
     () => ({
+      postosLocal: currentData,
       postos,
       postosByAPI,
       postoById,
       hasMore,
-      currentPosition, // Incluído
+      totalData,
+      firstDataIndex,
+      lastDataIndex,
+      currentDataIndex,
+      dataPerPage,
       handleClick,
       loadMore,
       loadLess,
@@ -356,13 +423,20 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
       deletePosto,
       updatePosto,
       loadPostosByAPI,
+      loadPostoForAccordion,
+      deletePostoByOPM,
     }),
     [
+      postosLocal,
       postos,
       postosByAPI,
       postoById,
       hasMore,
-      currentPosition, // Incluído
+      totalData,
+      firstDataIndex,
+      lastDataIndex,
+      currentDataIndex,
+      dataPerPage,
       handleClick,
       loadMore,
       loadLess,
@@ -373,6 +447,8 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
       deletePosto,
       updatePosto,
       loadPostosByAPI,
+      loadPostoForAccordion,
+      deletePostoByOPM,
     ],
   );
 

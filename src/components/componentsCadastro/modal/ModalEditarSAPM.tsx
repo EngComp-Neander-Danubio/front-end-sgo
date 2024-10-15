@@ -617,12 +617,17 @@ export const ModalEditarSAPM: React.FC<IModal> = ({
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="yellow" mr={3} onClick={onClose}>
+            <Button colorScheme="red" mr={3} onClick={onClose}>
               Cancelar
             </Button>
             <Button
               variant="ghost"
-              bgColor="#38A169"
+              bgColor=" #38A169"
+              _hover={{
+                bgColor: 'green',
+                cursor: 'pointer',
+                transition: '.5s',
+              }}
               color="#fff"
               type="submit"
               onClick={reset}

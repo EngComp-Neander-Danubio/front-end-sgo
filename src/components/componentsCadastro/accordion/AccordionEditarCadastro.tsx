@@ -8,14 +8,12 @@ import {
   AccordionProps,
   Flex,
   Button,
-  ButtonGroup,
   useDisclosure,
   Divider,
   FlexboxProps,
   Text,
   Tooltip,
 } from '@chakra-ui/react';
-import { FormGrandeEvento } from '../formGrandeEvento/FormGrandeEvento';
 import { BiPencil } from 'react-icons/bi';
 import { ModalRequesitos } from '../modal/ModalRequesitos';
 import { BotaoCadastrar } from '../botaoCadastrar';
@@ -23,7 +21,7 @@ import { BotaoCadastrar } from '../botaoCadastrar';
 import { TableFicha } from '../../componentesFicha/table';
 import { InputCSVpapparse } from '../inputCSVpapaparse/InputCSVpapaparse';
 import { usePostos } from '../../../context/postosContext/usePostos';
-import { useMilitares } from '../../../context/militares/useMilitares';
+import { useMilitares } from '../../../context/militaresContext/useMilitares';
 import { FaFileUpload } from 'react-icons/fa';
 import { CiCircleList } from 'react-icons/ci';
 import { useForm, FormProvider } from 'react-hook-form';
@@ -31,7 +29,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { eventoSchema } from '../../../types/yupEvento/yupEvento';
 import { useRequisitos } from '../../../context/requisitosContext/useRequesitos';
 import React, { useEffect } from 'react';
-import { CardService } from '../cardServices/CardService';
 import { ModalRelatorio } from '../modal/ModalRelatorio';
 import { ModalRestantes } from '../modal/ModalRestantes';
 import { ModalSAPM } from '../modal/ModalSAPM';
@@ -46,8 +43,7 @@ import {
 import { columnsMapPostos } from '../../../types/yupPostos/yupPostos';
 import { FormEditarGrandeEvento } from '../formGrandeEvento/FormEditarGrandeEvento';
 import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
-import { ModalFormEditarMilitar } from '../formEfetivo/ModalFormEditarMilitar';
-import { ModalEditarSAPM } from '../modal/ModalEditarSAPM';
+import { PostoForm } from '../../../context/postosContext/PostosContex';
 interface IAccordion extends AccordionProps {
   handleSubmit?: () => void;
   isOpen: boolean;
@@ -183,7 +179,7 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
           <h2>
             <AccordionButton>
               <Box as="span" flex="1" textAlign="left" fontWeight={'bold'}>
-                Evento/Operação
+                Operação
               </Box>
 
               <AccordionIcon />
@@ -551,11 +547,17 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
         isOpen={isOpenFormAddPosto}
         onOpen={onOpenFormAddPosto}
         onClose={onCloseFormAddPosto}
+        uploadPosto={function(data: PostoForm): Promise<void> {
+          throw new Error('Function not implemented.');
+        }}
       />
       <ModalFormAddMilitar
         isOpen={isOpenFormAddMilitar}
         onOpen={onOpenFormAddMilitar}
         onClose={onCloseFormAddMilitar}
+        uploadPM={function(data: any): Promise<void> {
+          throw new Error('Function not implemented.');
+        }}
       />
       <ModalRelatorio
         isOpen={isOpenModalRelatorio}
@@ -573,7 +575,9 @@ export const AccordinEditarCadastro: React.FC<IAccordion> = ({ isOpen }) => {
         onOpen={onOpenModalSAPM}
         onClose={onCloseModalSAPM}
         opms={[]}
-        select_opm={'' as OPMs} militaresRestantes={[]}      />
+        select_opm={'' as OPMs}
+        militaresRestantes={[]}
+      />
       <ModalServices
         isOpen={isOpenModalServices}
         onOpen={onOpenModalServices}

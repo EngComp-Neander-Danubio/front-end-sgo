@@ -52,7 +52,7 @@ export const ModalRequesitos: React.FC<IModal> = ({ isOpen, onClose }) => {
 
               <ModalFooter>
                 <Button
-                  colorScheme="yellow"
+                  colorScheme="red"
                   mr={3}
                   onClick={() => {
                     onClose();
@@ -63,7 +63,12 @@ export const ModalRequesitos: React.FC<IModal> = ({ isOpen, onClose }) => {
                 </Button>
                 <Button
                   variant="ghost"
-                  bgColor="#38A169"
+                  bgColor=" #38A169"
+                  _hover={{
+                    bgColor: 'green',
+                    cursor: 'pointer',
+                    transition: '.5s',
+                  }}
                   color="#fff"
                   type="submit"
                   //onClick={!methodsRequisitos.formState.defaultValues ? onClose : undefined}

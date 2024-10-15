@@ -4,10 +4,15 @@ import { CSSReset, ChakraProvider } from '@chakra-ui/react';
 import * as ReactDOM from 'react-dom/client';
 import { AuthProvider } from './context/AuthProvider/index.tsx';
 import { PostosProvider } from './context/postosContext/PostosContex.tsx';
-import { MilitaresProvider } from './context/militares/MilitarContext.tsx';
+import { MilitaresProvider } from './context/militaresContext/MilitarContext.tsx';
 import { RequisitosProvider } from './context/requisitosContext/RequisitosContext.tsx';
 import { EventsProvider } from './context/eventContext/EventsContex.tsx';
-import { TotalEfetivoOPMsContext, TotalEfetivoOPMsProvider } from './context/efetivoOPMs/EfetivoOPMsContext.tsx';
+import { TotalEfetivoOPMsProvider } from './context/efetivoOPMs/EfetivoOPMsContext.tsx';
+import { SolicitacoesPostosProvider } from './context/solicitacoesPostosContext/SolicitacoesPostosContex.tsx';
+import { SolicitacoesPMsProvider } from './context/solicitacoesPMsContext/SolicitacoesPMsContex.tsx';
+import { SolicitacoesOPMPostosProvider } from './context/solicitacoesOPMPostosContext/SolicitacoesOPMPostosContext.tsx';
+import { SolicitacoesOPMPMsProvider } from './context/solicitacoesOPMPMsContext copy/SolicitacoesOPMPMsContext.tsx';
+import { theme } from './theme.tsx';
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
@@ -22,20 +27,28 @@ if ('serviceWorker' in navigator) {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ChakraProvider>
+    <ChakraProvider theme={theme}>
       <AuthProvider>
-        <TotalEfetivoOPMsProvider>
-          <MilitaresProvider>
-            <EventsProvider>
-              <PostosProvider>
-                <RequisitosProvider>
-                  <CSSReset />
-                  <App />
-                </RequisitosProvider>
-              </PostosProvider>
-            </EventsProvider>
-          </MilitaresProvider>
-        </TotalEfetivoOPMsProvider>
+        <SolicitacoesPostosProvider>
+          <SolicitacoesPMsProvider>
+            <SolicitacoesOPMPostosProvider>
+              <SolicitacoesOPMPMsProvider>
+                <TotalEfetivoOPMsProvider>
+                  <MilitaresProvider>
+                    <EventsProvider>
+                      <PostosProvider>
+                        <RequisitosProvider>
+                          <CSSReset />
+                          <App />
+                        </RequisitosProvider>
+                      </PostosProvider>
+                    </EventsProvider>
+                  </MilitaresProvider>
+                </TotalEfetivoOPMsProvider>
+              </SolicitacoesOPMPMsProvider>
+            </SolicitacoesOPMPostosProvider>
+          </SolicitacoesPMsProvider>
+        </SolicitacoesPostosProvider>
       </AuthProvider>
     </ChakraProvider>
   </React.StrictMode>,

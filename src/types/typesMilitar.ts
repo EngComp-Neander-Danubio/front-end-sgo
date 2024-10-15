@@ -53,6 +53,7 @@ export const columnsMapMilitar: {
 
 // Agora, defina a função para ordenar pela hierarquia de posto_grad
 export const handleSortByPostoGrad = (militares: any[], type?: string) => {
+
   // Defina a ordem hierárquica das graduações (do menor para o maior)
   const hierarchy = [
     'Cel PM',
@@ -196,7 +197,168 @@ export type OPMOption =
   | 'cpjm'
   | null;
 
-
+export const options = [
+  {
+    label:
+      '1º Sgt PM NEULIMAR DE ASSIS SILVA - Matrícula: 13583919 - Unidade: 2ª COMPANHIA DO 1ºBPRAIO ',
+    value: '13583919',
+  },
+  {
+    label:
+      '1º Ten PM WELTESON OLIVEIRA VIANA DA SILVA - Matrícula: 84395692 - Unidade: BATALHÃO DE POLÍCIA DO MEIO AMBIENTE ',
+    value: '84395692',
+  },
+  {
+    label:
+      'Sd PM ALISON FERREIRA OLIVEIRA - Matrícula: 30864387 - Unidade: 1ª COMPANHIA DO BPMA ',
+    value: '30864387',
+  },
+  {
+    label:
+      'Sd PM EXPEDITO MARTINS GOMES NETO - Matrícula: 30020561 - Unidade: 1ª COMPANHIA DO BPMA ',
+    value: '30020561',
+  },
+  {
+    label:
+      'Cb PM SAULO VIEIRA RIBEIRO - Matrícula: 30732715 - Unidade: 1ª COMPANHIA DO 1ºBPRAIO ',
+    value: '30732715',
+  },
+  {
+    label:
+      'Cb PM NILSON CASTRO DE SOUSA - Matrícula: 30652215 - Unidade: 1ª COMPANHIA DO 1ºBPRAIO ',
+    value: '30652215',
+  },
+  {
+    label:
+      'Sd PM IGOR LIMA TEIXEIRA - Matrícula: 30889347 - Unidade: 2ª COMPANHIA DO 1ºBPRAIO ',
+    value: '30889347',
+  },
+  {
+    label:
+      'Sd PM ELANNO LUIS FIRMINO LIMA - Matrícula: 3087529X - Unidade: 2ª COMPANHIA DO 1ºBPRAIO ',
+    value: '3087529X',
+  },
+  {
+    label:
+      'Sd PM LEONARDO SANTANA AMORIM - Matrícula: 30732111 - Unidade: 1ª COMPANHIA DO BPMA ',
+    value: '30732111',
+  },
+  {
+    label:
+      'Sd PM FRANCISCA CLERTIENY GOMES ROCHA CORDEIRO - Matrícula: 30020596 - Unidade: 1ª COMPANHIA DO BPMA ',
+    value: '30020596',
+  },
+  {
+    label:
+      'St PM FRANCISCO JOSE MELO VASCONCELOS - Matrícula: 11019110 - Unidade: 1ª COMPANHIA DO 1ºBPRAIO ',
+    value: '11019110',
+  },
+  {
+    label:
+      '1º Sgt PM VALDIZAR TEIXEIRA MATIAS JUNIOR - Matrícula: 30795016 - Unidade: 1ª COMPANHIA DO 1ºBPRAIO ',
+    value: '30795016',
+  },
+  {
+    label:
+      'St PM ANTONIO MARCOS PINHEIRO DE LIMA - Matrícula: 12575017 - Unidade: 2ª COMPANHIA DO 1ºBPRAIO ',
+    value: '12575017',
+  },
+  {
+    label:
+      '3º Sgt PM PAULO SERGIO DA SILVA BARBOSA - Matrícula: 30152719 - Unidade: 1ª COMPANHIA DO 1ºBPRAIO ',
+    value: '30152719',
+  },
+  {
+    label:
+      'Sd PM FELIPE MARTINS DA SILVEIRA - Matrícula: 30866606 - Unidade: 1ª COMPANHIA DO BPMA ',
+    value: '30866606',
+  },
+  {
+    label:
+      '1º Sgt PM NICOLAU RUSTINIS CARVALHO CORDEIRO - Matrícula: 13586217 - Unidade: 1ª COMPANHIA DO 1ºBPRAIO ',
+    value: '13586217',
+  },
+  {
+    label:
+      'Sd PM EDUARDO DAVID LOPES DE SOUSA - Matrícula: 30880188 - Unidade: 1ª COMPANHIA DO BPMA ',
+    value: '30880188',
+  },
+  {
+    label:
+      '3º Sgt PM JARDEL MOREIRA RODRIGUES - Matrícula: 30142519 - Unidade: 1º PELOTÃO DA 1ª COMPANHIA DO 1ºBPRAIO ',
+    value: '30142519',
+  },
+  {
+    label:
+      'St PM FRANCISCO ARILSON COELHO LOPES - Matrícula: 10984610 - Unidade: 1ª COMPANHIA DO BPMA ',
+    value: '10984610',
+  },
+  {
+    label:
+      'Sd PM THIAGO CORDEIRO LIMA LIBERATO - Matrícula: 30907329 - Unidade: 2ª COMPANHIA DO 1ºBPRAIO ',
+    value: '30907329',
+  },
+  {
+    label:
+      'Ten-Cel PM NAZARENO NUNES CORDEIRO FILHO - Matrícula: 11108814 - Unidade: BATALHÃO DE POLÍCIA DE TRÂNSITO URBANO E RODOVIÁRIO ESTADUAL - Função: Comandante de Trânsito',
+    value: '11108814',
+  },
+  {
+    label:
+      'Cb PM CHARLLES DOS SANTOS ESTEVAM - Matrícula: 58787817 - Unidade: 2ª COMPANHIA DO 1ºBPRAIO ',
+    value: '58787817',
+  },
+  {
+    label:
+      '1º Sgt PM JOSE RICARDO DE SOUSA DA SILVA - Matrícula: 13628513 - Unidade: 2ª COMPANHIA DO 1ºBPRAIO ',
+    value: '13628513',
+  },
+  {
+    label:
+      '3º Sgt PM FRANCISCO JACKSON BOTAO ARANHA - Matrícula: 30053818 - Unidade: BATALHÃO DE POLÍCIA DE TRÂNSITO URBANO E RODOVIÁRIO ESTADUAL ',
+    value: '30053818',
+  },
+  {
+    label:
+      '3º Sgt PM FRANCISCO GERLANO DOS REIS SILVA - Matrícula: 30440013 - Unidade: 1º PELOTÃO DA 1ª COMPANHIA DO 1ºBPRAIO ',
+    value: '30440013',
+  },
+  {
+    label:
+      'Cb PM DANIEL MAIA SOARES - Matrícula: 58818313 - Unidade: 2ª COMPANHIA DO 1ºBPRAIO ',
+    value: '58818313',
+  },
+  {
+    label:
+      'Cb PM ANGELO CALEB SOUZA ALVES - Matrícula: 30731018 - Unidade: 1ª COMPANHIA DO 1ºBPRAIO ',
+    value: '30731018',
+  },
+  {
+    label:
+      '3º Sgt PM SAULO ASSIS FERNANDES DE SOUZA - Matrícula: 30237811 - Unidade: 2ª COMPANHIA DO 1ºBPRAIO ',
+    value: '30237811',
+  },
+  {
+    label:
+      '3º Sgt PM JOELSON LEANDRO CHAGAS FERREIRA - Matrícula: 30189019 - Unidade: 1ª COMPANHIA DO 1ºBPRAIO ',
+    value: '30189019',
+  },
+  {
+    label:
+      '2º Sgt PM CLAUDIO FREITAS DA SILVA - Matrícula: 15139110 - Unidade: 2ª COMPANHIA DO 1ºBPRAIO ',
+    value: '15139110',
+  },
+  {
+    label:
+      'Cb PM GUTERREY OLIVEIRA DE ALMEIDA - Matrícula: 30536010 - Unidade: 2ª COMPANHIA DO 1ºBPRAIO ',
+    value: '30536010',
+  },
+  {
+    label:
+      '3º Sgt PM MARIA ALINE SALES CASTRO - Matrícula: 30218612 - Unidade: 1ª COMPANHIA DO BPMA ',
+    value: '30218612',
+  },
+];
 /* const transformedMiltitares = militaresRestantes.map(militar => {
   const transformedMilitar: {
     [key: string]: any;

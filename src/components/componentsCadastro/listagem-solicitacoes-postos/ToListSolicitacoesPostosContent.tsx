@@ -1,17 +1,26 @@
 import { TableSolicitacoes } from '../table-solicitacoes';
-import soli_data from '../../../assets/solitacoes_postos.json';
-import { useState } from 'react';
-import { useDisclosure } from '@chakra-ui/react';
-import { ModalFormAddPosto } from '../modal/ModalFormAddPosto';
-
+import { Flex, useDisclosure } from '@chakra-ui/react';
+import { Pagination } from '../pagination/Pagination';
+import { useSolicitacoesPostos } from '../../../context/solicitacoesPostosContext/useSolicitacoesPostos';
+// lista as solicitacoes da OPM no que se refere ao posto de serviço
 export const ToListSolicitacoesPostosContent = () => {
-  const [data, setData] = useState(soli_data);
+  const {
+    solicitacoesPostos,
+    totalData,
+    firstDataIndex,
+    lastDataIndex,
+    dataPerPage,
+    loadLessSolicitacoesPostos,
+    loadMoreSolicitacoesPostos,
+  } = useSolicitacoesPostos();
 
   // Defina as colunas desejadas e o mapeamento para as chaves dos eventos
   const columnsMap: { [key: string]: string } = {
+    Operação: 'operacao',
     Solicitação: 'solicitacao',
     'Prazo Final': 'prazo',
     'Quantidade de postos': 'qtd_postos',
+    OPM: 'OPM',
     Status: 'status',
   };
 
@@ -19,34 +28,41 @@ export const ToListSolicitacoesPostosContent = () => {
   const columns = Object.keys(columnsMap);
 
   // Transforme os registros dos eventos com as novas chaves
-  const transformedPostos = data.map(p => {
+  const transformedPostos = solicitacoesPostos.map(p => {
     const transformedPosto: { [key: string]: any } = {};
     Object.entries(columnsMap).forEach(([newKey, originalKey]) => {
       transformedPosto[newKey] = p[originalKey];
     });
     return transformedPosto;
   });
-  const {
+
+  /*  const {
     isOpen: isOpenFormAddPosto,
     onOpen: onOpenFormAddPosto,
     onClose: onCloseFormAddPosto,
-  } = useDisclosure();
+  } = useDisclosure(); */
   return (
     <>
-      <TableSolicitacoes
-        columns={columns} // Use as colunas personalizadas
-        registers={transformedPostos} // Use os registros transformados
-        currentPosition={0}
-        rowsPerLoad={0}
-        isActions={true}
-        label_tooltip={'Solicitação de Postos'}
-        openModalAdd={onOpenFormAddPosto}
-      />
-      <ModalFormAddPosto
-        isOpen={isOpenFormAddPosto}
-        onOpen={onOpenFormAddPosto}
-        onClose={onCloseFormAddPosto}
-      />
+      <Flex flexDirection={'column'} w={'100%'}>
+        {/* Tabela de solicitações de postos */}
+        <TableSolicitacoes
+          columns={columns} // Use as colunas personalizadas
+          registers={transformedPostos} // Use os registros transformados
+          isActions={true}
+          label_tooltip={'Solicitação de Postos'}
+          height={'60vh'}
+        />
+
+        {/* Componente de paginação */}
+        <Pagination
+          totalPages={totalData}
+          dataPerPage={dataPerPage}
+          firstDataIndex={firstDataIndex}
+          lastDataIndex={lastDataIndex}
+          loadLess={loadLessSolicitacoesPostos}
+          loadMore={loadMoreSolicitacoesPostos}
+        />
+      </Flex>
     </>
   );
 };

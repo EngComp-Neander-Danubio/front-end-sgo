@@ -1,18 +1,37 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useEvents } from '../../../context/eventContext/useEvents';
 import { TableFicha } from '../../componentesFicha/table';
 import { IconeEditar, IconeDeletar } from '../../ViewLogin';
 import { useNavigate } from 'react-router-dom';
 import { TableEvent } from '../table';
+import { TableSolicitacoes } from '../table-solicitacoes';
+import { Pagination } from '../pagination/Pagination';
+import { Flex } from '@chakra-ui/react';
+interface IToListEventsContent {
+  isOpen: boolean;
+  handleToggle: () => void;
+}
+export const ToListEventsContent: React.FC<IToListEventsContent> = ({
+  isOpen,
+}) => {
+  const {
+    loadEventsById,
+    deleteEvent,
+    events,
+    eventById,
+    loadLessEvents,
+    loadMoreEvents,
+    totalData,
+    firstDataIndex,
+    lastDataIndex,
+    dataPerPage,
+    updateEvent,
+  } = useEvents();
 
-export const ToListEventsContent = () => {
-  const { loadEventsById, deleteEvent, events, eventById } = useEvents();
-  const navigate = useNavigate();
-  //useEffect(() =>{loadEventsById()}, events)
   // Defina as colunas desejadas e o mapeamento para as chaves dos eventos
   const columnsMap: { [key: string]: string } = {
     Ord: 'id', // Exemplo: 'Ord' mapeia para 'id'
-    'Título do Evento': 'nomeOperacao',
+    'Título da Operação': 'nomeOperacao',
     'Data inicial': 'dataInicio',
     'Data final': 'dataFinal',
     Comandante: 'comandante',
@@ -31,13 +50,39 @@ export const ToListEventsContent = () => {
   });
 
   return (
-    <TableEvent
-      columns={columns} // Use as colunas personalizadas
-      registers={transformedEvents} // Use os registros transformados
-      currentPosition={0}
-      rowsPerLoad={0}
-      isActions={true}
-      label_tooltip={'Evento'}
-    />
+    <>
+      <Flex
+        //mt={2}
+        flexDirection={'column'}
+        w={'100%'}
+      >
+        <TableSolicitacoes
+          isActions
+          isOpen={true}
+          isView={true}
+          /* columns={[
+            'id',
+            'Título do Operação',
+            'Comandante',
+            'Data inicial',
+            'Data final',
+          ]} */
+          columns={columns}
+          registers={transformedEvents}
+          label_tooltip="Operação"
+          height={'32vh'}
+          handleDelete={() => deleteEvent} //handleDelete={deletePMByCGO}
+          handleUpdate={updateEvent}
+        />
+        <Pagination
+          totalPages={totalData}
+          dataPerPage={dataPerPage}
+          firstDataIndex={firstDataIndex}
+          lastDataIndex={lastDataIndex}
+          loadLess={loadLessEvents}
+          loadMore={loadMoreEvents}
+        />
+      </Flex>
+    </>
   );
 };

@@ -12,26 +12,32 @@ import { FormEfetivo } from '../formEfetivo/FormEfetivo';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { militarSchema } from '../../../types/yupMilitares/yupMilitares';
+import { Militar } from '../../../context/solicitacoesOPMPMsContext copy/SolicitacoesOPMPMsContext';
+import { FormEfetivoBySearch } from './FormEfetivoBySearch';
+import { useEffect } from 'react';
 interface IModal {
   isOpen: boolean;
   onClose: () => void;
   onOpen: () => void;
+  uploadPM: (data: Militar) => Promise<void>;
 }
-interface MilitarForm {
-  nome_completo: string;
-  opm: string;
-  matricula: string;
-  posto_grad: string;
-}
-export const ModalFormAddMilitar: React.FC<IModal> = ({ isOpen, onClose }) => {
-  const methodsInput = useForm<MilitarForm>({
+
+export const ModalFormAddMilitar: React.FC<IModal> = ({
+  uploadPM,
+  isOpen,
+  onClose,
+}) => {
+  const methodsInput = useForm<Militar>({
     resolver: yupResolver(militarSchema),
   });
   const { reset } = methodsInput;
-  const onSubmit = async (data: MilitarForm) => {
+  const onSubmit = async (data: Militar) => {
+    await uploadPM(data);
     console.log(data);
+    onClose();
     reset();
   };
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -43,12 +49,12 @@ export const ModalFormAddMilitar: React.FC<IModal> = ({ isOpen, onClose }) => {
               <ModalHeader>Adicionar Policial Militar</ModalHeader>
               <ModalCloseButton />
               <ModalBody>
-                <FormEfetivo />
+                <FormEfetivoBySearch />
               </ModalBody>
 
               <ModalFooter>
                 <Button
-                  colorScheme="yellow"
+                  colorScheme="red"
                   mr={3}
                   onClick={() => {
                     onClose();

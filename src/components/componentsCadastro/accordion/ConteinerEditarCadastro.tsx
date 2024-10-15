@@ -1,8 +1,9 @@
 import { Flex } from '@chakra-ui/react';
 import React from 'react';
 import { TitleCadastro } from '../tilteCadastro';
-import { FlexMenor } from '../flexMenor';
+
 import { AccordinEditarCadastro } from './AccordionEditarCadastro';
+import { BreadCrumb } from '../flexMenor/BreadCrumb';
 
 interface IFlexCadastrar {
   isOpen: boolean;
@@ -15,7 +16,7 @@ export const ConteinerEditarCadastro: React.FC<IFlexCadastrar> = ({
 }) => {
   return (
     <Flex h={'80vh'} flexDirection={'column'} gap={2}>
-      <FlexMenor />
+      <BreadCrumb />
       <Flex
         pl={2}
         pr={2}

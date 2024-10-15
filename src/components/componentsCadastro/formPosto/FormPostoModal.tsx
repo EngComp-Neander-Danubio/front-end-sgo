@@ -1,9 +1,7 @@
-import { Flex, Text, FormLabel, Input, FormControl, FlexProps } from '@chakra-ui/react';
+import { Flex, FormLabel, FormControl, FlexProps } from '@chakra-ui/react';
 import React from 'react';
-import { Controller, useForm, useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
-import { optionsModalidade } from '../../../types/typesModalidade';
-import { SelectPattern } from '../modal/SelectPattern';
 interface IForm {
   local: string;
   rua: string;
@@ -12,16 +10,17 @@ interface IForm {
   cidade: string;
   modalidade: string;
 }
-interface IModal extends FlexProps{}
-export const FormPostoModal: React.FC<IModal> = ({...props}) => {
+interface IModal extends FlexProps {}
+export const FormPostoModal: React.FC<IModal> = ({ ...props }) => {
   const {
     control,
     formState: { errors },
   } = useFormContext<IForm>();
   return (
     <FormControl
-    //border={'1px solid red'}
-     {...props}>
+      //border={'1px solid red'}
+      {...props}
+    >
       <Flex
         flexDirection={'column'}
         align={'center'}

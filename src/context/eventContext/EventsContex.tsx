@@ -31,6 +31,13 @@ export interface IContextEventsData {
   loadEventsById: (id: string) => Promise<void>;
   updateEvent: (data: Event, id: string) => Promise<void>;
   deleteEvent: (id: string) => Promise<void>;
+  loadMoreEvents: () => void;
+  loadLessEvents: () => void;
+  currentDataIndex: number;
+  dataPerPage: number;
+  lastDataIndex: number;
+  firstDataIndex: number;
+  totalData: number;
   //handleOnSubmitP: (e: React.FormEvent) => void;
 }
 
@@ -45,9 +52,49 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
   const [events, setEvents] = useState<Event[]>([]);
   const [eventById, setEventById] = useState<Event>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  //const [event, setPMs] = useState<Event[]>([]);
+  const [eventsDaPlanilha, setEventsDaPlanilha] = useState<Event[]>([]);
+  const [currentDataIndex, setCurrentDataIndex] = useState(0);
+  const [dataPerPage] = useState(8); // Defina o número de registros por página
+  const lastDataIndex = (currentDataIndex + 1) * dataPerPage;
+  const firstDataIndex = lastDataIndex - dataPerPage;
+  const totalData = events.length;
+  const currentData = events.slice(firstDataIndex, lastDataIndex);
+  const hasMore = lastDataIndex < events.length;
+
   useEffect(() => {
     loadEvents();
   }, []);
+
+  const loadMoreEvents = () => {
+    if (hasMore) {
+      setCurrentDataIndex(prevIndex => prevIndex + 1);
+    } else {
+      toast({
+        title: 'Fim dos dados',
+        description: 'Não há mais PPMM para carregar.',
+        status: 'info',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+    }
+  };
+
+  const loadLessEvents = () => {
+    if (firstDataIndex > 0) {
+      setCurrentDataIndex(prevIndex => prevIndex - 1);
+    } else {
+      toast({
+        title: 'Início dos dados',
+        description: 'Você está na primeira página.',
+        status: 'info',
+        duration: 3000,
+        isClosable: true,
+        position: 'top',
+      });
+    }
+  };
   const uploadEvent = useCallback(
     async (data: Event) => {
       setIsLoading(true);
@@ -87,16 +134,11 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       const response = await api.get<{ items: Event[] }>(
         `operacao/${parameters}`,
       );
-      setEvents((response.data as unknown) as Event[]);
-      /* toast({
-         title: 'Sucesso',
-         description: 'Eventos/Operações carregados com sucesso',
-         status: 'success',
-         position: 'top-right',
-         duration: 9000,
-         isClosable: true,
-       }); */
-      console.log('Dados carregados:', response.data);
+      //setEvents((response.data as unknown) as Event[]);
+      setEvents(prevArray => [
+        ...prevArray,
+        ...((response.data as unknown) as Event[]),
+      ]);
     } catch (error) {
       console.error('Falha ao carregar os eventos/operações:', error);
     } finally {
@@ -182,8 +224,15 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       updateEvent,
       deleteEvent,
       loadEventsById,
-      events,
+      loadLessEvents,
+      loadMoreEvents,
+      events: currentData,
       eventById,
+      totalData,
+      firstDataIndex,
+      lastDataIndex,
+      currentDataIndex,
+      dataPerPage,
     }),
     [
       uploadEvent,
@@ -191,8 +240,15 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       updateEvent,
       deleteEvent,
       loadEventsById,
+      loadLessEvents,
+      loadMoreEvents,
       events,
       eventById,
+      totalData,
+      firstDataIndex,
+      lastDataIndex,
+      currentDataIndex,
+      dataPerPage,
     ],
   );
 

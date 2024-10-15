@@ -98,7 +98,7 @@ export const ModalServices: React.FC<IModal> = ({ isOpen, onClose }) => {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="yellow" mr={3} onClick={onClose}>
+            <Button colorScheme="red" mr={3} onClick={onClose}>
               Fechar
             </Button>
           </ModalFooter>

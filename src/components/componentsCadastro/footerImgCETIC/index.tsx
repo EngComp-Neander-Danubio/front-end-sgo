@@ -28,7 +28,7 @@ export const FooterCetic: React.FC<IFooter> = ({ isOpen }) => {
         }}
         //boxSize={isOpen ? '0px' : '20px'}
         position="absolute"
-        bottom={1}
+        bottom={5}
         alignSelf="center"
         //border="1px solid red" // Para visualização, remova se não necessário
       />

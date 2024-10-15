@@ -81,11 +81,11 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
             <ModalContent
               w={'fit-content'}
               //h={'fit-content'}
-              h={'80vh'}
+              //h={'90vh'}
               maxW="80vw"
               minW="30vw"
-              maxH="80vh"
-              minH="40vh"
+              maxH="90vh"
+              minH="fit-content"
             >
               <ModalHeader>
                 <Center>Solicitação de Efetivo Policial</Center>
@@ -97,7 +97,7 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
                 </ModalBody>
                 <ModalFooter>
                   <Button
-                    colorScheme="yellow"
+                    colorScheme="red"
                     mr={3}
                     onClick={() => {
                       onClose();
@@ -109,7 +109,12 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
                   </Button>
                   <Button
                     variant="ghost"
-                    bgColor="#38A169"
+                    bgColor=" #38A169"
+                    _hover={{
+                      bgColor: 'green',
+                      cursor: 'pointer',
+                      transition: '.5s',
+                    }}
                     color="#fff"
                     type="submit"
                     //onClick={reset}

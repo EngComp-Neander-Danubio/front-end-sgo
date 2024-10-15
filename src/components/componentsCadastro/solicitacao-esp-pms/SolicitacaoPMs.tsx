@@ -1,26 +1,27 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React from 'react';
-import { FlexMenor } from '../flexMenor';
-import { SolicitacaoPMsContent } from './SolicitacaoPMsContent';
 
-interface IFlexCadastrar {
+import { SolicitacaoPMsContent } from './SolicitacaoPMsContent';
+import { BreadCrumb } from '../flexMenor/BreadCrumb';
+
+interface ISolicitacaoPMs {
   isOpen: boolean;
   handleToggle: () => void;
 }
-export const SolicitacaoPMs: React.FC<IFlexCadastrar> = ({
+export const SolicitacaoPMs: React.FC<ISolicitacaoPMs> = ({
   isOpen,
   handleToggle,
 }) => {
   return (
-    <Flex h={'98%'} flexDirection={'column'} gap={2}>
-      <FlexMenor />
+    <Flex h={'100%'} flexDirection={'column'} gap={2}>
+      <BreadCrumb />
       <Flex
         pl={2}
         pr={2}
         //border={'1px solid black'}
         borderRadius={'8px'}
         borderTopLeftRadius={0}
-        w={isOpen ? '87vw' : '94vw'}
+        w={isOpen ? '86vw' : '94vw'}
         transitionDuration="1.0s"
         h={'100%'}
         position="relative"
@@ -29,12 +30,17 @@ export const SolicitacaoPMs: React.FC<IFlexCadastrar> = ({
         bg={'white'}
         overflowY={'auto'}
       >
-        <Flex position="absolute" top={'32px'} ml={10} fontWeight={'700'}>
+        <Flex position="absolute" top={'32px'} ml={12} fontWeight={'700'}>
           <Text
             color={'rgba(0, 0, 0, 0.48)'}
             fontWeight={'700'}
             //fontSize={'1.2vw'}
-            fontSize={{ base: '25px', lg: '25px', md: '20px', sm: '20px' }}
+            fontSize={{
+              base: '25px',
+              lg: '20px',
+              md: '20px',
+              sm: '20px',
+            }}
             textDecoration={'underline'}
           >
             Solicitação de PMs n° XX
@@ -50,20 +56,6 @@ export const SolicitacaoPMs: React.FC<IFlexCadastrar> = ({
           gap={2}
           align={{ base: 'flex-start' }}
         >
-          {/* <Flex
-            borderBottom="1px solid rgba(0, 0, 0, 0.5)"
-            boxShadow="0px 4px 4px -2px rgba(0, 0, 0, 0.5)"
-            borderRadius={'8px'}
-            bg={'white'}
-            //m={4}
-            w={isOpen ? '86vw' : '93vw'} //don't change
-            transitionDuration="1.0s"
-            align={'center'}
-            justifyContent={'center'}
-          >
-
-
-          </Flex> */}
           <Flex p={8} w={isOpen ? '86vw' : '93vw'}>
             <SolicitacaoPMsContent
               isOpen={isOpen}

@@ -90,7 +90,7 @@ export const optionsOPMs: OptionType[] = [
   { label: 'Batalhão Especializado em Policiamento do Interior – BEPI', value: "bepi" },
   { label: 'Batalhão de Polícia de Choque – BPCHOQUE', value: "bpchoque" },
   { label: 'Comando de Prevenção e Apoio às Comunidades – COPAC', value: "copac" },
-  { label: 'Comando de Policiamento de Rondas de Ações Intensivas e Ostensivas – CPRAIO', value: "cpraio" },
+
   { label: '1º BPM (Russas)', value: "1bpm" },
   { label: '2º BPM (Juazeiro do Norte)', value: "2bpm" },
   { label: '3º BPM (Sobral)', value: "3bpm" },
@@ -224,12 +224,12 @@ export const optionsCPRAIO: OptionType[] = [
   { label: '5º BPRAIO - (5º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '5bpraio' },
 ];
 export const optionsEsp: OptionType[] = [
+  { label: 'CPRAIO - (Comando de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: 'cpraio' },
   { label: '1º BPRAIO - (1º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '1bpraio' },
   { label: '2º BPRAIO - (2º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '2bpraio' },
   { label: '3º BPRAIO - (3º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '3bpraio' },
   { label: '4º BPRAIO - (4º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '4bpraio' },
   { label: '5º BPRAIO - (5º Batalhão de Policiamento de Rondas e Ações Intensivas e Ostensivas)', value: '5bpraio' },
-  { label: 'Batalhão de Policiamento de Guarda Externa dos Presídios – BPGEP', value: 'bpgep' },
   { label: 'Comando de Policiamento de Choque – CPCHOQUE', value: 'cpchoque' },
   { label: 'Batalhão de Comando Tático Motorizado – COTAM', value: 'cotam' },
   { label: 'Batalhão de Operações Policiais Especiais – BOPE', value: 'bope' },

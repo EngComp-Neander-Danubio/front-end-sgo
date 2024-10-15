@@ -14,7 +14,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { militarSchema } from '../../../types/yupMilitares/yupMilitares';
-import { useMilitares } from '../../../context/militares/useMilitares';
+import { useMilitares } from '../../../context/militaresContext/useMilitares';
 interface IModal {
   isOpen: boolean;
   onClose: () => void;
@@ -27,7 +27,10 @@ export interface IForm {
   matricula: string;
   posto_grad: string;
 }
-export const ModalFormEditarMilitar: React.FC<IModal> = ({ isOpen, onClose }) => {
+export const ModalFormEditarMilitar: React.FC<IModal> = ({
+  isOpen,
+  onClose,
+}) => {
   const methodsInput = useForm<IForm>({
     resolver: yupResolver(militarSchema),
   });

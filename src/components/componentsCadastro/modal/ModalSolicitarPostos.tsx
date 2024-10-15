@@ -14,7 +14,6 @@ import React, { useState } from 'react';
 import { OPMs, optionsOPMs } from '../../../types/typesOPM';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Militares_service } from '../../../context/requisitosContext/RequisitosContext';
 import { FormSolicitacaoPostos } from './FormSolicitacaoPostos';
 import { solicitacaoPostosSchema } from '../../../types/yupSolicitacaoPostos/yupSolicitacaoPostos';
 import api from '../../../services/api';
@@ -70,20 +69,21 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
         title: 'Solicitações de Postos.',
         description: 'Solicitação Salva.',
         status: 'success',
-        duration: 5000,
+        duration: 3000,
         isClosable: true,
         position: 'top-right',
       });
     } catch (err) {
       toast({
         title: 'Erro',
-        description: 'Falha ao atualizar a solicitação',
+        description: 'Falha ao criar solicitação',
         status: 'error',
         position: 'top-right',
-        duration: 9000,
+        duration: 3000,
         isClosable: true,
       });
     }
+    onClose();
   };
 
   return (
@@ -98,7 +98,7 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
               w={'fit-content'}
               //h={'90vh'}
               maxH="100vh"
-              minH="85vh"
+              minH="65vh"
             >
               <ModalHeader>
                 <Center>Solicitação de Postos</Center>
@@ -109,7 +109,7 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
               </ModalBody>
               <ModalFooter>
                 <Button
-                  colorScheme="yellow"
+                  colorScheme="red"
                   mr={3}
                   onClick={() => {
                     onClose();
@@ -121,7 +121,12 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
                 </Button>
                 <Button
                   variant="ghost"
-                  bgColor="#38A169"
+                  bgColor=" #38A169"
+                  _hover={{
+                    bgColor: 'green',
+                    cursor: 'pointer',
+                    transition: '.5s',
+                  }}
                   color="#fff"
                   type="submit"
                   //onClick={() => reset()}

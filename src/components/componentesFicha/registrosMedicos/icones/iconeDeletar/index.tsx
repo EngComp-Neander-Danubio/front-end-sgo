@@ -16,7 +16,12 @@ export const IconeDeletar: React.FC<IIcone> = ({
         aria-label="A tooltip"
         placement="top"
       >
-        <span>
+        <span
+          style={{
+            cursor: 'pointer',
+            transition: '.5s',
+          }}
+        >
           <BiTrash color="#A0AEC0" size={'20px'} onClick={handleDelete} />
         </span>
       </Tooltip>

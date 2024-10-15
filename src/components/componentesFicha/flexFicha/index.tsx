@@ -1,16 +1,14 @@
-import { Flex, Box, VStack } from '@chakra-ui/react';
 import React from 'react';
-import { FlexMenor } from '../../componentsCadastro/flexMenor';
+import { Flex, Box, VStack } from '@chakra-ui/react';
 import { ImgFicha } from '../dadosDaFicha/imgServidor';
 import { TitlePerfil } from '../dadosDaFicha/titlePerfil';
 import {} from '../registrosMedicos/title';
 import { BotaoNovoRegistro } from '../botaoNovoRegistro';
-import { InputBuscaFicha } from '../registrosMedicos/inputs/inputBusca';
-import { ButtonExportar } from '../registrosMedicos/buttons/butttonExportar';
 import {} from '../registrosMedicos/header';
 import { TableFicha } from '../table';
 import { TabFicha } from '../tabFicha';
 import { DadosFicha } from '../dadosDaFicha/dados';
+import { BreadCrumb } from '../../componentsCadastro/flexMenor/BreadCrumb';
 
 interface IFlexFicha {
   isOpen: boolean;
@@ -19,7 +17,7 @@ interface IFlexFicha {
 export const FlexFicha: React.FC<IFlexFicha> = props => {
   return (
     <>
-      <FlexMenor />
+      <BreadCrumb />
       <Flex
         pl={2}
         pr={2}

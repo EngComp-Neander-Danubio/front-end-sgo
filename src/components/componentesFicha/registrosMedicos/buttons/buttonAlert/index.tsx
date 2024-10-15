@@ -1,4 +1,4 @@
-import { Button } from '@chakra-ui/react';
+import { Box, Button, Flex, Icon } from '@chakra-ui/react';
 import React from 'react';
 import { GoDotFill } from 'react-icons/go';
 
@@ -26,20 +26,24 @@ export const BotaoAlert: React.FC<IBotaoAlert> = props => {
   }
 
   return (
-    <Button
-      fontWeight={500}
-      bg={colorOne}
-      leftIcon={<GoDotFill size={'8px'} />}
-      variant="outline"
-      borderRadius={'16px'}
-      w={'83px'}
-      h={'22px'}
-      fontSize={'12px'}
-      color={colorTwo}
-      alignContent={'center'}
-      justifyContent={'center'}
-    >
-      {props.text}
-    </Button>
+    <Flex>
+      <Box
+        fontWeight={500}
+        bg={colorOne}
+        //leftIcon={<GoDotFill size={'8px'} />}
+        //variant="outline"
+        //as={GoDotFill}
+        borderRadius={'16px'}
+        w={'83px'}
+        h={'22px'}
+        fontSize={'12px'}
+        color={colorTwo}
+        alignContent={'center'}
+        justifyContent={'center'}
+        _hover={{ cursor: 'pointer' }}
+      >
+        {props.text}
+      </Box>
+    </Flex>
   );
 };

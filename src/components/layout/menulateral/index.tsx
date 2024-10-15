@@ -1,31 +1,14 @@
-import {
-  Center,
-  Flex,
-  Grid,
-  GridItem,
-  Icon,
-  Image,
-  Text,
-} from '@chakra-ui/react';
+import { Flex, Icon, Image, Text } from '@chakra-ui/react';
 import Brasao from '../../../assets/img/BRASAOPMCEbranco2.png';
-import Relogio from '../../componentesGerais/relogio';
-import { IconeMinhaArea } from '../../componentesGerais/iconesMenuLateral/iconeMinhaArea';
-import { AccordionMenuLateral } from '../../componentesGerais/accordionMenuLateral';
-import { IconeSistema } from '../../componentesGerais/iconesMenuLateral/iconeSistema';
 import { IconeCadastro } from '../../componentesGerais/iconesMenuLateral/iconeMenulateralCadastro';
 import '../../border.modules.css';
 import React from 'react';
 import { IconeBusca } from '../../componentesGerais/iconesMenuLateral/iconeMenulateralBusca';
 import { Link, useNavigate } from 'react-router-dom';
-import { IconePostos } from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralPostos';
-import {
-  IconeLogout,
-  IconeRelatorio,
-} from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralRelatorios';
-import { IconeOPMs } from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralOPMs';
+import { IconeRelatorio } from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralRelatorios';
 import { IconeSolicitacoes } from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralSolicitacoes';
 import { FooterCetic } from '../../componentsCadastro/footerImgCETIC';
-import { IconeLogOut } from '../../componentesGerais/iconesMenuLateral/iconeMenulateralLogout';
+import { AccordionMenuLateral } from '../../componentesGerais/accordionMenuLateral/AccordionMenuLateral';
 
 interface IMenuLateral {
   isOpen: boolean;
@@ -72,7 +55,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
               pt={4}
               //w={'8vw'}
               w={'164px'}
-              display={{ base: 'none', lg: 'flex', md: 'flex', sm: 'block' }}
+              display={{ base: 'none', lg: 'flex', md: 'flex', sm: 'flex' }}
             />
           </Link>
         </Flex>
@@ -87,11 +70,8 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
           >
             <Text
               color={'white'}
-              //width={'60vw'}
-              //height={"8vh"}
               width={'224px'}
               height={'88px'}
-              //fontSize={'0.9vw'}
               mb={10}
               fontSize={'20px'}
               textAlign={'center'}
@@ -107,17 +87,22 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
               DE OPERAÇÕES
             </Text>
             {/* <Link to="/"></Link> */}
-
+            {/* <Flex
+              display={
+                !props.isOpen
+                  ? { base: 'block', lg: 'none', md: 'none', sm: 'block' }
+                  : 'none'
+              }
+              className="gradient-border"
+            ></Flex> */}
             <Text
               color={'white'}
-              /* width={'60vw'}
-                                height={"8vh"} */
               width={'224px'}
               height={'88px'}
-              //fontSize={'0.9vw'}
               fontSize={'20px'}
               fontWeight={800}
-              display={!props.isOpen ? 'visibility' : 'none'}
+              mb={2.5}
+              display={!props.isOpen ? 'block' : 'none'}
               textAlign={'center'}
             >
               SGO
@@ -128,7 +113,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
             color={'white'}
             gap="8px"
             //className="gradient-border"
-            display={'-ms-inline-flexbox'}
+            display={!props.isOpen ? 'block' : 'none'}
           >
             {/* <Flex
               p={6}
@@ -189,14 +174,19 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
           </Flex>
         </Flex>
 
-        <Flex
-          p={8}
+        {/* <Flex
+          pt={1}
           color="white"
           textAlign={'center'}
           align={'center'} // Adicionado para centralizar verticalmente
           justify={'center'} // Adicionado para centralizar horizontalmente
           //className="gradient-border"
-        ></Flex>
+          display={
+            !props.isOpen
+              ? { base: 'none', lg: 'block', md: 'none', sm: 'none' }
+              : 'none'
+          }
+        ></Flex> */}
         <Flex
           color={'white'}
           //border={"1px solid yellow"}
@@ -204,6 +194,8 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
           //width={"25vh"}
           //height={'168px'}
           align="center"
+          mt={!props.isOpen ? 4 : 0}
+          pt={4}
         >
           <AccordionMenuLateral
             customIcons={[
@@ -214,11 +206,11 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
             ]}
             nameLabels={['Cadastro', 'Consulta', 'Solicitacões', 'Escalas']}
             handleClick={[
-              () => navigate('/servico'),
-              () => navigate('/lista-de-eventos'),
+              () => navigate('/criar-operacao'),
+              () => navigate('/listar-operacoes'),
               [
-                () => navigate('/solicitacoes-postos'),
-                () => navigate('/solicitacoes-pms'),
+                () => navigate('/listar-solicitacoes-postos'),
+                () => navigate('/listar-solicitacoes-pms'),
               ],
               () => navigate('/escalas'),
             ]}

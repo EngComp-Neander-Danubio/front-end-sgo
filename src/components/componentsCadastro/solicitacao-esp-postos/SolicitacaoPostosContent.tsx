@@ -1,25 +1,20 @@
-import soli_data from '../../../assets/solitacoes_postos.json';
-import { useState } from 'react';
 import { Button, Flex, useDisclosure, VStack } from '@chakra-ui/react';
 import { DashButtons } from '../../componentesFicha/registrosMedicos/header';
 import { TitlePerfil } from '../../componentesFicha/dadosDaFicha/titlePerfil';
 import { TitleSolicitacoes } from '../../componentesFicha/registrosMedicos/title';
-import { TableFicha } from '../../componentesFicha/table';
 import { DadosFicha } from '../../ViewLogin';
-import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
-import { ModalAlertSolicitacaoPMs } from '../modal/ModalAlertSolicitacaoPMs';
+import { FiSave } from 'react-icons/fi';
 import { ModalFormAddPosto } from '../modal/ModalFormAddPosto';
 import { TableSolicitacoes } from '../table-solicitacoes';
-import { IoIosSend } from 'react-icons/io';
-import { usePostos } from '../../../context/postosContext/usePostos';
 import { columnsMapPostos } from '../../../types/yupPostos/yupPostos';
-interface IFlexCadastrar {
+import { Pagination } from '../pagination/Pagination';
+import { useSolicitacoesOPMPostos } from '../../../context/solicitacoesOPMPostosContext/useSolicitacoesOPMPostos';
+import { IoIosSend } from 'react-icons/io';
+interface ISolicitacaoPostosContent {
   isOpen: boolean;
   handleToggle: () => void;
 }
-export const SolicitacaoPostosContent: React.FC<IFlexCadastrar> = props => {
-  const { postos, handleClick, handleOnChange, handleOnSubmitP } = usePostos();
-
+export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = props => {
   const {
     isOpen: isOpenAlertSolicitacao,
     onOpen: onOpenAlertSolicitacao,
@@ -31,7 +26,23 @@ export const SolicitacaoPostosContent: React.FC<IFlexCadastrar> = props => {
     onClose: onCloseFormAddPosto,
   } = useDisclosure();
 
-  const transformedPostos = postos.map(posto => {
+  const {
+    postos,
+    dataPerPage,
+    postosLocal,
+    firstDataIndex,
+    handleClick,
+    handleOnChange,
+    handleOnSubmit,
+    lastDataIndex,
+    loadLessSolicitacoesOPMPostos,
+    loadMoreSolicitacoesOPMPostos,
+    loadPostoByOPM,
+    deletePostoByOPM,
+    totalData,
+  } = useSolicitacoesOPMPostos();
+  const totalPages = totalData;
+  const transformedPostos = postosLocal.map(posto => {
     const transformedPosto: {
       [key: string]: any;
     } = {};
@@ -40,10 +51,11 @@ export const SolicitacaoPostosContent: React.FC<IFlexCadastrar> = props => {
     });
     return transformedPosto;
   });
+  console.log(transformedPostos);
   return (
     <>
       <Flex h={'100%'} flexDirection={'column'}>
-        <VStack spacing={6} mt={4} p={4} alignItems="flex-start">
+        <VStack spacing={2} p={4} alignItems="flex-start">
           <TitlePerfil />
         </VStack>
 
@@ -53,7 +65,7 @@ export const SolicitacaoPostosContent: React.FC<IFlexCadastrar> = props => {
           borderRadius={'8px'}
           bg={'white'}
           p={4}
-          mt={4}
+          mt={2}
           w={props.isOpen ? '83vw' : '91vw'}
           transitionDuration="1.0s"
           minH={'120px'}
@@ -63,7 +75,6 @@ export const SolicitacaoPostosContent: React.FC<IFlexCadastrar> = props => {
           gap={{ lg: 2, md: 2, sm: 4 }}
         >
           <DadosFicha
-            ml={{ lg: '', md: '', sm: '2' }}
             marginLeft={{ lg: 6, md: 6, sm: 0 }}
             align={{ lg: 'center', md: 'center', sm: 'left' }}
           />
@@ -75,7 +86,7 @@ export const SolicitacaoPostosContent: React.FC<IFlexCadastrar> = props => {
                     borderRadius={'8px'} */
           bg={'white'}
           p={4}
-          mt={4}
+          mt={2}
           width="100%"
         >
           <TitleSolicitacoes label="Relação de Postos de Serviço" />
@@ -89,7 +100,6 @@ export const SolicitacaoPostosContent: React.FC<IFlexCadastrar> = props => {
           borderRadius={'8px'}
           bg={'white'}
           p={4}
-          mt={4}
           w={props.isOpen ? '83vw' : '91vw'}
           transitionDuration="1.0s"
           flexDirection={'column'}
@@ -100,43 +110,60 @@ export const SolicitacaoPostosContent: React.FC<IFlexCadastrar> = props => {
             openModalSend={onOpenAlertSolicitacao}
             handleClick={handleClick}
             handleOnChange={handleOnChange}
-            handleOnSubmit={handleOnSubmitP}
+            handleOnSubmit={handleOnSubmit}
           />
-          <TableSolicitacoes
-            isOpen={props.isOpen}
-            isActions
-            isView={true}
-            columns={[
-              'Local',
-              'Rua',
-              'Número',
-              'Bairro',
-              'Cidade',
-              'Modalidade',
-            ]}
-            registers={transformedPostos}
-            currentPosition={0}
-            rowsPerLoad={0}
-            label_tooltip="Posto"
-          />
+          <Flex mt={2} flexDirection={'column'} w={'100%'}>
+            <TableSolicitacoes
+              isOpen={props.isOpen}
+              isActions
+              isView={true}
+              columns={[
+                'Local',
+                'Rua',
+                'Número',
+                'Bairro',
+                'Cidade',
+                'Modalidade',
+                'Qtd Militares',
+              ]}
+              registers={transformedPostos}
+              label_tooltip="Posto"
+              height={'32vh'}
+              handleDelete={deletePostoByOPM}
+            />
+            {/* Componente de paginação */}
+            <Pagination
+              totalPages={totalPages}
+              dataPerPage={dataPerPage}
+              firstDataIndex={firstDataIndex}
+              lastDataIndex={lastDataIndex}
+              loadLess={loadLessSolicitacoesOPMPostos}
+              loadMore={loadMoreSolicitacoesOPMPostos}
+            />
+          </Flex>
         </Flex>
         <Flex
           p={4}
-          mt={4}
+          //mt={1}
           flexDirection={'column'}
           align={'center'}
           justify={'center'}
         >
           <Button
             variant="ghost"
-            bgColor="#38A169"
+            bgColor=" #38A169"
+            _hover={{
+              bgColor: 'green',
+              cursor: 'pointer',
+              transition: '.5s',
+            }}
             color="#fff"
             type="submit"
             //onClick={reset}
             rightIcon={<IoIosSend color="#fff" size="20px" />}
             w={200}
           >
-            Salvar
+            Enviar
           </Button>
         </Flex>
       </Flex>
@@ -145,6 +172,7 @@ export const SolicitacaoPostosContent: React.FC<IFlexCadastrar> = props => {
         isOpen={isOpenFormAddPosto}
         onOpen={onOpenFormAddPosto}
         onClose={onCloseFormAddPosto}
+        uploadPosto={loadPostoByOPM}
       />
     </>
   );

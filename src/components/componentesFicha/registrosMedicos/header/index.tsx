@@ -4,12 +4,13 @@ import { InputBuscaFicha } from '../inputs/inputBusca';
 import { InputCSVpapparse } from '../../../componentsCadastro/inputCSVpapaparse/InputCSVpapaparse';
 import { BiPencil } from 'react-icons/bi';
 import { HiPencil } from 'react-icons/hi';
+import { FiSave } from 'react-icons/fi';
 interface IFunction {
   openModalAdd?: () => void;
   openModalSend?: () => void;
-  handleClick?: () => void;
-  handleOnChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleOnSubmit?: (e: React.FormEvent) => void;
+  handleClick: () => void;
+  handleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleOnSubmit: (e: React.FormEvent) => void;
 }
 export const DashButtons: React.FC<IFunction> = ({
   openModalAdd,
@@ -31,15 +32,6 @@ export const DashButtons: React.FC<IFunction> = ({
         <InputBuscaFicha />
         <Flex gap={2} align={'center'} justify={'center'}>
           {/* <IconeCadastrarSol onOpen={openModalAdd} /> */}
-          <Button
-            color={'white'}
-            rightIcon={<HiPencil size={'16px'} />}
-            bgColor=" #38A169"
-            variant="ghost"
-            onClick={openModalAdd}
-          >
-            Adicionar Individual
-          </Button>
           <Flex flexDirection={'column'}>
             <Tooltip
               //label={`Campos essencias: Local, Rua, Número, Bairro, Cidade, Modalidade`}
@@ -57,6 +49,37 @@ export const DashButtons: React.FC<IFunction> = ({
               </span>
             </Tooltip>
           </Flex>
+          <Button
+            color={'white'}
+            rightIcon={<HiPencil size={'16px'} />}
+            bgColor="#50a1f8"
+            //bgColor="#3182CE"
+            _hover={{
+              bgColor: '#1071cc',
+              cursor: 'pointer',
+              transition: '.5s',
+            }}
+            variant="ghost"
+            onClick={openModalAdd}
+          >
+            Adicionar Individual
+          </Button>
+          <Button
+            variant="ghost"
+            bgColor=" #38A169"
+            _hover={{
+              bgColor: 'green',
+              cursor: 'pointer',
+              transition: '.5s',
+            }}
+            color="#fff"
+            type="submit"
+            //onClick={reset}
+            rightIcon={<FiSave color="#fff" size="20px" />}
+            w={200}
+          >
+            Salvar
+          </Button>
         </Flex>
       </Flex>
     </>

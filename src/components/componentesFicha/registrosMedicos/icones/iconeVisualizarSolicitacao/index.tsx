@@ -18,7 +18,12 @@ export const IconeVisualizar: React.FC<IIcone> = ({
         aria-label="A tooltip"
         placement="top"
       >
-        <span>
+        <span
+          style={{
+            cursor: 'pointer',
+            transition: '.5s',
+          }}
+        >
           <HiOutlineSearch color="#A0AEC0" size="20px" onClick={onOpen} />
         </span>
       </Tooltip>

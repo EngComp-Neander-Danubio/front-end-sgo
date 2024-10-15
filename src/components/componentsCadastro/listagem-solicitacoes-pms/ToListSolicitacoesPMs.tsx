@@ -1,9 +1,8 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React from 'react';
-import { TitleCadastro } from '../tilteCadastro';
-import { FlexMenor } from '../flexMenor';
-import { useForm } from 'react-hook-form';
+
 import { ToListSolicitacoesPMsContent } from './ToListSolicitacoesPMsContent';
+import { BreadCrumb } from '../flexMenor/BreadCrumb';
 
 interface IFlexCadastrar {
   isOpen: boolean;
@@ -14,15 +13,15 @@ export const ToListSolicitacoesPMs: React.FC<IFlexCadastrar> = ({
   handleToggle,
 }) => {
   return (
-    <Flex h={'98%'} flexDirection={'column'} gap={2}>
-      <FlexMenor />
+    <Flex h={'100%'} flexDirection={'column'} gap={2}>
+      <BreadCrumb />
       <Flex
         pl={2}
         pr={2}
         //border={'1px solid black'}
         borderRadius={'8px'}
         borderTopLeftRadius={0}
-        w={isOpen ? '87vw' : '94vw'}
+        w={isOpen ? '86vw' : '94vw'}
         transitionDuration="1.0s"
         h={'100%'}
         position="relative"
@@ -36,7 +35,7 @@ export const ToListSolicitacoesPMs: React.FC<IFlexCadastrar> = ({
             color={'rgba(0, 0, 0, 0.48)'}
             fontWeight={'700'}
             //fontSize={'1.2vw'}
-            fontSize={{ base: '25px', lg: '25px', md: '20px', sm: '20px' }}
+            fontSize={{ base: '1.2rem', lg: '1.3rem', md: '1rem', sm: '1rem' }}
             textDecoration={'underline'}
           >
             Solicitações de PMs
@@ -52,20 +51,6 @@ export const ToListSolicitacoesPMs: React.FC<IFlexCadastrar> = ({
           gap={2}
           align={{ base: 'flex-start' }}
         >
-          {/* <Flex
-            borderBottom="1px solid rgba(0, 0, 0, 0.5)"
-            boxShadow="0px 4px 4px -2px rgba(0, 0, 0, 0.5)"
-            borderRadius={'8px'}
-            bg={'white'}
-            //m={4}
-            w={isOpen ? '86vw' : '93vw'} //don't change
-            transitionDuration="1.0s"
-            align={'center'}
-            justifyContent={'center'}
-          >
-
-
-          </Flex> */}
           <Flex p={8} w={isOpen ? '86vw' : '93vw'}>
             <ToListSolicitacoesPMsContent />
           </Flex>

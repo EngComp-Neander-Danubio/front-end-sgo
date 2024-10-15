@@ -62,12 +62,17 @@ export const ModalFormAddEvent: React.FC<IModal> = ({ isOpen, onClose }) => {
               <FormGrandeEvento flexDirection="column" widthSelect="18vw" />
             </ModalBody>
             <ModalFooter>
-              <Button colorScheme="yellow" mr={3} onClick={onClose}>
+              <Button colorScheme="red" mr={3} onClick={onClose}>
                 Cancelar
               </Button>
               <Button
                 variant="ghost"
-                bgColor="green.500"
+                bgColor=" #38A169"
+                _hover={{
+                  bgColor: 'green',
+                  cursor: 'pointer',
+                  transition: '.5s',
+                }}
                 color="white"
                 type="submit"
               >

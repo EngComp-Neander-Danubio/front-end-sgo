@@ -58,8 +58,6 @@ export const TableFicha: React.FC<ITable> = ({
     onOpen: onOpenFormEditarEvent,
     onClose: onCloseFormEditarEvent,
   } = useDisclosure();
-  const { loadEventsById, deleteEvent } = useEvents();
-  const navigate = useNavigate();
 
   return (
     <>

@@ -1,15 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Ficha } from '../pages/views/ficha';
 import { Login } from '../pages/views/login/Login';
-import { HomePrincipal } from '../pages/views/home';
-import { PostoServico } from '../pages/views/cadastrarPostoDeServico/PostoServico';
-import { PageAddGrandeEvento } from '../pages/views/pageAddGrandeEvento/PageAddGrandeEvento';
-import { ListEvent } from '../pages/views/listar-eventos/ListEvent';
-import { EditarPostoServico } from '../pages/views/editarPostoDeServico/EditarPostoServico';
-import { SolicitacaoPostos } from '../pages/views/solicitacoes-postos';
-import { SolicitacaoPMs } from '../pages/views/solicitacoes-pms';
-import { ViewSolicitacaoPostos } from '../pages/views/viewSolicitacaoPostos';
-import { ViewSolicitacaoPMs } from '../pages/views/viewSolicitacaoPMs';
+import { PageAddGrandeEvento } from '../pages/views/page-Add-Grande-Evento/PageAddGrandeEvento';
+import { PostoServico } from '../pages/views/page-cadastrar-posto-de-servico/PostoServico';
+import { EditarPostoServico } from '../pages/views/page-editar-posto-de-Servico/EditarPostoServico';
+import { HomePrincipal } from '../pages/views/page-home';
+import { ListEvent } from '../pages/views/page-listar-eventos/ListEvent';
+import { LoginSGO } from '../pages/views/page-login-sgo/LoginSGO';
+import { SolicitacaoPMs } from '../pages/views/page-solicitacoes-pms';
+import { SolicitacaoPostos } from '../pages/views/page-solicitacoes-postos';
+import { ViewSolicitacaoPMs } from '../pages/views/page-viewSolicitacao-pms';
+import { ViewSolicitacaoPostos } from '../pages/views/page-viewSolicitacao-postos';
 
 export const Rotas = () => {
   // const { onOpen, onClose } = useDisclosure();
@@ -18,19 +19,26 @@ export const Rotas = () => {
       <Routes>
         <Route path="/" element={<HomePrincipal />} />
         <Route
-          path="/viewSolicitacaoPostos"
+          path="/listar-solicitacao-posto"
           element={<ViewSolicitacaoPostos />}
         />
-        <Route path="/viewSolicitacaoPMs" element={<ViewSolicitacaoPMs />} />
+        <Route
+          path="/listar-solicitacao-pms"
+          element={<ViewSolicitacaoPMs />}
+        />
         <Route path="/login" element={<Login />} />
+        <Route path="/login-sgo" element={<LoginSGO />} />
         <Route path="/ficha" element={<Ficha />} />
-        <Route path="/servico" element={<PostoServico />} />
-        <Route path={`/servico/*`} element={<EditarPostoServico />} />
-        <Route path="/lista-de-eventos" element={<ListEvent />} />
-        <Route path="/addEvento" element={<PageAddGrandeEvento />} />
+        <Route path="/criar-operacao" element={<PostoServico />} />
+        <Route path={`/criar-operacao/*`} element={<EditarPostoServico />} />
+        <Route path="/listar-operacoes" element={<ListEvent />} />
+        <Route path="/adicionar-operacao" element={<PageAddGrandeEvento />} />
         <Route path="/novoRegistro" element={<Ficha />} />
-        <Route path="/solicitacoes-postos" element={<SolicitacaoPostos />} />
-        <Route path="/solicitacoes-pms" element={<SolicitacaoPMs />} />
+        <Route
+          path="/listar-solicitacoes-postos"
+          element={<SolicitacaoPostos />}
+        />
+        <Route path="/listar-solicitacoes-pms" element={<SolicitacaoPMs />} />
       </Routes>
     </Router>
   );

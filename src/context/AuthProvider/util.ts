@@ -1,4 +1,3 @@
-
 import axios from 'axios'
 import { IUser } from './types'
 
@@ -21,7 +20,7 @@ export async function LoginRequest(matricula: string, senha: string) {
     const request = await axios.post((process.env.VITE_APP_URL_API_SEG || '').concat('login'),
       {
         matricula: matricula,
-        password: senha,
+        senha: senha,
         sis_sigla: 'sies',
       },)
     console.log('LoginRequest', request.data)

@@ -20,16 +20,21 @@ interface IModal {
   isOpen: boolean;
   onClose: () => void;
   onOpen: () => void;
+  uploadPosto: (data: PostoForm) => Promise<void>;
 }
 
-export const ModalFormAddPosto: React.FC<IModal> = ({ isOpen, onClose }) => {
+export const ModalFormAddPosto: React.FC<IModal> = ({
+  isOpen,
+  onClose,
+  uploadPosto,
+}) => {
   const methodsInput = useForm<PostoForm>({
     resolver: yupResolver(postosSchema),
   });
   const { reset } = methodsInput;
-  const { uploadPosto } = usePostos();
   const onSubmit = async (data: PostoForm) => {
     await uploadPosto(data);
+    onClose();
     reset();
   };
   return (
@@ -47,7 +52,7 @@ export const ModalFormAddPosto: React.FC<IModal> = ({ isOpen, onClose }) => {
 
               <ModalFooter>
                 <Button
-                  colorScheme="yellow"
+                  colorScheme="red"
                   mr={3}
                   onClick={() => {
                     onClose();
@@ -58,9 +63,14 @@ export const ModalFormAddPosto: React.FC<IModal> = ({ isOpen, onClose }) => {
                 </Button>
                 <Button
                   variant="ghost"
-                  bgColor={' #38A169'}
+                  bgColor=" #38A169"
+                  _hover={{
+                    bgColor: 'green',
+                    cursor: 'pointer',
+                    transition: '.5s',
+                  }}
                   color={'#fff'}
-                  //onClick={onClose}
+                  onClick={() => reset}
                   type="submit"
                 >
                   Adicionar

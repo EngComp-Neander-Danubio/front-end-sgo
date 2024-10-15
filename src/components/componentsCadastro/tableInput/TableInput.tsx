@@ -161,6 +161,7 @@ export const TableInput: React.FC<ITable> = ({
                   <Checkbox
                     isChecked={isAllChecked}
                     onChange={handleCheckAll}
+                    colorScheme={'green'}
                   />
                   <ThTable title="Total Efetivo" customIcon={undefined} />
                 </Flex>
@@ -185,6 +186,7 @@ export const TableInput: React.FC<ITable> = ({
                               field.onChange(e.target.checked);
                               handleCheck(index)(e);
                             }}
+                            colorScheme={'green'}
                           />
                         )}
                       />
@@ -195,6 +197,7 @@ export const TableInput: React.FC<ITable> = ({
                         render={({ field }) => (
                           <Input
                             w="5.5vw"
+                            //w={'fit-content'}
                             h="30px"
                             isDisabled={
                               watch(`checkbox.${index}`) || isAllChecked
@@ -210,7 +213,13 @@ export const TableInput: React.FC<ITable> = ({
                   </Td>
 
                   <Td>
-                    <Flex align="center" justify="center" gap={2}>
+                    <Flex
+                      //w={'fit-content'}
+                      //border={'1px solid red'}
+                      align="center"
+                      justify="center"
+                      gap={2}
+                    >
                       {optionsOPMs
                         .filter(op => opmDatas[index] === op.value)
                         .map(filteredOption => (

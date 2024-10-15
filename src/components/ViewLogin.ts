@@ -1,14 +1,14 @@
 //export * from '../components/botoesMenuLateral';
 export * from '../components/componentesGerais/iconesMenuLateral/iconeMinhaArea';
 export * from '../components/componentesGerais/iconesMenuLateral/iconeSistema';
-export * from './componentesGerais/accordionMenuLateral';
+
 export * from './layout/menulateral';
 export * from './layout/dashHeader';
 export * from '../components/componentesGerais/iconeDashHeader/iconeEnginner';
 export * from '../components/componentesGerais/iconeDashHeader/iconeLogin';
 export * from '../components/componentesGerais/iconeDashHeader/iconeSino';
 export * from '../components/componentesGerais/inputDashHeader';
-export * from '../components/componentesGerais/listDashHeader';
+
 export * from './componentesGerais/relogio';
 //export * from '../components/componentsConteudo/botaoCadastrar';
 export * from '../components/componentsCadastro/flexCadastrar';

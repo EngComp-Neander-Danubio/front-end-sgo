@@ -46,7 +46,7 @@ export const ModalAlertSolicitacaoPMs: React.FC<IModal> = ({
 
               <ModalFooter>
                 <Button
-                  colorScheme="yellow"
+                  colorScheme="red"
                   mr={3}
                   onClick={() => {
                     onClose();

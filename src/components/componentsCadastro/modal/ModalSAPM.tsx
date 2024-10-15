@@ -20,7 +20,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { OptionType, SelectPattern } from './SelectPattern';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   OPMs,
   options1CRPM,
@@ -34,21 +34,16 @@ import {
   optionsEsp,
   optionsOPMs,
 } from '../../../types/typesOPM';
-import { Controller, FieldError, useForm } from 'react-hook-form';
-import { ModalFormAddMilitar } from './ModalFormAddMilitar';
-import { FormEfetivo } from '../formEfetivo/FormEfetivo';
-import { printValue } from 'yup';
+import { Controller, useForm } from 'react-hook-form';
 import { FormEditarEfetivo } from '../formEfetivo/FormEditarEfetivo';
 import {
   columnsMapMilitar,
   handleSortByPostoGrad,
   OPMOption,
 } from '../../../types/typesMilitar';
-import { sapmSchema } from '../../../types/yupSAPM/yupSAPM';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { TableFicha } from '../../componentesFicha/table';
 import { Militares_service } from '../../../context/requisitosContext/RequisitosContext';
-import { useMilitares } from '../../../context/militares/useMilitares';
+import { useMilitares } from '../../../context/militaresContext/useMilitares';
 
 interface IModal {
   isOpen: boolean;
@@ -215,10 +210,12 @@ export const ModalSAPM: React.FC<IModal> = ({
         <ModalOverlay />
         <ModalContent
           w={'fit-content'}
+          //h={'fit-content'}
+          //h={'90vh'}
           maxW="80vw"
           minW="30vw"
-          maxH="80vh"
-          minH="40vh"
+          maxH="90vh"
+          minH="fit-content"
         >
           <ModalHeader>
             <Center>Adicionar OPM</Center>
@@ -250,6 +247,7 @@ export const ModalSAPM: React.FC<IModal> = ({
                           }}
                           onBlur={onBlur}
                           value={value}
+                          colorScheme={'green'}
                         >
                           Todos
                         </Checkbox>
@@ -270,6 +268,7 @@ export const ModalSAPM: React.FC<IModal> = ({
                           }}
                           onBlur={onBlur}
                           value={value}
+                          colorScheme={'green'}
                         >
                           Especializadas
                         </Checkbox>
@@ -301,6 +300,7 @@ export const ModalSAPM: React.FC<IModal> = ({
                           }}
                           onBlur={onBlur}
                           value={value}
+                          colorScheme={'green'}
                         >
                           Setores Administrativos
                         </Checkbox>
@@ -327,6 +327,7 @@ export const ModalSAPM: React.FC<IModal> = ({
                           }}
                           onBlur={onBlur}
                           value={value}
+                          colorScheme={'green'}
                         >
                           1° CRPM
                         </Checkbox>
@@ -348,6 +349,7 @@ export const ModalSAPM: React.FC<IModal> = ({
                           }}
                           onBlur={onBlur}
                           value={value}
+                          colorScheme={'green'}
                         >
                           2° CRPM
                         </Checkbox>
@@ -369,6 +371,7 @@ export const ModalSAPM: React.FC<IModal> = ({
                           }}
                           onBlur={onBlur}
                           value={value}
+                          colorScheme={'green'}
                         >
                           3° CRPM
                         </Checkbox>
@@ -390,6 +393,7 @@ export const ModalSAPM: React.FC<IModal> = ({
                           }}
                           onBlur={onBlur}
                           value={value}
+                          colorScheme={'green'}
                         >
                           4° CRPM
                         </Checkbox>
@@ -410,6 +414,7 @@ export const ModalSAPM: React.FC<IModal> = ({
                           }}
                           onBlur={onBlur}
                           value={value}
+                          colorScheme={'green'}
                         >
                           CPCHOQUE
                         </Checkbox>
@@ -430,6 +435,7 @@ export const ModalSAPM: React.FC<IModal> = ({
                           }}
                           onBlur={onBlur}
                           value={value}
+                          colorScheme={'green'}
                         >
                           CPRAIO
                         </Checkbox>
@@ -447,6 +453,7 @@ export const ModalSAPM: React.FC<IModal> = ({
                           }}
                           onBlur={onBlur}
                           value={value}
+                          colorScheme={'green'}
                         >
                           CPE
                         </Checkbox>
@@ -582,6 +589,7 @@ export const ModalSAPM: React.FC<IModal> = ({
                                     isChecked
                                     onBlur={onBlur}
                                     onChange={() => handleDeleteOpm(item)}
+                                    colorScheme={'green'}
                                   >
                                     {option?.label || 'Item não encontrado'}
                                   </Checkbox>
@@ -638,7 +646,7 @@ export const ModalSAPM: React.FC<IModal> = ({
 
           <ModalFooter>
             <Button
-              colorScheme="yellow"
+              colorScheme="red"
               mr={3}
               onClick={() => {
                 onClose();
@@ -650,7 +658,12 @@ export const ModalSAPM: React.FC<IModal> = ({
             </Button>
             <Button
               variant="ghost"
-              bgColor="#38A169"
+              bgColor=" #38A169"
+              _hover={{
+                bgColor: 'green',
+                cursor: 'pointer',
+                transition: '.5s',
+              }}
               color="#fff"
               type="submit"
               onClick={reset}

@@ -1,8 +1,8 @@
-import { createContext, useEffect, useState } from "react";
-import { IAuthProvider, IContext, IDecodedToken, IUser } from "./types";
-import { LoginRequest, getUserLocalStorage, setUserLocalStorage } from "./util";
-import { jwtDecode } from "jwt-decode";
-import api from "../../services/api";
+import { createContext, useEffect, useState } from 'react';
+import { IAuthProvider, IContext, IDecodedToken, IUser } from './types';
+import { LoginRequest, getUserLocalStorage, setUserLocalStorage } from './util';
+import { jwtDecode } from 'jwt-decode';
+import api from '../../services/api';
 
 export const AuthContext = createContext<IContext>({} as IContext);
 
@@ -20,9 +20,9 @@ export const AuthProvider = ({ children }: IAuthProvider) => {
     const response = await LoginRequest(matricula, senha);
 
     const payload = {
-      userId: response.user.id_usuario,
+      //userId: response.user.id_usuario,
       matricula: response.user.matricula,
-      nome: response.user.nome,
+      senha: response.user.senha,
       token: response.token,
     };
     setUser(payload);
@@ -30,26 +30,26 @@ export const AuthProvider = ({ children }: IAuthProvider) => {
   }
 
   api.interceptors.response.use(
-    (response) => {
+    response => {
       return response;
     },
-    async (error) => {
+    async error => {
       console.trace(error);
       if (
         error.response &&
         error.response.status === 401 &&
-        error.response.data.message !== "Assinatura incorreta"
+        error.response.data.message !== 'Assinatura incorreta'
       ) {
         logout();
       }
       return Promise.reject(error);
-    }
+    },
   );
 
   function logout() {
     setUser(null);
     setUserLocalStorage(null);
-    localStorage.removeItem("userSession");
+    localStorage.removeItem('userSession');
   }
 
   function isTokenValid() {
@@ -83,5 +83,3 @@ export const AuthProvider = ({ children }: IAuthProvider) => {
     </AuthContext.Provider>
   );
 };
-
-

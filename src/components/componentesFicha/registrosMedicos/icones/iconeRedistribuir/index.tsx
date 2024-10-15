@@ -18,7 +18,12 @@ export const IconeRedistribuir: React.FC<IIcone> = ({
         aria-label="A tooltip"
         placement="top"
       >
-        <span>
+        <span
+          style={{
+            cursor: 'pointer',
+            transition: '.5s',
+          }}
+        >
           <RiShareCircleLine color="#A0AEC0" size="20px" onClick={onOpen} />
         </span>
       </Tooltip>

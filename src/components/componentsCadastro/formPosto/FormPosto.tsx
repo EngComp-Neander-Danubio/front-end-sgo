@@ -6,11 +6,12 @@ import {
   FormControl,
   FlexProps,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm, useFormContext } from 'react-hook-form';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
 import { optionsModalidade } from '../../../types/typesModalidade';
 import { SelectPattern } from '../modal/SelectPattern';
+import { FaMinusCircle, FaPlusCircle } from 'react-icons/fa';
 interface IForm {
   local: string;
   rua: string;
@@ -18,13 +19,26 @@ interface IForm {
   bairro: string;
   cidade: string;
   modalidade: string;
+  quantity_militars?: number | string;
 }
 interface IModal extends FlexProps {}
 export const FormPosto: React.FC<IModal> = () => {
   const {
     control,
     formState: { errors },
+    setValue,
   } = useFormContext<IForm>();
+  const [quantity, setQuantity] = useState(2);
+  setValue('quantity_militars', quantity);
+  const handleQuantityPlus = async () => {
+    setQuantity(q => q + 1);
+  };
+
+  const handleQuantityMinus = () => {
+    if (quantity > 2) {
+      setQuantity(q => q - 1);
+    }
+  };
   return (
     <FormControl>
       <Flex
@@ -34,6 +48,43 @@ export const FormPosto: React.FC<IModal> = () => {
         justifyContent={'space-between'}
         gap={4}
       >
+        <Flex flexDirection={'column'} gap={1} w={'full'}>
+          <FormLabel fontWeight={'bold'}>Militares por posto</FormLabel>
+          <Controller
+            name="quantity_militars"
+            control={control}
+            render={({ field }) => (
+              <Flex
+                flexDirection={'row'}
+                align={'center'}
+                //justify={'center'}
+                gap={2}
+              >
+                <FaMinusCircle
+                  onClick={() => {
+                    handleQuantityMinus();
+                  }}
+                />
+                <Input
+                  w={'60px'}
+                  h={'30px'}
+                  type="text"
+                  value={`${quantity}`} // Use o valor do campo controlado
+                  onChange={e => {
+                    const newValue = Number(e.target.value);
+                    setQuantity(newValue);
+                    field.onChange(newValue);
+                  }}
+                />
+                <FaPlusCircle
+                  onClick={() => {
+                    handleQuantityPlus();
+                  }}
+                />
+              </Flex>
+            )}
+          />
+        </Flex>
         <Flex flexDirection={'column'} gap={1} w={'full'}>
           <FormLabel>Local</FormLabel>
           <Controller

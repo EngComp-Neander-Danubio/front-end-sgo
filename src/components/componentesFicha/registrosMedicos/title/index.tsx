@@ -10,7 +10,7 @@ export const TitleSolicitacoes: React.FC<ITitle> = ({ label }) => {
         color={'rgba(0, 0, 0, 0.48)'}
         fontWeight={'700'}
         //fontSize={'1.2vw'}
-        fontSize={{ base: '25px', lg: '25px', md: '20px', sm: '20px' }}
+        fontSize={{ base: '1rem', lg: '1.2rem', md: '1rem', sm: '1rem' }}
         textDecoration={'underline'}
       >
         {label}

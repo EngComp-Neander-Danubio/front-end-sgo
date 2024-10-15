@@ -1,15 +1,12 @@
-import {
-  Flex,
-  FlexboxProps,
-  FormControl,
-  FormControlProps,
-  FormLabel,
-} from '@chakra-ui/react';
+import { Flex, FlexboxProps, FormControl, FormLabel } from '@chakra-ui/react';
 import { Controller, useFormContext } from 'react-hook-form';
 import 'react-datepicker/dist/react-datepicker.css';
 import { DatePickerEvent } from './DatePickerEvent';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
 import { useState } from 'react';
+import AsyncSelectComponent from '../formEfetivo/AsyncSelectComponent';
+import { OptionsOrGroups, GroupBase } from 'react-select';
+import { options } from '../../../types/typesMilitar';
 
 interface IFormProps extends FlexboxProps {
   widthSelect?: string;
@@ -24,7 +21,23 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
   const { control } = useFormContext();
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
+  const loadOptions = async (
+    inputValue: string,
+  ): Promise<OptionsOrGroups<
+    { label: string; value: string },
+    GroupBase<{ label: string; value: string }>
+  >> => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        const filteredOptions = options.filter(option =>
+          option.label.toLowerCase().includes(inputValue.toLowerCase()),
+        );
 
+        resolve(filteredOptions);
+        //setDataValue(filteredOptions);
+      }, 1000);
+    });
+  };
   return (
     <FormControl
       //border={'1px solid green'}
@@ -53,18 +66,19 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
               )}
             />
           </Flex>
-          <Flex flexDirection="column" gap={1} w={widthSelect || '500px'}>
+          <Flex flexDirection="column" gap={0} w={widthSelect || '700px'}>
             <FormLabel fontWeight="bold">Comandante</FormLabel>
             <Controller
               name="comandante"
               control={control}
               render={({ field, fieldState: { error } }) => (
-                <InputPatternController
-                  type="text"
-                  w={widthSelect || '500px'}
+                <AsyncSelectComponent
                   placeholder="Informe o Comandante"
-                  {...field}
+                  nameLabel=""
+                  onChange={field.onChange}
                   error={error}
+                  isOverwriting
+                  loadOptions={loadOptions}
                 />
               )}
             />

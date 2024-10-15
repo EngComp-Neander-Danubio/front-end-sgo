@@ -16,7 +16,7 @@ import {
   optionsMilitares,
 } from '../../types/typesMilitar';
 import { useRequisitos } from './useRequesitos';
-import { useMilitares } from '../militares/useMilitares';
+import { useMilitares } from '../militaresContext/useMilitares';
 import { usePostos } from '../postosContext/usePostos';
 import { object } from 'prop-types';
 
@@ -451,9 +451,6 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
 
     generateServices();
   };
-
-
-
 
   const searchServicesById = useCallback(
     async (param?: string) => {

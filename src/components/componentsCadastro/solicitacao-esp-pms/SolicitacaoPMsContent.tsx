@@ -1,17 +1,19 @@
 import React from 'react';
 import { Button, Flex, useDisclosure, VStack } from '@chakra-ui/react';
-import { IoIosSend } from 'react-icons/io';
 import { TitlePerfil } from '../../componentesFicha/dadosDaFicha/titlePerfil';
 import { DashButtons } from '../../componentesFicha/registrosMedicos/header';
 import { TitleSolicitacoes } from '../../componentesFicha/registrosMedicos/title';
 import { DadosFicha } from '../../ViewLogin';
 import { TableSolicitacoes } from '../table-solicitacoes';
-import { useMilitares } from '../../../context/militares/useMilitares';
 import {
   columnsMapMilitar,
   handleSortByPostoGrad,
 } from '../../../types/typesMilitar';
 import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
+import { FiSave } from 'react-icons/fi';
+import { Pagination } from '../pagination/Pagination';
+import { useSolicitacoesOPMPMs } from '../../../context/solicitacoesOPMPMsContext copy/useSolicitacoesOPMPMs';
+import { IoIosSend } from 'react-icons/io';
 interface IFlexCadastrar {
   isOpen: boolean;
   handleToggle: () => void;
@@ -21,15 +23,20 @@ export const SolicitacaoPMsContent: React.FC<IFlexCadastrar> = ({
   handleToggle,
 }) => {
   const {
-    militares,
-    militaresByAPI,
-    currentPositionMilitar,
-    loadLessMilitar,
-    loadMoreMilitar,
-    handleClickMilitar,
-    handleOnChangeMilitar,
-    handleOnSubmitMilitar,
-  } = useMilitares();
+    pms,
+    handleClick,
+    handleOnChange,
+    handleOnSubmit,
+    firstDataIndex,
+    lastDataIndex,
+    loadLessSolicitacoesOPMPMs,
+    loadMoreSolicitacoesOPMPMs,
+    loadPMByOPM,
+    totalData,
+    dataPerPage,
+    deletePMByOPM,
+  } = useSolicitacoesOPMPMs();
+
   const {
     isOpen: isOpenAlertSolicitacao,
     onOpen: onOpenAlertSolicitacao,
@@ -41,7 +48,7 @@ export const SolicitacaoPMsContent: React.FC<IFlexCadastrar> = ({
     onClose: onCloseFormAddMilitar,
   } = useDisclosure();
 
-  const transformedMiltitares = militares.map(militar => {
+  const transformedMiltitares = pms.map(militar => {
     const transformedMilitar: {
       [key: string]: any;
     } = {};
@@ -53,7 +60,7 @@ export const SolicitacaoPMsContent: React.FC<IFlexCadastrar> = ({
   return (
     <>
       <Flex h={'100%'} flexDirection={'column'}>
-        <VStack spacing={6} mt={4} p={4} alignItems="flex-start">
+        <VStack spacing={2} p={4} alignItems="flex-start">
           <TitlePerfil />
         </VStack>
 
@@ -63,7 +70,7 @@ export const SolicitacaoPMsContent: React.FC<IFlexCadastrar> = ({
           borderRadius={'8px'}
           bg={'white'}
           p={4}
-          mt={4}
+          mt={2}
           w={isOpen ? '83vw' : '91vw'}
           transitionDuration="1.0s"
           minH={'120px'}
@@ -73,7 +80,6 @@ export const SolicitacaoPMsContent: React.FC<IFlexCadastrar> = ({
           gap={{ lg: 2, md: 2, sm: 4 }}
         >
           <DadosFicha
-            ml={{ lg: '', md: '', sm: '2' }}
             marginLeft={{ lg: 6, md: 6, sm: 0 }}
             align={{ lg: 'center', md: 'center', sm: 'left' }}
           />
@@ -85,13 +91,11 @@ export const SolicitacaoPMsContent: React.FC<IFlexCadastrar> = ({
                     borderRadius={'8px'} */
           bg={'white'}
           p={4}
-          mt={4}
+          mt={2}
           width="100%"
         >
           <TitleSolicitacoes label="Relação de Militares" />
         </Flex>
-
-        {/* <TabFicha /> */}
 
         <Flex
           borderBottom="1px solid rgba(0, 0, 0, 0.5)"
@@ -99,7 +103,7 @@ export const SolicitacaoPMsContent: React.FC<IFlexCadastrar> = ({
           borderRadius={'8px'}
           bg={'white'}
           p={4}
-          mt={4}
+          //mt={4}
           //mb={4}
           w={isOpen ? '83vw' : '91vw'}
           transitionDuration="1.0s"
@@ -110,25 +114,36 @@ export const SolicitacaoPMsContent: React.FC<IFlexCadastrar> = ({
           <DashButtons
             openModalAdd={onOpenFormAddMilitar}
             openModalSend={onOpenAlertSolicitacao}
-            handleClick={handleClickMilitar}
-            handleOnChange={handleOnChangeMilitar}
-            handleOnSubmit={handleOnSubmitMilitar}
+            handleClick={handleClick}
+            handleOnChange={handleOnChange}
+            handleOnSubmit={handleOnSubmit}
           />
-          <TableSolicitacoes
-            isActions
-            isOpen={isOpen}
-            isView={true}
-            columns={[
-              'Matrícula',
-              'Posto/Graduação',
-              'Nome Completo',
-              'Unidade',
-            ]}
-            registers={handleSortByPostoGrad(transformedMiltitares, '1')}
-            currentPosition={0}
-            rowsPerLoad={0}
-            label_tooltip="Militar"
-          />
+          <Flex mt={2} flexDirection={'column'} w={'100%'}>
+            <TableSolicitacoes
+              isActions
+              isOpen={isOpen}
+              isView={true}
+              columns={[
+                'Matrícula',
+                'Posto/Graduação',
+                'Nome Completo',
+                'Unidade',
+              ]}
+              registers={transformedMiltitares}
+              //registers={handleSortByPostoGrad(transformedMiltitares, '1')}
+              label_tooltip="Militar"
+              height={'32vh'}
+              handleDelete={deletePMByOPM}
+            />
+            <Pagination
+              totalPages={totalData}
+              dataPerPage={dataPerPage}
+              firstDataIndex={firstDataIndex}
+              lastDataIndex={lastDataIndex}
+              loadLess={loadLessSolicitacoesOPMPMs}
+              loadMore={loadMoreSolicitacoesOPMPMs}
+            />
+          </Flex>
         </Flex>
         <Flex
           p={4}
@@ -139,14 +154,19 @@ export const SolicitacaoPMsContent: React.FC<IFlexCadastrar> = ({
         >
           <Button
             variant="ghost"
-            bgColor="#38A169"
+            bgColor=" #38A169"
+            _hover={{
+              bgColor: 'green',
+              cursor: 'pointer',
+              transition: '.5s',
+            }}
             color="#fff"
             type="submit"
             //onClick={reset}
             rightIcon={<IoIosSend color="#fff" size="20px" />}
             w={200}
           >
-            Salvar
+            Enviar
           </Button>
         </Flex>
       </Flex>
@@ -155,6 +175,7 @@ export const SolicitacaoPMsContent: React.FC<IFlexCadastrar> = ({
         isOpen={isOpenFormAddMilitar}
         onOpen={onOpenFormAddMilitar}
         onClose={onCloseFormAddMilitar}
+        uploadPM={loadPMByOPM}
       />
     </>
   );

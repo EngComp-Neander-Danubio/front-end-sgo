@@ -35,7 +35,12 @@ export const ModalRelatorio: React.FC<IModal> = ({ isOpen, onClose }) => {
             </Button>
             <Button
               variant="ghost"
-              bgColor="#38A169"
+              bgColor=" #38A169"
+              _hover={{
+                bgColor: 'green',
+                cursor: 'pointer',
+                transition: '.5s',
+              }}
               color="#fff"
               type="submit"
               onClick={isOpen ? onClose : undefined}
