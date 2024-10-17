@@ -79,12 +79,38 @@ export const SolicitacoesOPMPostosProvider: React.FC<{
         }
 
         const parsedArray = result.data as PostoForm[];
+        const newPostos = parsedArray.filter(
+          a =>
+            !postosLocal.some(
+              m =>
+                a.local === m.local &&
+                a.bairro === m.bairro &&
+                a.numero === m.numero &&
+                a.cidade === m.cidade,
+            ),
+        );
 
-        // Atualize o estado com os novos dados sem concatenar
-        setPostosDaPlanilha(prevArray => [...prevArray, ...parsedArray]);
-        setPostosLocal(prevArray => [...prevArray, ...postosDaPlanilha]);
-
-        console.log('planilha', parsedArray);
+        if (newPostos.length > 0) {
+          setPostosDaPlanilha(prevArray => [...prevArray, ...newPostos]);
+          setPostosLocal(prevArray => [...prevArray, ...postosDaPlanilha]);
+          toast({
+            title: 'Sucesso',
+            description: 'Posto(s) adicionado(s) com sucesso',
+            status: 'success',
+            position: 'top-right',
+            duration: 5000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: 'Erro',
+            description: 'Todos os Postos já existem, não serão adicionados:',
+            status: 'warning',
+            position: 'top-right',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       },
     });
   };
@@ -95,7 +121,7 @@ export const SolicitacoesOPMPostosProvider: React.FC<{
   }, [postosDaPlanilha]);
 
   const loadMoreSolicitacoesOPMPostos = () => {
-    if (lastDataIndex < postosLocal.length) {
+    if (hasMore) {
       setCurrentDataIndex(prevIndex => prevIndex + 1);
     } else {
       toast({
@@ -109,9 +135,47 @@ export const SolicitacoesOPMPostosProvider: React.FC<{
     }
   };
   const loadPostoByOPM = (data: PostoForm) => {
-    console.log(data);
-    setPostosLocal(prevArray => [...prevArray, data]);
-    console.log('postos de serviço do perfil de OPM', postosLocal);
+    try {
+      const postoExists = postosLocal.some(
+        m =>
+          data.local === m.local &&
+          data.bairro === m.bairro &&
+          data.numero === m.numero &&
+          data.cidade === m.cidade,
+      );
+
+      if (!postoExists) {
+        setPostosLocal(prevArray => [...prevArray, data]);
+        toast({
+          title: 'Sucesso',
+          description: 'Posto adicionado com sucesso',
+          status: 'success',
+          position: 'top-right',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'Atenção',
+          description: 'Posto já foi adicionado',
+          status: 'warning',
+          position: 'top-right',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (err) {
+      toast({
+        title: 'Erro',
+        description: 'Falha ao inserir Posto',
+        status: 'error',
+        position: 'top-right',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+
+    //console.log('postos de serviço do perfil de OPM', postosLocal);
   };
 
   const loadLessSolicitacoesOPMPostos = () => {

@@ -20,7 +20,8 @@ export const ToListSolicitacoesPMsContent = () => {
   const columnsMap: { [key: string]: string } = {
     Operação: 'operacao',
     Solicitação: 'solicitacao',
-    Prazo: 'prazo',
+    'Prazo Final': 'prazoFinal',
+    //'Prazo Inicial': 'prazoInicial',
     'Quantidade Total Efetivo': 'qtd_efetivo',
     'Quantidade Parcial Efetivo': 'qtd_parcial_efetivo',
     OPM: 'OPM',
@@ -59,6 +60,9 @@ export const ToListSolicitacoesPMsContent = () => {
           openModalAdd={onOpenFormAddMilitar}
           openModalSend={onOpenAlertSolicitacao}
           height={''}
+          handleDelete={function(id?: string, index?: string): {} {
+            throw new Error('Function not implemented.');
+          }}
         />
         {/* Componente de paginação */}
         <Pagination

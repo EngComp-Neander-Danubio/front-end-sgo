@@ -26,6 +26,7 @@ export type Requisito = {
 };
 
 export type Militares_service = {
+  id?: string;
   nome_completo: string;
   opm: string;
   matricula: string;
@@ -109,14 +110,9 @@ export const RequisitosContext = createContext<
 export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  // Supondo que `useMilitares` retorna o tipo correto
   const { militares } = useMilitares();
   const { postos } = usePostos();
-  // Inicializa o estado com `militares` se ele for do tipo correto
   const [militars, setMilitares] = useState<Militares_service[]>(militares);
-  //console.log('militars', militars);
-  //console.log('postos', postos);
-
   const [militaresRestantes, setMilitaresRestantes] = useState<
     Militares_service[]
   >([]);

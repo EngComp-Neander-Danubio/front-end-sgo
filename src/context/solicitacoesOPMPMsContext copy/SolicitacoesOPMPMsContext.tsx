@@ -26,7 +26,7 @@ export interface Militar {
   [key: string]: any;
 }
 
-export interface SolicitacoesOPMPMData {
+/* export interface SolicitacoesOPMPMData {
   operacao: string;
   solicitacao: string;
   dataFinal: Date;
@@ -34,7 +34,7 @@ export interface SolicitacoesOPMPMData {
   bairro: string;
   qtd_postos: string | number;
   [key: string]: any;
-}
+} */
 
 export interface IContextSolicitacoesOPMPMData {
   pms: Militar[];
@@ -66,7 +66,7 @@ export const SolicitacoesOPMPMsProvider: React.FC<{
 
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
   const [dataPerPage] = useState(5); // Defina o número de registros por página
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [, setIsLoading] = useState<boolean>(false);
   const lastDataIndex = (currentDataIndex + 1) * dataPerPage;
   const firstDataIndex = lastDataIndex - dataPerPage;
   const totalData = pms.length;
@@ -74,9 +74,40 @@ export const SolicitacoesOPMPMsProvider: React.FC<{
   const hasMore = lastDataIndex < pms.length;
 
   const loadPMByOPM = (data: Militar) => {
-    //console.log(data);
-    setPMs(prevArray => [...prevArray, data]);
-    //console.log('postos de serviço do perfil de OPM', pms);
+    try {
+      const pmExists = pms.some(m => m.matricula === data.matricula);
+
+      if (!pmExists) {
+        // Adiciona o novo PM ao array de pms
+        setPMs(prevArray => [...prevArray, data]);
+        toast({
+          title: 'Sucesso',
+          description: 'PM adicionado com sucesso',
+          status: 'success',
+          position: 'top-right',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'Atenção',
+          description: 'PM já foi adicionado',
+          status: 'warning',
+          position: 'top-right',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (err) {
+      toast({
+        title: 'Erro',
+        description: 'Falha ao inserir PM',
+        status: 'error',
+        position: 'top-right',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
   };
 
   // Função para carregar o CSV completo
@@ -90,10 +121,34 @@ export const SolicitacoesOPMPMsProvider: React.FC<{
           console.error('Erro ao processar CSV:', result.errors);
           return;
         }
+
         const parsedArray = result.data as Militar[];
-        // Atualize o estado com os novos dados sem concatenar
-        setPMsDaPlanilha(prevArray => [...prevArray, ...parsedArray]);
-        setPMs(prevArray => [...prevArray, ...pmsDaPlanilha]);
+
+        // Verifica quais PMs são novos e não estão em pms
+        const newPMs = parsedArray.filter(
+          a => !pms.some(m => a.matricula === m.matricula),
+        );
+
+        if (newPMs.length > 0) {
+          setPMs(prevArray => [...prevArray, ...newPMs]);
+          toast({
+            title: 'Sucesso',
+            description: 'PM(s) adicionado(s) com sucesso',
+            status: 'success',
+            position: 'top-right',
+            duration: 5000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: 'Erro',
+            description: 'Todos os PMs já existem, não serão adicionados:',
+            status: 'warning',
+            position: 'top-right',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       },
     });
   };

@@ -12,7 +12,7 @@ export interface SolicitacoesPMData {
   operacao: string;
   solicitacao: string;
   prazoFinal: Date;
-  prazoInicio: Date;
+  prazoInicial: Date;
   qtd_efetivo: string | number;
   qtd_parcial_efetivo: string | number;
   status: string;
@@ -38,19 +38,13 @@ export const SolicitacoesPMsProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const toast = useToast();
-
-  // Estado para armazenar os dados paginados de solicitações
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
-  const [dataPerPage] = useState(15); // Defina o número de registros por página
-
-  // Calcule os índices de início e fim da paginação
+  const [dataPerPage] = useState(15);
   const lastDataIndex = (currentDataIndex + 1) * dataPerPage;
   const firstDataIndex = lastDataIndex - dataPerPage;
   const totalData = soli_data.length;
-  // Dados paginados baseados no índice atual
   const currentData = soli_data.slice(firstDataIndex, lastDataIndex);
 
-  // Função para carregar mais dados (avanço de página)
   const loadMoreSolicitacoesPMs = () => {
     if (lastDataIndex < soli_data.length) {
       setCurrentDataIndex(prevIndex => prevIndex + 1);
@@ -66,7 +60,6 @@ export const SolicitacoesPMsProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // Função para carregar menos dados (voltar página)
   const loadLessSolicitacoesPMs = () => {
     if (firstDataIndex > 0) {
       setCurrentDataIndex(prevIndex => prevIndex - 1);

@@ -82,7 +82,7 @@ export const TableSolicitacoes: React.FC<ITable> = ({
             </Thead>
             <Tbody>
               {registers?.map((register, index) => (
-                <Tr key={index} zIndex={1}>
+                <Tr key={index}>
                   {columns?.map(column => (
                     <TdTable
                       key={column}

@@ -86,7 +86,6 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
   const loadPMForAccordion = (data: Militar) => {
     console.log(data);
     setPMs(prevArray => [...prevArray, data]);
-    console.log('postos de serviço do perfil de OPM', pms);
   };
 
   // Função para carregar o CSV completo
@@ -107,7 +106,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
         setPMsDaPlanilha(prevArray => [...prevArray, ...parsedArray]);
         setPMs(prevArray => [...prevArray, ...pmsDaPlanilha]);
 
-        console.log('planilha', parsedArray);
+        //console.log('planilha', parsedArray);
       },
     });
   };
@@ -119,7 +118,6 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, [pmsDaPlanilha]);
 
-  // Função para carregar mais PMs (próxima página)
   const loadMoreMilitar = () => {
     if (hasMore) {
       setCurrentDataIndex(prevIndex => prevIndex + 1);
@@ -135,7 +133,6 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // Função para carregar menos PMs (página anterior)
   const loadLessMilitar = () => {
     if (firstDataIndexMilitar > 0) {
       setCurrentDataIndex(prevIndex => prevIndex - 1);
@@ -249,7 +246,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
   const uploadMilitar = useCallback(
     async (data: Militares_service) => {
       setIsLoading(true);
-      //console.log('Chamou o post de evento', data);
+
       try {
         const response = await api.post('/militares', data);
         console.log('resposta: ', response.data);
@@ -326,7 +323,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
-  //const headerKeys = Militares.length > 0 ? Object.keys(Militares[0]) : [];
+
   const deletePMByCGO = useCallback(
     async (id?: string, index?: string) => {
       setIsLoading(true);
@@ -418,7 +415,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
       militarById,
       currentData,
       pms: currentData,
-      file,
+
       totalData,
       firstDataIndexMilitar,
       lastDataIndexMilitar,
@@ -446,7 +443,6 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
       militarById,
       currentData,
       pms,
-      file,
       totalData,
       firstDataIndexMilitar,
       lastDataIndexMilitar,
