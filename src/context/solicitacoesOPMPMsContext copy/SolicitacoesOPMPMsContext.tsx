@@ -78,7 +78,6 @@ export const SolicitacoesOPMPMsProvider: React.FC<{
       const pmExists = pms.some(m => m.matricula === data.matricula);
 
       if (!pmExists) {
-        // Adiciona o novo PM ao array de pms
         setPMs(prevArray => [...prevArray, data]);
         toast({
           title: 'Sucesso',
@@ -121,9 +120,7 @@ export const SolicitacoesOPMPMsProvider: React.FC<{
           console.error('Erro ao processar CSV:', result.errors);
           return;
         }
-
         const parsedArray = result.data as Militar[];
-
         // Verifica quais PMs são novos e não estão em pms
         const newPMs = parsedArray.filter(
           a => !pms.some(m => a.matricula === m.matricula),

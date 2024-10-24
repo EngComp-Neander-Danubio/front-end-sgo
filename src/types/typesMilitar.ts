@@ -1,4 +1,4 @@
-export type OptionType = { label: string; value: string | number };
+export type OptionType = { label: string; value: string };
 
 export enum Modaliade {
   "A PÉ" = '1',
@@ -125,10 +125,10 @@ export const handleSortByPostoGradTwoMilitar = (militarOne: any, militarTwo: any
 
 export type OPMOption =
   | 'cgo'
-  | '1crpm'
-  | '2crpm'
-  | '3crpm'
-  | '4crpm'
+  | '1°CRPM'
+  | '2°CRPM'
+  | '3°CRPM'
+  | '4°CRPM'
   | 'cpe'
   | 'bpre'
   | 'bptur'

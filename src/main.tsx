@@ -29,26 +29,26 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
       <AuthProvider>
-        <SolicitacoesPostosProvider>
-          <SolicitacoesPMsProvider>
-            <SolicitacoesOPMPostosProvider>
-              <SolicitacoesOPMPMsProvider>
-                <TotalEfetivoOPMsProvider>
-                  <MilitaresProvider>
-                    <EventsProvider>
+        <EventsProvider>
+          <SolicitacoesPostosProvider>
+            <SolicitacoesPMsProvider>
+              <SolicitacoesOPMPostosProvider>
+                <SolicitacoesOPMPMsProvider>
+                  <TotalEfetivoOPMsProvider>
+                    <MilitaresProvider>
                       <PostosProvider>
                         <RequisitosProvider>
                           <CSSReset />
                           <App />
                         </RequisitosProvider>
                       </PostosProvider>
-                    </EventsProvider>
-                  </MilitaresProvider>
-                </TotalEfetivoOPMsProvider>
-              </SolicitacoesOPMPMsProvider>
-            </SolicitacoesOPMPostosProvider>
-          </SolicitacoesPMsProvider>
-        </SolicitacoesPostosProvider>
+                    </MilitaresProvider>
+                  </TotalEfetivoOPMsProvider>
+                </SolicitacoesOPMPMsProvider>
+              </SolicitacoesOPMPostosProvider>
+            </SolicitacoesPMsProvider>
+          </SolicitacoesPostosProvider>
+        </EventsProvider>
       </AuthProvider>
     </ChakraProvider>
   </React.StrictMode>,

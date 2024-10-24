@@ -19,7 +19,7 @@ interface IModal {
   isOpen: boolean;
   onClose: () => void;
   onOpen: () => void;
-  uploadPM: (data: Militar) => Promise<void>;
+  uploadPM: (data: Militar) => void;
 }
 
 export const ModalFormAddMilitar: React.FC<IModal> = ({
@@ -32,7 +32,7 @@ export const ModalFormAddMilitar: React.FC<IModal> = ({
   });
   const { reset } = methodsInput;
   const onSubmit = async (data: Militar) => {
-    await uploadPM(data);
+    uploadPM(data);
     console.log(data);
     onClose();
     reset();

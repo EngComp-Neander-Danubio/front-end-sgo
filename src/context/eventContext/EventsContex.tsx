@@ -9,10 +9,7 @@ import React, {
 
 import { useToast } from '@chakra-ui/react';
 import api from '../../services/api';
-/* export type Events = {
-  columns?: string[];
-  registers?: { [key: string]: any }[];
-}; */
+import { OptionType } from '../../types/typesMilitar';
 
 export interface Event {
   id?: string;
@@ -21,11 +18,17 @@ export interface Event {
   dataInicio: Date;
   dataFinal: Date;
 }
-
+interface opmSaPM {
+  uni_codigo_pai: number;
+  uni_codigo: number;
+  uni_sigla: string;
+  uni_nome: string;
+}
 export interface IContextEventsData {
   events: Event[];
   eventById: Event;
-  //handleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  datasOPMSapm: opmSaPM[];
+  datasOPMSapmChildren: opmSaPM[];
   uploadEvent: (data: Event) => Promise<void>;
   loadEvents: (param?: string) => Promise<void>;
   loadEventsById: (id: string) => Promise<void>;
@@ -33,12 +36,16 @@ export interface IContextEventsData {
   deleteEvent: (id: string) => Promise<void>;
   loadMoreEvents: () => void;
   loadLessEvents: () => void;
+  loadIdsFromOPMsMain: () => Promise<void>;
+  loadIdsFromOPMsChildren: (param: number) => Promise<opmSaPM[]>;
+  handleDeleteOpmModal: (param: opmSaPM) => Promise<void>;
+  handleDeleteOpmFromSameFather: (param: opmSaPM) => Promise<void>;
+  handleDeleteSelectAllOpm: () => Promise<void>;
   currentDataIndex: number;
   dataPerPage: number;
   lastDataIndex: number;
   firstDataIndex: number;
   totalData: number;
-  //handleOnSubmitP: (e: React.FormEvent) => void;
 }
 
 export const EventsContext = createContext<IContextEventsData | undefined>(
@@ -50,12 +57,14 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const toast = useToast();
   const [events, setEvents] = useState<Event[]>([]);
+  const [datasOPMSapm, setDatasOPMSapm] = useState<opmSaPM[]>([]);
+  const [datasOPMSapmChildren, setDatasOPMSapmChildren] = useState<opmSaPM[]>(
+    [],
+  );
   const [eventById, setEventById] = useState<Event>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  //const [event, setPMs] = useState<Event[]>([]);
-  const [eventsDaPlanilha, setEventsDaPlanilha] = useState<Event[]>([]);
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
-  const [dataPerPage] = useState(8); // Defina o número de registros por página
+  const [dataPerPage] = useState(8);
   const lastDataIndex = (currentDataIndex + 1) * dataPerPage;
   const firstDataIndex = lastDataIndex - dataPerPage;
   const totalData = events.length;
@@ -65,7 +74,9 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     loadEvents();
   }, []);
-
+  useEffect(() => {
+    loadIdsFromOPMsMain();
+  }, []);
   const loadMoreEvents = () => {
     if (hasMore) {
       setCurrentDataIndex(prevIndex => prevIndex + 1);
@@ -95,13 +106,58 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       });
     }
   };
+
+  const loadIdsFromOPMsMain = useCallback(async () => {
+    try {
+      const response = await api.get<opmSaPM[]>('/unidades');
+      setDatasOPMSapm(response.data);
+      console.log('Dados recebidos da API:', response.data);
+    } catch (error) {
+    } finally {
+    }
+  }, []);
+
+  const loadIdsFromOPMsChildren = useCallback(async (param: number) => {
+    try {
+      const response = await api.get<opmSaPM[]>(`/listar-opms/${param}`);
+      const dados = response.data.map(opm => ({
+        ...opm,
+        uni_codigo_pai: param,
+      }));
+      setDatasOPMSapmChildren(prev => [...prev, ...dados]);
+    } catch (error) {
+      console.error('Erro ao carregar as unidades:', error);
+    } finally {
+    }
+  }, []);
+
+  const handleDeleteOpmModal = useCallback(async (param: opmSaPM) => {
+    setDatasOPMSapmChildren(dataOpmChildren => {
+      return dataOpmChildren.filter(o => {
+        return !o.uni_sigla.includes(param.uni_sigla);
+      });
+    });
+  }, []);
+  const handleDeleteOpmFromSameFather = useCallback(
+    async (param: opmSaPM) => {
+      setDatasOPMSapmChildren(() => {
+        return datasOPMSapmChildren.filter(
+          o => o.uni_codigo_pai !== param.uni_codigo,
+        );
+      });
+    },
+    [datasOPMSapmChildren],
+  );
+
+  const handleDeleteSelectAllOpm = useCallback(async () => {
+    setDatasOPMSapmChildren([]);
+  }, []);
   const uploadEvent = useCallback(
     async (data: Event) => {
       setIsLoading(true);
-      console.log('Chamou o post de evento', data);
+
       try {
         const response = await api.post('/operacao', data);
-        //console.log('resposta: ', response.data);
         toast({
           title: 'Sucesso',
           description: 'Evento/Operação atualizada com sucesso',
@@ -145,7 +201,6 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       setIsLoading(false);
     }
   }, []);
-  console.log({ eventById, event: events });
 
   const loadEventsById = useCallback(
     async (id: string) => {
@@ -216,7 +271,11 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
-
+  useEffect(() => {}, [
+    handleDeleteOpmFromSameFather,
+    datasOPMSapm,
+    datasOPMSapmChildren,
+  ]);
   const contextValue = useMemo(
     () => ({
       uploadEvent,
@@ -226,6 +285,13 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       loadEventsById,
       loadLessEvents,
       loadMoreEvents,
+      loadIdsFromOPMsMain,
+      loadIdsFromOPMsChildren,
+      handleDeleteOpmModal,
+      handleDeleteSelectAllOpm,
+      handleDeleteOpmFromSameFather,
+      datasOPMSapm,
+      datasOPMSapmChildren,
       events: currentData,
       eventById,
       totalData,
@@ -242,6 +308,13 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       loadEventsById,
       loadLessEvents,
       loadMoreEvents,
+      loadIdsFromOPMsMain,
+      loadIdsFromOPMsChildren,
+      handleDeleteOpmModal,
+      handleDeleteSelectAllOpm,
+      handleDeleteOpmFromSameFather,
+      datasOPMSapm,
+      datasOPMSapmChildren,
       events,
       eventById,
       totalData,

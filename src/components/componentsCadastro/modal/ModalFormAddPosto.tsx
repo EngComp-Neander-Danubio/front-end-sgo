@@ -20,7 +20,7 @@ interface IModal {
   isOpen: boolean;
   onClose: () => void;
   onOpen: () => void;
-  uploadPosto: (data: PostoForm) => Promise<void>;
+  uploadPosto: (data: PostoForm) => void;
 }
 
 export const ModalFormAddPosto: React.FC<IModal> = ({

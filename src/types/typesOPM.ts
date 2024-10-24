@@ -1,4 +1,4 @@
-export type OptionType = { label: string; value: string | number };
+export type OptionType = { label: string; value: string };
 export const columnsMapOPMs: {
   [key: string]: string;
 } = {
@@ -7,10 +7,10 @@ export const columnsMapOPMs: {
 };
 export enum OPMs {
   CoordenadoriaGeraldeOperaçoes = "cgo",
-  ComandoDePoliciamentoDaCapital = "1crpm",
-  ComandoDePoliciamentoMetropolitano = "2crpm",
-  ComandoDePoliciamentoDoInteriorNorte = "3crpm",
-  ComandoDePoliciamentoDoInteriorSul = "4crpm",
+  ComandoDePoliciamentoDaCapital = "1ºCRPM",
+  ComandoDePoliciamentoMetropolitano = "2ºCRPM",
+  ComandoDePoliciamentoDoInteriorNorte = "3ºCRPM",
+  ComandoDePoliciamentoDoInteriorSul = "4ºCRPM",
   ComandoDePoliciamentoEspecializado = "cpe",
   BatalhaoDePoliciaDeTransitoUrbanoERodoviarioEstadual = "bpre",
   BatalhaoDePoliciamentoTuristico = "bptur",
@@ -74,10 +74,10 @@ export enum OPMs {
 
 export const optionsOPMs: OptionType[] = [
   { label: 'Coordenadoria Geral de Operações – CGO', value: "cgo" },
-  { label: 'Comando de Policiamento da Capital – 1º CRPM', value: "1crpm" },
-  { label: 'Comando de Policiamento Metropolitano – 2º CRPM', value: "2crpm" },
-  { label: 'Comando de Policiamento do Interior Norte – 3º CRPM', value: "3crpm" },
-  { label: 'Comando de Policiamento do Interior Sul – 4º CRPM', value: "4crpm" },
+  { label: 'Comando de Policiamento da Capital – 1º CRPM', value: "1ºCRPM" },
+  { label: 'Comando de Policiamento Metropolitano – 2º CRPM', value: "2ºCRPM" },
+  { label: 'Comando de Policiamento do Interior Norte – 3º CRPM', value: "3ºCRPM" },
+  { label: 'Comando de Policiamento do Interior Sul – 4º CRPM', value: "4ºCRPM" },
   { label: 'Comando de Policiamento Especializado – CPE', value: "cpe" },
   { label: 'Batalhão de Polícia de Trânsito Urbano e Rodoviário Estadual – BPRE', value: "bpre" },
   { label: 'Batalhão de Policiamento Turístico – BPTUR', value: "bptur" },
@@ -145,19 +145,21 @@ export const optionsOPMs: OptionType[] = [
 ];
 
 
-export const options1CRPM: OptionType[] = [
-  // ... outras opções
-  { label: '5º BPM (Centro – Fortaleza)', value: '5bpm' },
-  { label: '6º BPM (Parangaba – Fortaleza)', value: '6bpm' },
-  { label: '8º BPM (Aldeota – Fortaleza)', value: '8bpm' },
-  { label: '16º BPM (Messejana – Fortaleza)', value: "16bpm" },
-  { label: '17º BPM (Conjunto Ceará – Fortaleza)', value: "17bpm" },
-  { label: '18º BPM (Antônio Bezerra – Fortaleza)', value: "18bpm" },
-  { label: '19º BPM (Tancredo Neves – Fortaleza)', value: "19bpm" },
-  { label: '20º BPM (Cristo Redentor – Fortaleza)', value: '20bpm' },
-  { label: '21º BPM (Cj. Esperança – Fortaleza)', value: '21bpm' },
-  { label: '22º BPM (Papicu – Fortaleza)', value: '22bpm' },
-];
+export const options1CRPM: OptionType[] =
+
+  [
+    // ... outras opções
+    { label: '5º BPM (Centro – Fortaleza)', value: '5bpm' },
+    { label: '6º BPM (Parangaba – Fortaleza)', value: '6bpm' },
+    { label: '8º BPM (Aldeota – Fortaleza)', value: '8bpm' },
+    { label: '16º BPM (Messejana – Fortaleza)', value: "16bpm" },
+    { label: '17º BPM (Conjunto Ceará – Fortaleza)', value: "17bpm" },
+    { label: '18º BPM (Antônio Bezerra – Fortaleza)', value: "18bpm" },
+    { label: '19º BPM (Tancredo Neves – Fortaleza)', value: "19bpm" },
+    { label: '20º BPM (Cristo Redentor – Fortaleza)', value: '20bpm' },
+    { label: '21º BPM (Cj. Esperança – Fortaleza)', value: '21bpm' },
+    { label: '22º BPM (Papicu – Fortaleza)', value: '22bpm' },
+  ];
 
 export const options2CRPM: OptionType[] = [
   // ... outras opções

@@ -79,6 +79,7 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
                   error={error}
                   isOverwriting
                   loadOptions={loadOptions}
+                  noOptionsMessage="Nenhum Militar encontrado"
                 />
               )}
             />

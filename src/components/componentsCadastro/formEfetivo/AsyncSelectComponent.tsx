@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { InputHTMLAttributes, SelectHTMLAttributes } from 'react';
 import {
   FormControl,
   FormLabel,
   FormErrorMessage,
   useTheme,
+  FlexboxProps,
+  FlexProps,
+  BoxProps,
+  SelectProps,
+  InputProps,
+  InputElementProps,
 } from '@chakra-ui/react';
 import { FieldError } from 'react-hook-form';
-import AsyncSelect from 'react-select/async';
+import AsyncSelect, { AsyncProps } from 'react-select/async';
 import { OptionsOrGroups, GroupBase } from 'react-select';
 import api from '../../../services/api';
 
@@ -56,6 +62,7 @@ interface IAsyncSelectProps {
     >
   >;
   isOverwriting?: boolean;
+  noOptionsMessage?: string;
 }
 
 const AsyncSelectComponent: React.FC<IAsyncSelectProps> = ({
@@ -65,6 +72,7 @@ const AsyncSelectComponent: React.FC<IAsyncSelectProps> = ({
   error,
   placeholder = 'Busca...',
   isOverwriting,
+  noOptionsMessage,
 }) => {
   const theme = useTheme();
 
@@ -126,11 +134,11 @@ const AsyncSelectComponent: React.FC<IAsyncSelectProps> = ({
         cacheOptions
         loadOptions={loadOptions}
         defaultOptions
-        noOptionsMessage={() => 'Nenhum militar encontrado...'}
+        noOptionsMessage={() => `${noOptionsMessage}`}
         styles={customStyles}
         onChange={option => onChange(option ? option.value : '')}
         placeholder={placeholder}
-        menuPortalTarget={isOverwriting ? document.body : null} // Para sobreposição
+        menuPortalTarget={isOverwriting ? document.body : null}
         menuPosition={isOverwriting ? 'fixed' : 'absolute'}
       />
       {error && <FormErrorMessage>{error.message}</FormErrorMessage>}

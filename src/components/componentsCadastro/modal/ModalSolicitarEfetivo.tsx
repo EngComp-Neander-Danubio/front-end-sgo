@@ -11,13 +11,14 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
-import { OPMs } from '../../../types/typesOPM';
+import { OPMs, optionsOPMs } from '../../../types/typesOPM';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Militares_service } from '../../../context/requisitosContext/RequisitosContext';
 
 import { FormSolicitacaoEfetivo } from './FormSolicitacaoEfetivo';
 import { yupResolver } from '@hookform/resolvers/yup';
 import solicitacaoEfetivoSchema from '../../../types/yupSolicitacaoEfetiv/yupSolicitacaoEfetivo';
+import api from '../../../services/api';
 
 interface IModal {
   isOpen: boolean;
@@ -29,16 +30,6 @@ interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
   input: string[];
-  checkboxespecializadas: boolean;
-  checkboxdgpi: boolean;
-  checkbox1crpm: boolean;
-  checkbox2crpm: boolean;
-  checkbox3crpm: boolean;
-  checkbox4crpm: boolean;
-  checkboxcpchoque: boolean;
-  checkboxcpraio: boolean;
-  checkboxcpe: boolean;
-  checkbox: boolean[];
   opmsLabel: string[];
 }
 export const ModalSolicitarEfetivo: React.FC<IModal> = ({
@@ -47,23 +38,6 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
 }) => {
   const toast = useToast();
   const [opm, setOPM] = useState<OPMs[]>([]);
-  const methodsInput = useForm<SolicitacaoForm>({
-    resolver: yupResolver(solicitacaoEfetivoSchema),
-  });
-  const { reset } = methodsInput;
-  const onSubmit = async (data: SolicitacaoForm) => {
-    console.log('', data);
-    reset();
-    onClose();
-    toast({
-      title: 'Solicitações de Efetivo.',
-      description: 'Solicitação Salva.',
-      status: 'success',
-      duration: 5000,
-      isClosable: true,
-      position: 'top-right',
-    });
-  };
   const handleDeleteSelectAllOpmCancel = () => {
     try {
       if (opm.length > 0) {
@@ -72,6 +46,51 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
       }
     } catch (err) {}
   };
+  const methodsInput = useForm<SolicitacaoForm>({
+    resolver: yupResolver(solicitacaoEfetivoSchema),
+  });
+  const { reset } = methodsInput;
+  const onSubmit = async (data: SolicitacaoForm) => {
+    // Mapeia os valores de opmsLabel e busca o valor correspondente em optionsOPMs
+    const opms = data.opmsLabel
+      .map(op => {
+        const option = optionsOPMs.find(o => o.label === op.valueOf());
+        return option ? option.value : null;
+      })
+      .filter(Boolean); // Remove valores nulos
+
+    const dados = {
+      opms,
+      prazoInicio: data.dataInicio,
+      prazoFinal: data.dataFinal,
+      input,
+    };
+
+    console.log('Dados de solicitação de postos mapeados:', dados);
+    console.log('Dados de solicitação de postos originais:', data);
+    try {
+      await api.post('/solicitacao', dados);
+      toast({
+        title: 'Solicitações de Postos.',
+        description: 'Solicitação Salva.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+        position: 'top-right',
+      });
+    } catch (err) {
+      toast({
+        title: 'Erro',
+        description: 'Falha ao criar solicitação',
+        status: 'error',
+        position: 'top-right',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+    onClose();
+  };
+
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>

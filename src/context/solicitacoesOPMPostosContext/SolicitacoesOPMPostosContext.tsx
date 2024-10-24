@@ -86,6 +86,7 @@ export const SolicitacoesOPMPostosProvider: React.FC<{
                 a.local === m.local &&
                 a.bairro === m.bairro &&
                 a.numero === m.numero &&
+                a.rua === m.rua &&
                 a.cidade === m.cidade,
             ),
         );

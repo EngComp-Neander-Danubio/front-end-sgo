@@ -28,6 +28,9 @@ import {
 import { DatePickerEvent } from '../formGrandeEvento/DatePickerEvent';
 import { TableInput } from '../tableInput/TableInput';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
+import { Pagination } from '../pagination/Pagination';
+import { TableSolicitacoes } from '../table-solicitacoes';
+import { CheckBoxPattern } from './CheckboxPattern';
 
 interface SolicitacaoForm {
   dataInicio: Date;
@@ -257,203 +260,156 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
         </Flex>
       </Flex>
       <Divider />
-      <Flex gap={4} flexDirection="row" h="50px">
-        <Checkbox
-          size="md"
-          //isChecked={selectedCheckbox === 'Todos'}
-          onChange={e => {
-            handleCheckboxChange('Todos');
-            handleCheckbox(e.currentTarget.checked, optionsOPMs);
-            //console.log('', opm);
-          }}
-          colorScheme={'green'}
-        >
-          Todos
-        </Checkbox>
-
-        <Controller
-          name="checkboxespecializadas"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              //isChecked={selectedCheckbox === 'especializadas'}
-              onChange={e => {
-                handleCheckboxChange('especializadas');
-
-                handleCheckbox(e.currentTarget.checked, optionsEsp);
-                //console.log('', opm);
-              }}
-              onBlur={onBlur}
-              colorScheme={'green'}
-              //value={value}
-            >
-              Especializadas
-            </Checkbox>
-          )}
-        />
-        <Checkbox
-          size="md"
-          //isChecked={selectedCheckbox === 'POG'}
-          onChange={() => handleCheckboxChange('POG')}
-          colorScheme={'green'}
-        >
-          POG
-        </Checkbox>
-        <Controller
-          name="checkboxdgpi"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              /* isChecked={
-                            selectedCheckbox === 'Setores Administrativos'
-                          } */
-              onChange={e => {
-                handleCheckboxChange('Setores Administrativos');
-                handleCheckbox(e.currentTarget.checked, optionsDPGI);
-                //console.log('', opm);
-              }}
-              onBlur={onBlur}
-              colorScheme={'green'}
-              //value={value}
-            >
-              Setores Administrativos
-            </Checkbox>
-          )}
-        />
-      </Flex>
-      <Divider />
       <Flex gap={4} h="50px">
+        <Controller
+          name="todos"
+          control={control}
+          render={({ field: { onChange, onBlur } }) => (
+            <CheckBoxPattern
+              onChange={onChange}
+              handleCheckbox={handleCheckbox}
+              handleCheckboxChange={() => handleCheckboxChange('Todos')}
+              onBlur={onBlur}
+              //value={value}
+              labelCheckbox={'Todos'}
+              optionsOPMs={optionsOPMs}
+            />
+          )}
+        />
         <Controller
           name="checkbox1crpm"
           control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              //isChecked={selectedCheckboxGrandeOPMs === '1crpm'}
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('1crpm');
-                handleCheckbox(e.currentTarget.checked, options1CRPM);
-                //console.log('', opm);
-              }}
+          render={({ field: { onChange, onBlur } }) => (
+            <CheckBoxPattern
+              onChange={onChange}
+              handleCheckbox={handleCheckbox}
+              handleCheckboxChangeGrandeOPM={() =>
+                handleCheckboxChangeGrandeOPM('1crpm')
+              }
               onBlur={onBlur}
-              colorScheme={'green'}
               //value={value}
-            >
-              1° CRPM
-            </Checkbox>
+              labelCheckbox={'1° CRPM'}
+              optionsOPMs={options1CRPM}
+            />
           )}
         />
         <Controller
           name="checkbox2crpm"
           control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              //isChecked={selectedCheckboxGrandeOPMs === '2crpm'}
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('2crpm');
-                handleCheckbox(e.currentTarget.checked, options2CRPM);
-              }}
+          render={({ field: { onChange, onBlur } }) => (
+            <CheckBoxPattern
+              onChange={onChange}
+              handleCheckbox={handleCheckbox}
+              handleCheckboxChangeGrandeOPM={() =>
+                handleCheckboxChangeGrandeOPM('2crpm')
+              }
               onBlur={onBlur}
-              colorScheme={'green'}
               //value={value}
-            >
-              2° CRPM
-            </Checkbox>
+              labelCheckbox={'2° CRPM'}
+              optionsOPMs={options2CRPM}
+            />
           )}
         />
         <Controller
           name="checkbox3crpm"
           control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              //isChecked={selectedCheckboxGrandeOPMs === '3crpm'}
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('3crpm');
-                handleCheckbox(e.currentTarget.checked, options3CRPM);
-              }}
+          render={({ field: { onChange, onBlur } }) => (
+            <CheckBoxPattern
+              onChange={onChange}
+              handleCheckbox={handleCheckbox}
+              handleCheckboxChangeGrandeOPM={() =>
+                handleCheckboxChangeGrandeOPM('3crpm')
+              }
               onBlur={onBlur}
-              colorScheme={'green'}
               //value={value}
-            >
-              3° CRPM
-            </Checkbox>
+              labelCheckbox={'3° CRPM'}
+              optionsOPMs={options3CRPM}
+            />
           )}
         />
         <Controller
           name="checkbox4crpm"
           control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              //isChecked={selectedCheckboxGrandeOPMs === '4crpm'}
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('4crpm');
-                handleCheckbox(e.currentTarget.checked, options4CRPM);
-              }}
+          render={({ field: { onChange, onBlur } }) => (
+            <CheckBoxPattern
+              onChange={onChange}
+              handleCheckbox={handleCheckbox}
+              handleCheckboxChangeGrandeOPM={() =>
+                handleCheckboxChangeGrandeOPM('4crpm')
+              }
               onBlur={onBlur}
-              colorScheme={'green'}
               //value={value}
-            >
-              4° CRPM
-            </Checkbox>
+              labelCheckbox={'4° CRPM'}
+              optionsOPMs={options4CRPM}
+            />
           )}
         />
         <Controller
           name="checkboxcpchoque"
           control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('4crpm');
-                handleCheckbox(e.currentTarget.checked, optionsCPCHOQUE);
-              }}
+          render={({ field: { onChange, onBlur } }) => (
+            <CheckBoxPattern
+              onChange={onChange}
+              handleCheckbox={handleCheckbox}
+              handleCheckboxChangeGrandeOPM={() =>
+                handleCheckboxChangeGrandeOPM('cpchoque')
+              }
               onBlur={onBlur}
-              colorScheme={'green'}
               //value={value}
-            >
-              CPCHOQUE
-            </Checkbox>
+              labelCheckbox={'CPCHOQUE'}
+              optionsOPMs={optionsCPCHOQUE}
+            />
           )}
         />
         <Controller
           name="checkboxcpraio"
           control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('cpraio');
-                handleCheckbox(e.currentTarget.checked, optionsCPRAIO);
-              }}
+          render={({ field: { onChange, onBlur } }) => (
+            <CheckBoxPattern
+              onChange={onChange}
+              handleCheckbox={handleCheckbox}
+              handleCheckboxChangeGrandeOPM={() =>
+                handleCheckboxChangeGrandeOPM('cpraio')
+              }
               onBlur={onBlur}
-              colorScheme={'green'}
               //value={value}
-            >
-              CPRAIO
-            </Checkbox>
+              labelCheckbox={'CPRAIO'}
+              optionsOPMs={optionsCPRAIO}
+            />
           )}
         />
         <Controller
           name="checkboxcpe"
           control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('cpe');
-                handleCheckbox(e.currentTarget.checked, optionsCPE);
-              }}
+          render={({ field: { onChange, onBlur } }) => (
+            <CheckBoxPattern
+              onChange={onChange}
+              handleCheckbox={handleCheckbox}
+              handleCheckboxChangeGrandeOPM={() =>
+                handleCheckboxChangeGrandeOPM('cpe')
+              }
               onBlur={onBlur}
-              colorScheme={'green'}
               //value={value}
-            >
-              CPE
-            </Checkbox>
+              labelCheckbox={'CPE'}
+              optionsOPMs={optionsCPE}
+            />
+          )}
+        />
+        <Controller
+          name="checkboxdgpi"
+          control={control}
+          render={({ field: { onChange, onBlur } }) => (
+            <CheckBoxPattern
+              onChange={onChange}
+              handleCheckbox={handleCheckbox}
+              handleCheckboxChange={() =>
+                handleCheckboxChange('Setores Administrativos')
+              }
+              onBlur={onBlur}
+              //value={value}
+              labelCheckbox={'Setores Instrumentais'}
+              optionsOPMs={optionsDPGI}
+            />
           )}
         />
       </Flex>
@@ -627,20 +583,6 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
         p={2}
         gap={4}
       >
-        {/* <TableOPMs
-                  isOpen={militaresRestantes.length > 0}
-                  columns={['OPM']}
-                  registers={optionsOPMs.filter(op =>
-                    opm.includes(op.value as OPMs),
-                  )} // Filtragem correta
-                  currentPosition={0}
-                  rowsPerLoad={100}
-                  lessLoad={loadLessMilitar}
-                  moreLoad={loadMoreMilitar}
-                  isCheckBox={true}
-                  isActions={true}
-                  handleDeleteOpm={handleDeleteOpm}
-                /> */}
         <TableInput
           isOpen={opm.length > 0}
           isActions
@@ -651,6 +593,32 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
           handleDeleteOpm={handleDeleteOpm}
           opmDatas={opm}
         />
+        {/* <Flex mt={2} flexDirection={'column'} w={'100%'}>
+          <TableSolicitacoes
+            isActions
+            isOpen={true}
+            isView={true}
+            columns={[
+              'Matrícula',
+              'Posto/Graduação',
+              'Nome Completo',
+              'Unidade',
+            ]}
+            registers={transformedMiltitares}
+            //registers={handleSortByPostoGrad(transformedMiltitares, '1')}
+            label_tooltip="Militar"
+            height={'32vh'}
+            handleDelete={deletePMByOPM}
+          />
+          <Pagination
+            totalPages={totalData}
+            dataPerPage={dataPerPage}
+            firstDataIndex={firstDataIndex}
+            lastDataIndex={lastDataIndex}
+            loadLess={loadLessSolicitacoesOPMPMs}
+            loadMore={loadMoreSolicitacoesOPMPMs}
+          />
+        </Flex> */}
       </Flex>
     </FormControl>
   );

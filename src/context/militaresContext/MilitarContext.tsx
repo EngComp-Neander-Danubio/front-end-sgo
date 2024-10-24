@@ -26,18 +26,17 @@ export interface Militar {
 }
 
 export interface IContextMilitaresData {
-  file: File[] | null;
   pms: Militar[];
   militares: Militares_service[];
   militarById: Militar;
   militaresByAPI: Militar[];
-  hasMoreMilitar: boolean;
-  currentPositionMilitar: number;
+  militaresBySAPM: Militar[];
   handleClickMilitar: () => void;
   handleOnChangeMilitar: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleOnSubmitMilitar: (e: React.FormEvent) => void;
   loadMoreMilitar: () => void;
   loadLessMilitar: () => void;
+  loadPMToPlanilha: (data: Militar) => void;
   loadMilitarBySAPM: (param?: string) => void;
   loadMilitarById: (id: string) => Promise<void>;
   loadMilitaresByAPI: (id: string) => Promise<void>;
@@ -65,15 +64,11 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
   const [militares, setMilitares] = useState<Militares_service[]>([]);
   const [militaresByAPI, setMilitaresByAPI] = useState<Militar[]>([]);
   const [militarById, setMilitarById] = useState<Militar>();
-  const [currentPositionMilitar, setCurrentPositionMilitar] = useState(0);
-  const [hasMoreMilitar, setHasMoreMilitar] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const [pms, setPMs] = useState<Militar[]>([]);
   const [pmsDaPlanilha, setPMsDaPlanilha] = useState<Militar[]>([]);
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
   const [dataPerPage] = useState(8); // Defina o número de registros por página
-
   const lastDataIndexMilitar = (currentDataIndex + 1) * dataPerPage;
   const firstDataIndexMilitar = lastDataIndexMilitar - dataPerPage;
   const totalData = pms.length;
@@ -87,6 +82,41 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
     console.log(data);
     setPMs(prevArray => [...prevArray, data]);
   };
+  const loadPMToPlanilha = (data: Militar) => {
+    try {
+      const pmExists = pms.some(m => m.matricula === data.matricula);
+
+      if (!pmExists) {
+        setPMs(prevArray => [...prevArray, data]);
+        toast({
+          title: 'Sucesso',
+          description: 'PM adicionado com sucesso',
+          status: 'success',
+          position: 'top-right',
+          duration: 5000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: 'Atenção',
+          description: 'PM já foi adicionado',
+          status: 'warning',
+          position: 'top-right',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    } catch (err) {
+      toast({
+        title: 'Erro',
+        description: 'Falha ao inserir PM',
+        status: 'error',
+        position: 'top-right',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   // Função para carregar o CSV completo
   const loadCompleteCSV = (text: string) => {
@@ -99,14 +129,31 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
           console.error('Erro ao processar CSV:', result.errors);
           return;
         }
-
         const parsedArray = result.data as Militar[];
+        const newPMs = parsedArray.filter(
+          a => !pms.some(m => a.matricula === m.matricula),
+        );
 
-        // Atualize o estado com os novos dados sem concatenar
-        setPMsDaPlanilha(prevArray => [...prevArray, ...parsedArray]);
-        setPMs(prevArray => [...prevArray, ...pmsDaPlanilha]);
-
-        //console.log('planilha', parsedArray);
+        if (newPMs.length > 0) {
+          setPMs(prevArray => [...prevArray, ...newPMs]);
+          toast({
+            title: 'Sucesso',
+            description: 'PM(s) adicionado(s) com sucesso',
+            status: 'success',
+            position: 'top-right',
+            duration: 5000,
+            isClosable: true,
+          });
+        } else {
+          toast({
+            title: 'Erro',
+            description: 'Todos os PMs já existem, não serão adicionados:',
+            status: 'warning',
+            position: 'top-right',
+            duration: 5000,
+            isClosable: true,
+          });
+        }
       },
     });
   };
@@ -358,19 +405,15 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
           setIsLoading(false);
         }
       }
-
       // Caso o posto esteja apenas no estado local (não tem id)
       else if (index) {
-        console.log('delete com index');
-
+        //console.log('delete com index');
         // Cálculo correto do índice considerando a página atual
         const indexDeletedOpm =
           currentDataIndex * (lastDataIndexMilitar - firstDataIndexMilitar) +
           Number(index);
 
-        console.log('index', indexDeletedOpm);
-
-        // Verifica se o index é válido
+        //console.log('index', indexDeletedOpm);
         if (indexDeletedOpm < 0 || indexDeletedOpm >= pms.length) {
           toast({
             title: 'Erro!',
@@ -383,10 +426,8 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
           setIsLoading(false);
           return;
         }
-
         // Remove o posto do estado local
         const updatedOpm = pms.filter((_, i) => i !== indexDeletedOpm);
-
         // Atualiza o estado e exibe o toast de sucesso
         setPMs(updatedOpm);
         if (updatedOpm.length !== pms.length) {
@@ -410,12 +451,9 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
     () => ({
       militares,
       militaresByAPI,
-      hasMoreMilitar,
-      currentPositionMilitar,
       militarById,
       currentData,
       pms: currentData,
-
       totalData,
       firstDataIndexMilitar,
       lastDataIndexMilitar,
@@ -434,12 +472,11 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
       updateMilitar,
       loadPMForAccordion,
       deletePMByCGO,
+      loadPMToPlanilha,
     }),
     [
       militares,
       militaresByAPI,
-      hasMoreMilitar,
-      currentPositionMilitar,
       militarById,
       currentData,
       pms,
@@ -461,6 +498,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
       updateMilitar,
       loadPMForAccordion,
       deletePMByCGO,
+      loadPMToPlanilha,
     ],
   );
 

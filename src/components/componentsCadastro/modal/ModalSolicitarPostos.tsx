@@ -17,6 +17,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FormSolicitacaoPostos } from './FormSolicitacaoPostos';
 import { solicitacaoPostosSchema } from '../../../types/yupSolicitacaoPostos/yupSolicitacaoPostos';
 import api from '../../../services/api';
+import { useEvents } from '../../../context/eventContext/useEvents';
 
 interface IModal {
   isOpen: boolean;
@@ -33,21 +34,15 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
   onClose,
 }) => {
   const toast = useToast();
-  const [opm, setOPM] = useState<OPMs[]>([]);
-  const handleDeleteSelectAllOpmCancel = () => {
-    try {
-      if (opm.length > 0) {
-        setOPM([]);
-        //reset();
-      }
-    } catch (err) {}
+  const { handleDeleteSelectAllOpm } = useEvents();
+  const handleDeleteAllOpm = async () => {
+    await handleDeleteSelectAllOpm();
   };
   const methodsInput = useForm<SolicitacaoForm>({
     resolver: yupResolver(solicitacaoPostosSchema),
   });
   const { reset } = methodsInput;
   const onSubmit = async (data: SolicitacaoForm) => {
-    // Mapeia os valores de opmsLabel e busca o valor correspondente em optionsOPMs
     const opms = data.opmsLabel
       .map(op => {
         const option = optionsOPMs.find(o => o.label === op.valueOf());
@@ -62,7 +57,7 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
     };
 
     console.log('Dados de solicitação de postos mapeados:', dados);
-    console.log('Dados de solicitação de postos originais:', data);
+    //console.log('Dados de solicitação de postos originais:', data);
     try {
       await api.post('/solicitacao', dados);
       toast({
@@ -114,7 +109,7 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
                   onClick={() => {
                     onClose();
                     reset();
-                    handleDeleteSelectAllOpmCancel();
+                    handleDeleteAllOpm();
                   }}
                 >
                   Cancelar

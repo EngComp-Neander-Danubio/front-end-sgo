@@ -50,7 +50,6 @@ export const SolicitacoesPostosProvider: React.FC<{ children: ReactNode }> = ({
   // Dados paginados baseados no índice atual
   const currentData = soli_data.slice(firstDataIndex, lastDataIndex);
 
-  // Função para carregar mais dados (avanço de página)
   const loadMoreSolicitacoesPostos = () => {
     if (lastDataIndex < soli_data.length) {
       setCurrentDataIndex(prevIndex => prevIndex + 1);
@@ -66,7 +65,6 @@ export const SolicitacoesPostosProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  // Função para carregar menos dados (voltar página)
   const loadLessSolicitacoesPostos = () => {
     if (firstDataIndex > 0) {
       setCurrentDataIndex(prevIndex => prevIndex - 1);

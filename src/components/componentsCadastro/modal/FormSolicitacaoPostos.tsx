@@ -12,97 +12,62 @@ import {
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { OptionType, SelectPattern } from './SelectPattern';
-import { OPMOption } from '../../../types/typesMilitar';
-import {
-  optionsOPMs,
-  optionsEsp,
-  optionsDPGI,
-  options1CRPM,
-  options2CRPM,
-  options3CRPM,
-  options4CRPM,
-  optionsCPCHOQUE,
-  optionsCPRAIO,
-  optionsCPE,
-  OPMs,
-} from '../../../types/typesOPM';
+import { OPMOption, options } from '../../../types/typesMilitar';
+import { optionsOPMs, OPMs } from '../../../types/typesOPM';
 import { DatePickerEvent } from '../formGrandeEvento/DatePickerEvent';
-import { Militares_service } from '../../../context/requisitosContext/RequisitosContext';
-
-interface IModal {
-  isOpen: boolean;
-  onOpen: () => void;
-  onClose: () => void;
-  opms: OPMs[];
-  select_opm: OPMs;
-  militaresRestantes: Militares_service[];
-}
+import { CheckBoxPattern } from './CheckboxPattern';
+import { useEvents } from '../../../context/eventContext/useEvents';
+import AsyncSelectComponent from '../formEfetivo/AsyncSelectComponent';
+import { OptionsOrGroups, GroupBase } from 'react-select';
 
 interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
-  opmsLabel: OPMs[];
+  opmsLabel: opmSaPM[];
   select_opm: OPMs;
+  checkbox: opmSaPM[];
 }
+type opmSaPM = {
+  uni_codigo_pai: number;
+  uni_codigo: string;
+  uni_sigla: string;
+  uni_nome: string;
+};
 export const FormSolicitacaoPostos: React.FC = () => {
-  const {
-    control,
-    setValue,
-    trigger,
-    watch,
-    reset,
-    getValues,
-  } = useFormContext<SolicitacaoForm>();
+  const { control, setValue, reset, getValues, watch } = useFormContext<
+    SolicitacaoForm
+  >();
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
+  const {
+    loadIdsFromOPMsChildren,
+    datasOPMSapm,
+    datasOPMSapmChildren,
+    handleDeleteOpmModal,
+    handleDeleteSelectAllOpm,
+    handleDeleteOpmFromSameFather,
+  } = useEvents();
+
   useEffect(() => {
     setValue('dataInicio', startDate || new Date());
   }, [startDate, setValue]);
 
-  const [selectedCheckbox, setSelectedCheckbox] = useState<
-    'Todos' | 'especializadas' | 'POG' | 'Setores Administrativos' | null
-  >(null);
-  const [selectedCheckboxGrandeOPMs, setSelectedCheckboxGrandeOPMs] = useState<
-    OPMOption
-  >(null);
+  const handleDeleteAllOpmCancel = async () => {
+    await handleDeleteSelectAllOpm();
+  };
+
   const [opm, setOPM] = useState<OPMs[]>([]);
-
   const toast = useToast();
-  const handleCheckboxChange = (
-    option: 'Todos' | 'especializadas' | 'POG' | 'Setores Administrativos',
-  ) => {
-    setSelectedCheckbox(option);
-  };
-
-  const handleCheckboxChangeGrandeOPM = (
-    option:
-      | '1crpm'
-      | '2crpm'
-      | '3crpm'
-      | '4crpm'
-      | 'cpchoque'
-      | 'cpe'
-      | 'cpraio',
-  ) => {
-    setSelectedCheckboxGrandeOPMs(option);
-  };
-  const handleCheckbox = (e: any, value: OptionType) => {
-    if (e === true) {
-      setOPM(prev => [
-        ...prev,
-        ...value.map(option => {
-          return option.value;
-        }),
-      ]);
-    } else {
-      setOPM(prev =>
-        prev.filter(option => !value.some(o => o.value === option)),
-      );
+  const handleCheckboxChangeGrandeOPM = async (option: string) => {
+    const dados = datasOPMSapm.find(o => o.uni_sigla.includes(option));
+    if (!dados) {
+      throw new Error('Grande Comando não encontrado');
     }
+    await loadIdsFromOPMsChildren(dados.uni_codigo);
   };
 
-  const handleSelectOpm = (option: OPMs) => {
-    if (opm.find(o => o.valueOf() === option.valueOf())) {
+  const handleSelectOpm = (option: opmSaPM) => {
+    if (datasOPMSapmChildren.find(o => o.valueOf() === option.valueOf())) {
       toast({
         title: 'OPM já inclusa.',
         description: 'OPM já incluída.',
@@ -126,61 +91,23 @@ export const FormSolicitacaoPostos: React.FC = () => {
 
     console.log(opm);
   };
+  const loadOptions = async (
+    inputValue: string,
+  ): Promise<OptionsOrGroups<
+    { label: string; value: string },
+    GroupBase<{ label: string; value: string }>
+  >> => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        const filteredOptions = options.filter(option =>
+          option.label.toLowerCase().includes(inputValue.toLowerCase()),
+        );
 
-  const handleDeleteSelectAllOpm = () => {
-    try {
-      if (opm.length > 0) {
-        setOPM([]);
-
-        reset();
-        toast({
-          title: 'Exclusão de OPMs.',
-          description: 'OPMs excluída com sucesso.',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-          position: 'top-right',
-        });
-      }
-    } catch (err) {
-      toast({
-        title: 'Erro!',
-        description: 'OPM não encontrada na lista.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'top-right',
-      });
-    }
+        resolve(filteredOptions);
+        //setDataValue(filteredOptions);
+      }, 1000);
+    });
   };
-
-  const handleDeleteOpm = (option: OPMs) => {
-    if (opm.some(o => o === option)) {
-      // Remove a OPM da lista
-      const updatedOpm = opm.filter(o => o !== option);
-
-      setOPM(updatedOpm);
-      //reset();
-      toast({
-        title: 'Exclusão de OPMs.',
-        description: 'OPM excluída com sucesso.',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-        position: 'top-right',
-      });
-    } else {
-      toast({
-        title: 'Erro!',
-        description: 'OPM não encontrada na lista.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'top-right',
-      });
-    }
-  };
-
   return (
     <FormControl
       //border={'1px solid green'}
@@ -206,7 +133,6 @@ export const FormSolicitacaoPostos: React.FC = () => {
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <DatePickerEvent
-                  //showPopperArrow={true}
                   selectsStart
                   onChange={date => {
                     field.onChange(date);
@@ -245,213 +171,36 @@ export const FormSolicitacaoPostos: React.FC = () => {
       </Flex>
 
       <Divider />
-
-      <Flex gap={4} flexDirection="row" h="50px">
-        <Controller
-          name="todos"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              //isChecked={selectedCheckbox === 'Todos'}
-              onChange={e => {
-                handleCheckboxChange('Todos');
-                handleCheckbox(e.currentTarget.checked, optionsOPMs);
-                //console.log('', opm);
-              }}
-              onBlur={onBlur}
-              colorScheme={'green'}
-              //value={value}
-            >
-              Todos
-            </Checkbox>
-          )}
-        />
-        <Controller
-          name="checkboxespecializadas"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              //isChecked={selectedCheckbox === 'especializadas'}
-              onChange={e => {
-                handleCheckboxChange('especializadas');
-
-                handleCheckbox(e.currentTarget.checked, optionsEsp);
-                //console.log('', opm);
-              }}
-              onBlur={onBlur}
-              colorScheme={'green'}
-              //value={value}
-            >
-              Especializadas
-            </Checkbox>
-          )}
-        />
-        <Checkbox
-          size="md"
-          //isChecked={selectedCheckbox === 'POG'}
-          onChange={() => handleCheckboxChange('POG')}
-        >
-          POG
-        </Checkbox>
-        <Controller
-          name="checkboxdgpi"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              /* isChecked={
-                            selectedCheckbox === 'Setores Administrativos'
-                          } */
-              onChange={e => {
-                handleCheckboxChange('Setores Administrativos');
-                handleCheckbox(e.currentTarget.checked, optionsDPGI);
-                //console.log('', opm);
-              }}
-              onBlur={onBlur}
-              colorScheme={'green'}
-              //value={value}
-            >
-              Setores Administrativos
-            </Checkbox>
-          )}
-        />
-      </Flex>
-
-      <Divider />
       <Flex gap={4} h="50px">
-        <Controller
-          name="checkbox1crpm"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
+        <Checkbox
+          colorScheme="green"
+          onChange={async e => {
+            if (e.target.checked) {
+              datasOPMSapm.map(async v => {
+                await loadIdsFromOPMsChildren(v.uni_codigo);
+              });
+            }
+          }}
+        >
+          Todos
+        </Checkbox>
+        {datasOPMSapm.map((data, index) => (
+          <>
             <Checkbox
-              size="md"
-              //isChecked={selectedCheckboxGrandeOPMs === '1crpm'}
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('1crpm');
-                handleCheckbox(e.currentTarget.checked, options1CRPM);
-                //console.log('', opm);
+              key={index}
+              onChange={async e => {
+                if (e.currentTarget.checked) {
+                  await handleCheckboxChangeGrandeOPM(data.uni_sigla);
+                } else {
+                  await handleDeleteOpmFromSameFather(data);
+                }
               }}
-              onBlur={onBlur}
-              colorScheme={'green'}
-              //value={value}
+              colorScheme="green"
             >
-              1° CRPM
+              {data.uni_sigla}
             </Checkbox>
-          )}
-        />
-        <Controller
-          name="checkbox2crpm"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              //isChecked={selectedCheckboxGrandeOPMs === '2crpm'}
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('2crpm');
-                handleCheckbox(e.currentTarget.checked, options2CRPM);
-              }}
-              onBlur={onBlur}
-              colorScheme={'green'}
-              //value={value}
-            >
-              2° CRPM
-            </Checkbox>
-          )}
-        />
-        <Controller
-          name="checkbox3crpm"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              //isChecked={selectedCheckboxGrandeOPMs === '3crpm'}
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('3crpm');
-                handleCheckbox(e.currentTarget.checked, options3CRPM);
-              }}
-              onBlur={onBlur}
-              colorScheme={'green'}
-              //value={value}
-            >
-              3° CRPM
-            </Checkbox>
-          )}
-        />
-        <Controller
-          name="checkbox4crpm"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              //isChecked={selectedCheckboxGrandeOPMs === '4crpm'}
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('4crpm');
-                handleCheckbox(e.currentTarget.checked, options4CRPM);
-              }}
-              onBlur={onBlur}
-              colorScheme={'green'}
-              //value={value}
-            >
-              4° CRPM
-            </Checkbox>
-          )}
-        />
-        <Controller
-          name="checkboxcpchoque"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('4crpm');
-                handleCheckbox(e.currentTarget.checked, optionsCPCHOQUE);
-              }}
-              onBlur={onBlur}
-              colorScheme={'green'}
-              //value={value}
-            >
-              CPCHOQUE
-            </Checkbox>
-          )}
-        />
-        <Controller
-          name="checkboxcpraio"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('cpraio');
-                handleCheckbox(e.currentTarget.checked, optionsCPRAIO);
-              }}
-              onBlur={onBlur}
-              colorScheme={'green'}
-              //value={value}
-            >
-              CPRAIO
-            </Checkbox>
-          )}
-        />
-        <Controller
-          name="checkboxcpe"
-          control={control}
-          render={({ field: { onChange, onBlur, value } }) => (
-            <Checkbox
-              size="md"
-              onChange={e => {
-                handleCheckboxChangeGrandeOPM('cpe');
-                handleCheckbox(e.currentTarget.checked, optionsCPE);
-              }}
-              onBlur={onBlur}
-              colorScheme={'green'}
-              //value={value}
-            >
-              CPE
-            </Checkbox>
-          )}
-        />
+          </>
+        ))}
       </Flex>
       <Divider />
 
@@ -469,41 +218,38 @@ export const FormSolicitacaoPostos: React.FC = () => {
         >
           <Text w={'7vw'}>Busca por OPM:</Text>
         </Flex>
-        <Flex gap={1}>
+        <Flex gap={1} align={'center'} justify={'center'}>
           <Flex
-          //border={'1px solid red'}
+            //border={'1px solid red'}
+            w={'400px'}
           >
             <Controller
               name="select_opm"
               control={control}
-              render={({
-                field: { onChange, onBlur, value, ref },
-                fieldState: { error },
-              }) => {
-                return (
-                  <SelectPattern
-                    onChange={value => {
-                      onChange(value);
-                    }}
-                    onBlur={onBlur}
-                    w="30vw"
-                    options={optionsOPMs}
+              render={({ field, fieldState: { error } }) => (
+                <>
+                  <AsyncSelectComponent
+                    placeholder="Informe a OPM"
+                    nameLabel=""
+                    onChange={field.onChange}
                     error={error}
+                    //isOverwriting
+                    loadOptions={loadOptions}
+                    noOptionsMessage={'Nenhuma OPM encontrada'}
                   />
-                );
-              }}
+                </>
+              )}
             />
           </Flex>
           <Flex
           //border={'1px solid red'}
           >
             <Button
-              onClick={value => {
-                handleDeleteSelectAllOpm();
+              onClick={() => {
+                handleDeleteAllOpmCancel();
               }}
               colorScheme="blue"
               variant="outline"
-              //color={'#fff'}
             >
               Limpar
             </Button>
@@ -511,32 +257,25 @@ export const FormSolicitacaoPostos: React.FC = () => {
           <Flex
           //border={'1px solid red'}
           >
-            <Controller
-              name="button"
-              control={control}
-              render={({ field: { onChange, onBlur }, formState }) => (
-                <Button
-                  onClick={() => {
-                    const v = getValues('select_opm');
-                    if (v !== undefined && v !== null && v !== ('' as OPMs)) {
-                      handleSelectOpm((v as unknown) as OPMs);
-                    }
-                    //onChange(v);
-                  }}
-                  bgColor="#38A169"
-                  _hover={{
-                    bgColor: 'green',
-                    cursor: 'pointer',
-                    transition: '.5s',
-                  }}
-                  color="#fff"
-                  onBlur={onBlur}
-                  variant="ghost"
-                >
-                  Incluir
-                </Button>
-              )}
-            />
+            <Button
+              onClick={() => {
+                const v = getValues('select_opm');
+                if (v !== undefined && v !== null && v !== ('' as OPMs)) {
+                  handleSelectOpm((v as unknown) as OPMs);
+                }
+                //onChange(v);
+              }}
+              bgColor="#38A169"
+              _hover={{
+                bgColor: 'green',
+                cursor: 'pointer',
+                transition: '.5s',
+              }}
+              color="#fff"
+              variant="ghost"
+            >
+              Incluir
+            </Button>
           </Flex>
         </Flex>
       </Flex>
@@ -555,48 +294,37 @@ export const FormSolicitacaoPostos: React.FC = () => {
         p={2}
         gap={4}
       >
-        {opm.length > 0 &&
-          opm.map((item, index) => {
-            // Encontrar o rótulo correspondente usando o valor do item
-            const option = optionsOPMs.find(op => op.value === item.valueOf());
-
-            return (
-              <Flex key={index}>
-                <Controller
-                  name={`opmsLabel.${index}`}
-                  control={control}
-                  defaultValue={(option?.label || '') as OPMs}
-                  render={({ field: { onBlur, value, onChange } }) => (
-                    <>
-                      <Checkbox
-                        size="md"
-                        isChecked
-                        onBlur={onBlur}
-                        /* onChange={e => {
-                          const isChecked = e.target.checked;
-                          onChange(isChecked ? option?.label : '');
-                          () => handleDeleteOpm(item);
-                          if (!isChecked) {
-                          }
-                        }} */
-                        onChange={() => handleDeleteOpm(item)}
-                        colorScheme={'green'}
-                        //value={option?.value}
-                      >
-                        <Input
-                          value={option?.label || 'Item não encontrado'}
-                          onChange={e => onChange(e.target.value)}
-                          border={'none'}
-                          w={'50vw'}
-                          h={'2vh'}
-                        />
-                      </Checkbox>
-                    </>
-                  )}
-                />
-              </Flex>
-            );
-          })}
+        {datasOPMSapmChildren.map((item, index) => {
+          return (
+            <Flex key={index}>
+              <Controller
+                name={`opmsLabel.${index}`}
+                control={control}
+                render={({ field: { onBlur, onChange } }) => (
+                  <>
+                    <Checkbox
+                      size="md"
+                      isChecked
+                      onBlur={onBlur}
+                      onChange={async () => {
+                        await handleDeleteOpmModal(item);
+                      }}
+                      colorScheme={'green'}
+                    >
+                      <Input
+                        value={item.uni_nome || 'Item não encontrado'}
+                        onChange={e => onChange(e.target.value)}
+                        border={'none'}
+                        w={'50vw'}
+                        h={'2vh'}
+                      />
+                    </Checkbox>
+                  </>
+                )}
+              />
+            </Flex>
+          );
+        })}
       </Flex>
     </FormControl>
   );

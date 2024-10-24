@@ -5,12 +5,8 @@ import { DashButtons } from '../../componentesFicha/registrosMedicos/header';
 import { TitleSolicitacoes } from '../../componentesFicha/registrosMedicos/title';
 import { DadosFicha } from '../../ViewLogin';
 import { TableSolicitacoes } from '../table-solicitacoes';
-import {
-  columnsMapMilitar,
-  handleSortByPostoGrad,
-} from '../../../types/typesMilitar';
+import { columnsMapMilitar } from '../../../types/typesMilitar';
 import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
-import { FiSave } from 'react-icons/fi';
 import { Pagination } from '../pagination/Pagination';
 import { useSolicitacoesOPMPMs } from '../../../context/solicitacoesOPMPMsContext copy/useSolicitacoesOPMPMs';
 import { IoIosSend } from 'react-icons/io';

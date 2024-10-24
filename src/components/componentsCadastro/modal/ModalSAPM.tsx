@@ -34,16 +34,21 @@ import {
   optionsEsp,
   optionsOPMs,
 } from '../../../types/typesOPM';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
 import { FormEditarEfetivo } from '../formEfetivo/FormEditarEfetivo';
 import {
   columnsMapMilitar,
   handleSortByPostoGrad,
+  Militar,
   OPMOption,
 } from '../../../types/typesMilitar';
 import { TableFicha } from '../../componentesFicha/table';
 import { Militares_service } from '../../../context/requisitosContext/RequisitosContext';
 import { useMilitares } from '../../../context/militaresContext/useMilitares';
+import { CheckBoxPattern } from './CheckboxPattern';
+import { FormEfetivoBySearch } from '../formEfetivo/FormEfetivoBySearch';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { militarSchema } from '../../../types/yupMilitares/yupMilitares';
 
 interface IModal {
   isOpen: boolean;
@@ -60,7 +65,6 @@ export const ModalSAPM: React.FC<IModal> = ({
   select_opm,
   militaresRestantes,
 }) => {
-  const { control, reset, getValues } = useForm();
   const [selectedCheckbox, setSelectedCheckbox] = useState<
     'Todos' | 'especializadas' | 'POG' | 'Setores Administrativos' | null
   >(null);
@@ -74,13 +78,8 @@ export const ModalSAPM: React.FC<IModal> = ({
   ) => {
     setSelectedCheckbox(option);
   };
-  const headerKeysMilitar =
-    militaresRestantes.length > 0
-      ? Object.keys(militaresRestantes[0]).filter(key =>
-          ['matricula', 'posto_grad', 'nome_completo', 'opm'].includes(key),
-        )
-      : [];
-  const { loadLessMilitar, loadMoreMilitar } = useMilitares();
+
+  const { loadLessMilitar, loadMoreMilitar, loadPMToPlanilha } = useMilitares();
 
   const transformedMiltitares = militaresRestantes.map(militar => {
     const transformedMilitar: {
@@ -204,474 +203,418 @@ export const ModalSAPM: React.FC<IModal> = ({
       });
     }
   };
+  const methodsInput = useForm<Militar>({
+    resolver: yupResolver(militarSchema),
+  });
+  const { reset, control, getValues } = methodsInput;
+  const onSubmit = async (data: Militar) => {
+    loadPMToPlanilha(data);
+    onClose();
+    reset();
+  };
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent
-          w={'fit-content'}
-          //h={'fit-content'}
-          //h={'90vh'}
-          maxW="80vw"
-          minW="30vw"
-          maxH="90vh"
-          minH="fit-content"
-        >
-          <ModalHeader>
-            <Center>Adicionar OPM</Center>
-          </ModalHeader>
-          <ModalCloseButton />
-          <ModalBody justifyContent="center" padding={4} gap={4}>
-            <Tabs variant="enclosed">
-              <TabList>
-                <Tab>Adicionar em grupo</Tab>
-                <Tab>Adicionar individual</Tab>
-              </TabList>
-              <TabPanels>
-                <TabPanel>
-                  <Flex gap={4} flexDirection="row" h="50px">
-                    <Controller
-                      name="todos"
-                      control={control}
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <Checkbox
-                          size="md"
-                          //isChecked={selectedCheckbox === 'Todos'}
-                          onChange={e => {
-                            handleCheckboxChange('Todos');
-                            handleCheckbox(
-                              e.currentTarget.checked,
-                              optionsOPMs,
-                            );
-                            //console.log('', opm);
-                          }}
-                          onBlur={onBlur}
-                          value={value}
-                          colorScheme={'green'}
-                        >
-                          Todos
-                        </Checkbox>
-                      )}
-                    />
-                    <Controller
-                      name="checkboxespecializadas"
-                      control={control}
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <Checkbox
-                          size="md"
-                          //isChecked={selectedCheckbox === 'especializadas'}
-                          onChange={e => {
-                            handleCheckboxChange('especializadas');
-
-                            handleCheckbox(e.currentTarget.checked, optionsEsp);
-                            //console.log('', opm);
-                          }}
-                          onBlur={onBlur}
-                          value={value}
-                          colorScheme={'green'}
-                        >
-                          Especializadas
-                        </Checkbox>
-                      )}
-                    />
-                    <Checkbox
-                      size="md"
-                      //isChecked={selectedCheckbox === 'POG'}
-                      onChange={() => handleCheckboxChange('POG')}
-                    >
-                      POG
-                    </Checkbox>
-                    <Controller
-                      name="checkboxdgpi"
-                      control={control}
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <Checkbox
-                          size="md"
-                          /* isChecked={
-                            selectedCheckbox === 'Setores Administrativos'
-                          } */
-                          onChange={e => {
-                            handleCheckboxChange('Setores Administrativos');
-                            handleCheckbox(
-                              e.currentTarget.checked,
-                              optionsDPGI,
-                            );
-                            //console.log('', opm);
-                          }}
-                          onBlur={onBlur}
-                          value={value}
-                          colorScheme={'green'}
-                        >
-                          Setores Administrativos
-                        </Checkbox>
-                      )}
-                    />
-                  </Flex>
-
-                  <Divider />
-                  <Flex gap={4} h="50px">
-                    <Controller
-                      name="checkbox1crpm"
-                      control={control}
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <Checkbox
-                          size="md"
-                          //isChecked={selectedCheckboxGrandeOPMs === '1crpm'}
-                          onChange={e => {
-                            handleCheckboxChangeGrandeOPM('1crpm');
-                            handleCheckbox(
-                              e.currentTarget.checked,
-                              options1CRPM,
-                            );
-                            //console.log('', opm);
-                          }}
-                          onBlur={onBlur}
-                          value={value}
-                          colorScheme={'green'}
-                        >
-                          1° CRPM
-                        </Checkbox>
-                      )}
-                    />
-                    <Controller
-                      name="checkbox2crpm"
-                      control={control}
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <Checkbox
-                          size="md"
-                          //isChecked={selectedCheckboxGrandeOPMs === '2crpm'}
-                          onChange={e => {
-                            handleCheckboxChangeGrandeOPM('2crpm');
-                            handleCheckbox(
-                              e.currentTarget.checked,
-                              options2CRPM,
-                            );
-                          }}
-                          onBlur={onBlur}
-                          value={value}
-                          colorScheme={'green'}
-                        >
-                          2° CRPM
-                        </Checkbox>
-                      )}
-                    />
-                    <Controller
-                      name="checkbox3crpm"
-                      control={control}
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <Checkbox
-                          size="md"
-                          //isChecked={selectedCheckboxGrandeOPMs === '3crpm'}
-                          onChange={e => {
-                            handleCheckboxChangeGrandeOPM('3crpm');
-                            handleCheckbox(
-                              e.currentTarget.checked,
-                              options3CRPM,
-                            );
-                          }}
-                          onBlur={onBlur}
-                          value={value}
-                          colorScheme={'green'}
-                        >
-                          3° CRPM
-                        </Checkbox>
-                      )}
-                    />
-                    <Controller
-                      name="checkbox4crpm"
-                      control={control}
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <Checkbox
-                          size="md"
-                          //isChecked={selectedCheckboxGrandeOPMs === '4crpm'}
-                          onChange={e => {
-                            handleCheckboxChangeGrandeOPM('4crpm');
-                            handleCheckbox(
-                              e.currentTarget.checked,
-                              options4CRPM,
-                            );
-                          }}
-                          onBlur={onBlur}
-                          value={value}
-                          colorScheme={'green'}
-                        >
-                          4° CRPM
-                        </Checkbox>
-                      )}
-                    />
-                    <Controller
-                      name="checkboxcpchoque"
-                      control={control}
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <Checkbox
-                          size="md"
-                          onChange={e => {
-                            handleCheckboxChangeGrandeOPM('4crpm');
-                            handleCheckbox(
-                              e.currentTarget.checked,
-                              optionsCPCHOQUE,
-                            );
-                          }}
-                          onBlur={onBlur}
-                          value={value}
-                          colorScheme={'green'}
-                        >
-                          CPCHOQUE
-                        </Checkbox>
-                      )}
-                    />
-                    <Controller
-                      name="checkboxcpraio"
-                      control={control}
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <Checkbox
-                          size="md"
-                          onChange={e => {
-                            handleCheckboxChangeGrandeOPM('cpraio');
-                            handleCheckbox(
-                              e.currentTarget.checked,
-                              optionsCPRAIO,
-                            );
-                          }}
-                          onBlur={onBlur}
-                          value={value}
-                          colorScheme={'green'}
-                        >
-                          CPRAIO
-                        </Checkbox>
-                      )}
-                    />
-                    <Controller
-                      name="checkboxcpe"
-                      control={control}
-                      render={({ field: { onChange, onBlur, value } }) => (
-                        <Checkbox
-                          size="md"
-                          onChange={e => {
-                            handleCheckboxChangeGrandeOPM('cpe');
-                            handleCheckbox(e.currentTarget.checked, optionsCPE);
-                          }}
-                          onBlur={onBlur}
-                          value={value}
-                          colorScheme={'green'}
-                        >
-                          CPE
-                        </Checkbox>
-                      )}
-                    />
-                  </Flex>
-                  <Divider />
-
-                  <Flex
-                    flexDirection="row"
-                    w="100%"
-                    h="50px"
-                    //mt={2}
-                    align="center"
-                    justify={'center'}
-                    justifyContent="space-between"
-                  >
-                    <Flex
-                    //border={'1px solid red'}
-                    >
-                      <Text w={'7vw'}>Busca por OPM:</Text>
-                    </Flex>
-                    <Flex gap={1}>
-                      <Flex
-                      //border={'1px solid red'}
-                      >
+        <FormProvider {...methodsInput}>
+          <form onSubmit={methodsInput.handleSubmit(onSubmit)}>
+            <ModalContent
+              w={'fit-content'}
+              //h={'fit-content'}
+              //h={'90vh'}
+              maxW="80vw"
+              minW="30vw"
+              maxH="90vh"
+              minH="fit-content"
+            >
+              <ModalHeader>
+                <Center>Adicionar OPM</Center>
+              </ModalHeader>
+              <ModalCloseButton />
+              <ModalBody justifyContent="center" padding={4} gap={4}>
+                <Tabs variant="enclosed">
+                  <TabList>
+                    <Tab>Adicionar em grupo</Tab>
+                    <Tab>Adicionar individual</Tab>
+                  </TabList>
+                  <TabPanels>
+                    <TabPanel>
+                      <Divider />
+                      <Flex gap={4} h="50px">
                         <Controller
-                          name="select_opm"
-                          control={control}
-                          render={({
-                            field: { onChange, onBlur, value, ref },
-                            fieldState: { error },
-                          }) => {
-                            return (
-                              <SelectPattern
-                                onChange={value => {
-                                  onChange(value);
-                                  // handleSelectOpm(value as OPMs);
-                                }}
-                                onBlur={onBlur}
-                                w="30vw"
-                                options={optionsOPMs}
-                                error={error}
-                              />
-                            );
-                          }}
-                        />
-                      </Flex>
-                      <Flex
-                      //border={'1px solid red'}
-                      >
-                        <Controller
-                          name="button_apagar"
+                          name="todos"
                           control={control}
                           render={({ field: { onChange, onBlur } }) => (
-                            <Button
-                              onClick={value => {
-                                const v = getValues('select_opm');
-                                onChange(value);
-                                handleDeleteSelectAllOpm();
-                              }}
-                              colorScheme="blue"
-                              variant="outline"
-                              //color={'#fff'}
+                            <CheckBoxPattern
+                              onChange={onChange}
+                              handleCheckbox={handleCheckbox}
+                              handleCheckboxChange={() =>
+                                handleCheckboxChange('Todos')
+                              }
                               onBlur={onBlur}
-                            >
-                              Limpar
-                            </Button>
+                              //value={value}
+                              labelCheckbox={'Todos'}
+                              optionsOPMs={optionsOPMs}
+                            />
                           )}
                         />
-                      </Flex>
-                      <Flex
-                      //border={'1px solid red'}
-                      >
                         <Controller
-                          name="button"
+                          name="checkbox1crpm"
                           control={control}
-                          render={({
-                            field: { onChange, onBlur },
-                            formState,
-                          }) => (
-                            <Button
-                              onClick={() => {
-                                const v = getValues('select_opm');
-                                if (v !== undefined && v !== null && v !== '') {
-                                  handleSelectOpm(v as OPMs);
-                                }
-                                onChange(v);
-                              }}
-                              bgColor="#38A169"
-                              color="#fff"
+                          render={({ field: { onChange, onBlur } }) => (
+                            <CheckBoxPattern
+                              onChange={onChange}
+                              handleCheckbox={handleCheckbox}
+                              handleCheckboxChangeGrandeOPM={() =>
+                                handleCheckboxChangeGrandeOPM('1crpm')
+                              }
                               onBlur={onBlur}
-                              variant="ghost"
-                            >
-                              Incluir
-                            </Button>
+                              //value={value}
+                              labelCheckbox={'1° CRPM'}
+                              optionsOPMs={options1CRPM}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="checkbox2crpm"
+                          control={control}
+                          render={({ field: { onChange, onBlur } }) => (
+                            <CheckBoxPattern
+                              onChange={onChange}
+                              handleCheckbox={handleCheckbox}
+                              handleCheckboxChangeGrandeOPM={() =>
+                                handleCheckboxChangeGrandeOPM('2crpm')
+                              }
+                              onBlur={onBlur}
+                              //value={value}
+                              labelCheckbox={'2° CRPM'}
+                              optionsOPMs={options2CRPM}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="checkbox3crpm"
+                          control={control}
+                          render={({ field: { onChange, onBlur } }) => (
+                            <CheckBoxPattern
+                              onChange={onChange}
+                              handleCheckbox={handleCheckbox}
+                              handleCheckboxChangeGrandeOPM={() =>
+                                handleCheckboxChangeGrandeOPM('3crpm')
+                              }
+                              onBlur={onBlur}
+                              //value={value}
+                              labelCheckbox={'3° CRPM'}
+                              optionsOPMs={options3CRPM}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="checkbox4crpm"
+                          control={control}
+                          render={({ field: { onChange, onBlur } }) => (
+                            <CheckBoxPattern
+                              onChange={onChange}
+                              handleCheckbox={handleCheckbox}
+                              handleCheckboxChangeGrandeOPM={() =>
+                                handleCheckboxChangeGrandeOPM('4crpm')
+                              }
+                              onBlur={onBlur}
+                              //value={value}
+                              labelCheckbox={'4° CRPM'}
+                              optionsOPMs={options4CRPM}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="checkboxcpchoque"
+                          control={control}
+                          render={({ field: { onChange, onBlur } }) => (
+                            <CheckBoxPattern
+                              onChange={onChange}
+                              handleCheckbox={handleCheckbox}
+                              handleCheckboxChangeGrandeOPM={() =>
+                                handleCheckboxChangeGrandeOPM('cpchoque')
+                              }
+                              onBlur={onBlur}
+                              //value={value}
+                              labelCheckbox={'CPCHOQUE'}
+                              optionsOPMs={optionsCPCHOQUE}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="checkboxcpraio"
+                          control={control}
+                          render={({ field: { onChange, onBlur } }) => (
+                            <CheckBoxPattern
+                              onChange={onChange}
+                              handleCheckbox={handleCheckbox}
+                              handleCheckboxChangeGrandeOPM={() =>
+                                handleCheckboxChangeGrandeOPM('cpraio')
+                              }
+                              onBlur={onBlur}
+                              //value={value}
+                              labelCheckbox={'CPRAIO'}
+                              optionsOPMs={optionsCPRAIO}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="checkboxcpe"
+                          control={control}
+                          render={({ field: { onChange, onBlur } }) => (
+                            <CheckBoxPattern
+                              onChange={onChange}
+                              handleCheckbox={handleCheckbox}
+                              handleCheckboxChangeGrandeOPM={() =>
+                                handleCheckboxChangeGrandeOPM('cpe')
+                              }
+                              onBlur={onBlur}
+                              //value={value}
+                              labelCheckbox={'CPE'}
+                              optionsOPMs={optionsCPE}
+                            />
+                          )}
+                        />
+                        <Controller
+                          name="checkboxdgpi"
+                          control={control}
+                          render={({ field: { onChange, onBlur } }) => (
+                            <CheckBoxPattern
+                              onChange={onChange}
+                              handleCheckbox={handleCheckbox}
+                              handleCheckboxChange={() =>
+                                handleCheckboxChange('Setores Administrativos')
+                              }
+                              onBlur={onBlur}
+                              //value={value}
+                              labelCheckbox={'Setores Instrumentais'}
+                              optionsOPMs={optionsDPGI}
+                            />
                           )}
                         />
                       </Flex>
-                    </Flex>
-                  </Flex>
-                  <Divider />
+                      <Divider />
 
-                  <Flex
-                    border="1px solid rgba(0, 0, 0, 0.16)"
-                    borderRadius="5px"
-                    minH="60px"
-                    maxH={'20vh'}
-                    w={'full'}
-                    overflowX={'auto'}
-                    //h={'60vh'}
-                    flexDirection={'column'}
-                    mt={4}
-                    p={2}
-                    gap={4}
-                  >
-                    {opm.length > 0 &&
-                      opm.map((item, index) => {
-                        // Encontrar o rótulo correspondente usando o valor do item
-                        const option = optionsOPMs.find(
-                          op => op.value === item.valueOf(),
-                        );
-
-                        return (
-                          <Flex key={index}>
+                      <Flex
+                        flexDirection="row"
+                        w="100%"
+                        h="50px"
+                        //mt={2}
+                        align="center"
+                        justify={'center'}
+                        justifyContent="space-between"
+                      >
+                        <Flex
+                        //border={'1px solid red'}
+                        >
+                          <Text w={'7vw'}>Busca por OPM:</Text>
+                        </Flex>
+                        <Flex gap={1}>
+                          <Flex
+                          //border={'1px solid red'}
+                          >
                             <Controller
-                              name={`checkbox-${index}`}
+                              name="select_opm"
                               control={control}
-                              render={({ field: { onBlur } }) => (
-                                <>
-                                  <Checkbox
-                                    size="md"
-                                    isChecked
+                              render={({
+                                field: { onChange, onBlur, value, ref },
+                                fieldState: { error },
+                              }) => {
+                                return (
+                                  <SelectPattern
+                                    onChange={value => {
+                                      onChange(value);
+                                      // handleSelectOpm(value as OPMs);
+                                    }}
                                     onBlur={onBlur}
-                                    onChange={() => handleDeleteOpm(item)}
-                                    colorScheme={'green'}
-                                  >
-                                    {option?.label || 'Item não encontrado'}
-                                  </Checkbox>
-                                </>
+                                    w="30vw"
+                                    options={optionsOPMs}
+                                    error={error}
+                                  />
+                                );
+                              }}
+                            />
+                          </Flex>
+                          <Flex
+                          //border={'1px solid red'}
+                          >
+                            <Controller
+                              name="button_apagar"
+                              control={control}
+                              render={({ field: { onChange, onBlur } }) => (
+                                <Button
+                                  onClick={value => {
+                                    const v = getValues('select_opm');
+                                    onChange(value);
+                                    handleDeleteSelectAllOpm();
+                                  }}
+                                  colorScheme="blue"
+                                  variant="outline"
+                                  //color={'#fff'}
+                                  onBlur={onBlur}
+                                >
+                                  Limpar
+                                </Button>
                               )}
                             />
                           </Flex>
-                        );
-                      })}
-                  </Flex>
-                  <Flex
-                    border="1px solid rgba(0, 0, 0, 0.16)"
-                    borderRadius="5px"
-                    minH="200px"
-                    w={'full'}
-                    overflowX={'auto'}
-                    mt={4}
-                    p={2}
-                    gap={4}
-                  >
-                    {/* <TableFicha
+                          <Flex
+                          //border={'1px solid red'}
+                          >
+                            <Controller
+                              name="button"
+                              control={control}
+                              render={({
+                                field: { onChange, onBlur },
+                                formState,
+                              }) => (
+                                <Button
+                                  onClick={() => {
+                                    const v = getValues('select_opm');
+                                    if (
+                                      v !== undefined &&
+                                      v !== null &&
+                                      v !== ''
+                                    ) {
+                                      handleSelectOpm(v as OPMs);
+                                    }
+                                    onChange(v);
+                                  }}
+                                  bgColor="#38A169"
+                                  color="#fff"
+                                  onBlur={onBlur}
+                                  variant="ghost"
+                                >
+                                  Incluir
+                                </Button>
+                              )}
+                            />
+                          </Flex>
+                        </Flex>
+                      </Flex>
+                      <Divider />
+
+                      <Flex
+                        border="1px solid rgba(0, 0, 0, 0.16)"
+                        borderRadius="5px"
+                        minH="60px"
+                        maxH={'20vh'}
+                        w={'full'}
+                        overflowX={'auto'}
+                        //h={'60vh'}
+                        flexDirection={'column'}
+                        mt={4}
+                        p={2}
+                        gap={4}
+                      >
+                        {opm.length > 0 &&
+                          opm.map((item, index) => {
+                            // Encontrar o rótulo correspondente usando o valor do item
+                            const option = optionsOPMs.find(
+                              op => op.value === item.valueOf(),
+                            );
+
+                            return (
+                              <Flex key={index}>
+                                <Controller
+                                  name={`checkbox-${index}`}
+                                  control={control}
+                                  render={({ field: { onBlur } }) => (
+                                    <>
+                                      <Checkbox
+                                        size="md"
+                                        isChecked
+                                        onBlur={onBlur}
+                                        onChange={() => handleDeleteOpm(item)}
+                                        colorScheme={'green'}
+                                      >
+                                        {option?.label || 'Item não encontrado'}
+                                      </Checkbox>
+                                    </>
+                                  )}
+                                />
+                              </Flex>
+                            );
+                          })}
+                      </Flex>
+                      <Flex
+                        border="1px solid rgba(0, 0, 0, 0.16)"
+                        borderRadius="5px"
+                        minH="200px"
+                        w={'full'}
+                        overflowX={'auto'}
+                        mt={4}
+                        p={2}
+                        gap={4}
+                      >
+                        {/* <TableFicha
                       isOpen={militaresRestantes.length > 0}
                       columns={headerKeysMilitar}
                       registers={handleSortByPostoGrad()}
                       currentPosition={50}
                       rowsPerLoad={0}
                     /> */}
-                    <TableFicha
-                      isOpen={militaresRestantes.length > 0}
-                      columns={[
-                        'Matrícula',
-                        'Posto/Graduação',
-                        'Nome Completo',
-                        'Unidade',
-                      ]}
-                      registers={handleSortByPostoGrad(
-                        transformedMiltitares,
-                        '1',
-                      )}
-                      currentPosition={0}
-                      rowsPerLoad={100}
-                      lessLoad={loadLessMilitar}
-                      moreLoad={loadMoreMilitar}
-                      isCheckBox={true}
-                    />
-                  </Flex>
-                </TabPanel>
-                <TabPanel>
-                  <FormEditarEfetivo />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-          </ModalBody>
+                        <TableFicha
+                          isOpen={militaresRestantes.length > 0}
+                          columns={[
+                            'Matrícula',
+                            'Posto/Graduação',
+                            'Nome Completo',
+                            'Unidade',
+                          ]}
+                          registers={handleSortByPostoGrad(
+                            transformedMiltitares,
+                            '1',
+                          )}
+                          currentPosition={0}
+                          rowsPerLoad={100}
+                          lessLoad={loadLessMilitar}
+                          moreLoad={loadMoreMilitar}
+                          isCheckBox={true}
+                        />
+                      </Flex>
+                    </TabPanel>
+                    <TabPanel>
+                      <FormEditarEfetivo />
 
-          <ModalFooter>
-            <Button
-              colorScheme="red"
-              mr={3}
-              onClick={() => {
-                onClose();
-                reset();
-                handleDeleteSelectAllOpmCancel();
-              }}
-            >
-              Cancelar
-            </Button>
-            <Button
-              variant="ghost"
-              bgColor=" #38A169"
-              _hover={{
-                bgColor: 'green',
-                cursor: 'pointer',
-                transition: '.5s',
-              }}
-              color="#fff"
-              type="submit"
-              onClick={reset}
-            >
-              Importar
-            </Button>
-          </ModalFooter>
-        </ModalContent>
+                      {/* <FormEfetivoBySearch /> */}
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
+              </ModalBody>
+
+              <ModalFooter>
+                <Button
+                  colorScheme="red"
+                  mr={3}
+                  onClick={() => {
+                    onClose();
+                    reset();
+                    handleDeleteSelectAllOpmCancel();
+                  }}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant="ghost"
+                  bgColor=" #38A169"
+                  _hover={{
+                    bgColor: 'green',
+                    cursor: 'pointer',
+                    transition: '.5s',
+                  }}
+                  color="#fff"
+                  type="submit"
+                  onClick={reset}
+                >
+                  Importar
+                </Button>
+              </ModalFooter>
+            </ModalContent>
+          </form>
+        </FormProvider>
       </Modal>
     </>
   );
