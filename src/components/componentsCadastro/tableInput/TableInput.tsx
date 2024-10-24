@@ -19,7 +19,12 @@ import { TdTable } from '../tableOPMs/td';
 import { IconeDeletar } from '../../componentesFicha/registrosMedicos/icones/iconeDeletar';
 import { OPMs, optionsOPMs } from '../../../types/typesOPM';
 import { useEfetivoOPMs } from '../../../context/efetivoOPMs/useEfetivoOPMs';
-
+type opmSaPM = {
+  uni_codigo_pai: number;
+  uni_codigo: number;
+  uni_sigla: string;
+  uni_nome: string;
+};
 interface ITable {
   isOpen?: boolean;
   isActions?: boolean;
@@ -35,12 +40,12 @@ interface ITable {
   isCheckBox?: boolean;
   customIcons?: React.ReactNode[];
   handleDeleteOpm: (option: any) => void;
-  opmDatas: string[];
+  opmDatas: opmSaPM[];
 }
 
 export type IForm = {
   input: string[];
-  opmDatas: string[];
+  opmDatas: opmSaPM[];
 };
 
 export const TableInput: React.FC<ITable> = ({
@@ -116,40 +121,6 @@ export const TableInput: React.FC<ITable> = ({
         overflowY="auto"
       >
         <Table variant="simple">
-          {/* <TableCaption textAlign="left" p={0}>
-            <Flex justify="space-between">
-              {start}-{end} de {opmDatas.length} itens
-              <Flex p={0} color="rgba(52, 64, 84, 1)">
-                <Button
-                  mr={2}
-                  fontSize="12px"
-                  fontWeight="none"
-                  bg="none"
-                  border="1px solid"
-                  borderColor="rgba(208, 213, 221, 1)"
-                  borderRadius="8px"
-                  color="rgba(52, 64, 84, 1)"
-                  onClick={lessLoad}
-                  disabled={currentPosition <= rowsPerLoad}
-                >
-                  Anterior
-                </Button>
-                <Button
-                  ml={2}
-                  fontSize="12px"
-                  fontWeight="none"
-                  bg="none"
-                  border="1px solid"
-                  borderColor="rgba(208, 213, 221, 1)"
-                  color="rgba(52, 64, 84, 1)"
-                  borderRadius="8px"
-                  onClick={moreLoad}
-                >
-                  Próximo
-                </Button>
-              </Flex>
-            </Flex>
-          </TableCaption> */}
           <Thead>
             <Tr
               borderTop="1px solid rgba(234, 236, 240, 1)"
@@ -213,20 +184,12 @@ export const TableInput: React.FC<ITable> = ({
                   </Td>
 
                   <Td>
-                    <Flex
-                      //w={'fit-content'}
-                      //border={'1px solid red'}
-                      align="center"
-                      justify="center"
-                      gap={2}
-                    >
-                      {optionsOPMs
-                        .filter(op => opmDatas[index] === op.value)
-                        .map(filteredOption => (
-                          <span key={filteredOption.value}>
-                            {filteredOption.label}
-                          </span>
-                        ))}
+                    <Flex align="center" justify="center" gap={2}>
+                      <span key={opmDatas[index].uni_sigla}>
+                        {opmDatas[index].uni_sigla +
+                          ' - ' +
+                          opmDatas[index].uni_nome}
+                      </span>
                     </Flex>
                   </Td>
                   {isActions && (
@@ -236,7 +199,7 @@ export const TableInput: React.FC<ITable> = ({
                           key={index}
                           label_tooltip="OPM"
                           handleDelete={async () => {
-                            handleDeleteOpm(opmDatas[index]);
+                            handleDeleteOpm(opmDatas[index].uni_codigo);
                             remove(index);
                           }}
                         />,

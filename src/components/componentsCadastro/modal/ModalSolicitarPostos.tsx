@@ -48,7 +48,7 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
         const option = optionsOPMs.find(o => o.label === op.valueOf());
         return option ? option.value : null;
       })
-      .filter(Boolean); // Remove valores nulos
+      .filter(Boolean);
 
     const dados = {
       opms,

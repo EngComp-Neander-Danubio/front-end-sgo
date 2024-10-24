@@ -11,57 +11,47 @@ import {
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { OptionType, SelectPattern } from './SelectPattern';
-import { OPMOption } from '../../../types/typesMilitar';
-import {
-  optionsOPMs,
-  optionsEsp,
-  optionsDPGI,
-  options1CRPM,
-  options2CRPM,
-  options3CRPM,
-  options4CRPM,
-  optionsCPCHOQUE,
-  optionsCPRAIO,
-  optionsCPE,
-  OPMs,
-} from '../../../types/typesOPM';
+import { OPMOption, options } from '../../../types/typesMilitar';
+import { OPMs } from '../../../types/typesOPM';
 import { DatePickerEvent } from '../formGrandeEvento/DatePickerEvent';
 import { TableInput } from '../tableInput/TableInput';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
 import { Pagination } from '../pagination/Pagination';
 import { TableSolicitacoes } from '../table-solicitacoes';
 import { CheckBoxPattern } from './CheckboxPattern';
-
+import { useEvents } from '../../../context/eventContext/useEvents';
+import AsyncSelectComponent from '../formEfetivo/AsyncSelectComponent';
+import { OptionsOrGroups, GroupBase } from 'react-select';
+type opmSaPM = {
+  uni_codigo_pai: number;
+  uni_codigo: number;
+  uni_sigla: string;
+  uni_nome: string;
+};
 interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
-  opmsLabel: OPMs[];
+  opmsLabel: opmSaPM[];
+  select_opm: opmSaPM;
+  checkbox: opmSaPM[];
   input: string[];
-  checkboxespecializadas: boolean;
-  checkboxdgpi: boolean;
-  checkbox1crpm: boolean;
-  checkbox2crpm: boolean;
-  checkbox3crpm: boolean;
-  checkbox4crpm: boolean;
-  checkboxcpchoque: boolean;
-  checkboxcpraio: boolean;
-  checkboxcpe: boolean;
-  button_apagar: any;
-  button: any;
 }
 export const FormSolicitacaoEfetivo: React.FC = () => {
   const { control, reset } = useFormContext<SolicitacaoForm>();
   const [opm, setOPM] = useState<OPMs[]>([]);
   const methodsInput = useFormContext();
   const { getValues, setValue } = methodsInput;
+  const {
+    loadIdsFromOPMsChildren,
+    datasOPMSapm,
+    datasOPMSapmChildren,
+    handleDeleteOpmModal,
+    handleDeleteSelectAllOpm,
+    handleDeleteOpmFromSameFather,
+    loadOPMfromLocal,
+  } = useEvents();
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
-  const [selectedCheckbox, setSelectedCheckbox] = useState<
-    'Todos' | 'especializadas' | 'POG' | 'Setores Administrativos' | null
-  >(null);
-  const [selectedCheckboxGrandeOPMs, setSelectedCheckboxGrandeOPMs] = useState<
-    OPMOption
-  >(null);
 
   useEffect(() => {
     opm.forEach((_, index) => {
@@ -82,9 +72,23 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
   useEffect(() => {
     setValue('dataInicio', startDate || new Date());
   }, [startDate, setValue]);
+  const handleDeleteAllOpmCancel = async () => {
+    await handleDeleteSelectAllOpm();
+  };
+  const toast = useToast();
+  const handleCheckboxChangeGrandeOPM = async (option: string) => {
+    const dados = datasOPMSapm.find(o => o.uni_sigla.includes(option));
+    if (!dados) {
+      throw new Error('Grande Comando não encontrado');
+    }
+    await loadIdsFromOPMsChildren(dados.uni_codigo);
+  };
 
-  const handleSelectOpm = (option: OPMs) => {
-    if (opm.find(o => o.valueOf() === option.valueOf())) {
+  const handleSelectOpm = async (data: opmSaPM) => {
+    const dataExists = datasOPMSapmChildren.some(
+      dataValue => dataValue.uni_codigo === data.uni_codigo,
+    );
+    if (dataExists) {
       toast({
         title: 'OPM já inclusa.',
         description: 'OPM já incluída.',
@@ -103,99 +107,25 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
         isClosable: true,
         position: 'top-right',
       });
-      setOPM(prev => [...prev, option]);
+      await loadOPMfromLocal(data);
     }
+  };
+  const loadOptions = async (
+    inputValue: string,
+  ): Promise<OptionsOrGroups<
+    { label: string; value: string },
+    GroupBase<{ label: string; value: string }>
+  >> => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        const filteredOptions = options.filter(option =>
+          option.label.toLowerCase().includes(inputValue.toLowerCase()),
+        );
 
-    console.log(opm);
-  };
-  /* const handleInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.currentTarget.value);
-  }, []); */
-  const toast = useToast();
-  const handleCheckboxChange = (
-    option: 'Todos' | 'especializadas' | 'POG' | 'Setores Administrativos',
-  ) => {
-    setSelectedCheckbox(option);
-  };
-  const handleCheckboxChangeGrandeOPM = (
-    option:
-      | '1crpm'
-      | '2crpm'
-      | '3crpm'
-      | '4crpm'
-      | 'cpchoque'
-      | 'cpe'
-      | 'cpraio',
-  ) => {
-    setSelectedCheckboxGrandeOPMs(option);
-  };
-  const handleCheckbox = (e: any, value: OptionType) => {
-    if (e === true) {
-      setOPM(prev => [
-        ...prev,
-        ...value.map(option => {
-          return option.value;
-        }),
-      ]);
-    } else {
-      setOPM(prev =>
-        prev.filter(option => !value.some(o => o.value === option)),
-      );
-    }
-  };
-
-  const handleDeleteOpm = (option: OPMs) => {
-    const indexDeletedOpm = opm.findIndex(o => o.includes(option));
-    if (indexDeletedOpm < 0) {
-      toast({
-        title: 'Erro!',
-        description: 'OPM não encontrada na lista.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'top-right',
-      });
-      return;
-    }
-    const updatedOpm = opm.filter(o => !o.includes(option));
-    //console.log({ option, opm, indexDeletedOpm, updatedOpm });
-    if (updatedOpm.length !== opm.length) {
-      setOPM(updatedOpm);
-      toast({
-        title: 'Exclusão de OPMs.',
-        description: 'OPM excluída com sucesso.',
-        status: 'success',
-        duration: 5000,
-        isClosable: true,
-        position: 'top-right',
-      });
-    }
-  };
-
-  const handleDeleteSelectAllOpm = () => {
-    try {
-      if (opm.length > 0) {
-        setOPM([]);
-        reset();
-        toast({
-          title: 'Exclusão de OPMs.',
-          description: 'OPMs excluída com sucesso.',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-          position: 'top-right',
-        });
-      }
-    } catch (err) {
-      toast({
-        title: 'Erro!',
-        description: 'OPM não encontrada na lista.',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'top-right',
-      });
-    }
+        resolve(filteredOptions);
+        //setDataValue(filteredOptions);
+      }, 1000);
+    });
   };
 
   return (
@@ -261,157 +191,35 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
       </Flex>
       <Divider />
       <Flex gap={4} h="50px">
-        <Controller
-          name="todos"
-          control={control}
-          render={({ field: { onChange, onBlur } }) => (
-            <CheckBoxPattern
-              onChange={onChange}
-              handleCheckbox={handleCheckbox}
-              handleCheckboxChange={() => handleCheckboxChange('Todos')}
-              onBlur={onBlur}
-              //value={value}
-              labelCheckbox={'Todos'}
-              optionsOPMs={optionsOPMs}
-            />
-          )}
-        />
-        <Controller
-          name="checkbox1crpm"
-          control={control}
-          render={({ field: { onChange, onBlur } }) => (
-            <CheckBoxPattern
-              onChange={onChange}
-              handleCheckbox={handleCheckbox}
-              handleCheckboxChangeGrandeOPM={() =>
-                handleCheckboxChangeGrandeOPM('1crpm')
-              }
-              onBlur={onBlur}
-              //value={value}
-              labelCheckbox={'1° CRPM'}
-              optionsOPMs={options1CRPM}
-            />
-          )}
-        />
-        <Controller
-          name="checkbox2crpm"
-          control={control}
-          render={({ field: { onChange, onBlur } }) => (
-            <CheckBoxPattern
-              onChange={onChange}
-              handleCheckbox={handleCheckbox}
-              handleCheckboxChangeGrandeOPM={() =>
-                handleCheckboxChangeGrandeOPM('2crpm')
-              }
-              onBlur={onBlur}
-              //value={value}
-              labelCheckbox={'2° CRPM'}
-              optionsOPMs={options2CRPM}
-            />
-          )}
-        />
-        <Controller
-          name="checkbox3crpm"
-          control={control}
-          render={({ field: { onChange, onBlur } }) => (
-            <CheckBoxPattern
-              onChange={onChange}
-              handleCheckbox={handleCheckbox}
-              handleCheckboxChangeGrandeOPM={() =>
-                handleCheckboxChangeGrandeOPM('3crpm')
-              }
-              onBlur={onBlur}
-              //value={value}
-              labelCheckbox={'3° CRPM'}
-              optionsOPMs={options3CRPM}
-            />
-          )}
-        />
-        <Controller
-          name="checkbox4crpm"
-          control={control}
-          render={({ field: { onChange, onBlur } }) => (
-            <CheckBoxPattern
-              onChange={onChange}
-              handleCheckbox={handleCheckbox}
-              handleCheckboxChangeGrandeOPM={() =>
-                handleCheckboxChangeGrandeOPM('4crpm')
-              }
-              onBlur={onBlur}
-              //value={value}
-              labelCheckbox={'4° CRPM'}
-              optionsOPMs={options4CRPM}
-            />
-          )}
-        />
-        <Controller
-          name="checkboxcpchoque"
-          control={control}
-          render={({ field: { onChange, onBlur } }) => (
-            <CheckBoxPattern
-              onChange={onChange}
-              handleCheckbox={handleCheckbox}
-              handleCheckboxChangeGrandeOPM={() =>
-                handleCheckboxChangeGrandeOPM('cpchoque')
-              }
-              onBlur={onBlur}
-              //value={value}
-              labelCheckbox={'CPCHOQUE'}
-              optionsOPMs={optionsCPCHOQUE}
-            />
-          )}
-        />
-        <Controller
-          name="checkboxcpraio"
-          control={control}
-          render={({ field: { onChange, onBlur } }) => (
-            <CheckBoxPattern
-              onChange={onChange}
-              handleCheckbox={handleCheckbox}
-              handleCheckboxChangeGrandeOPM={() =>
-                handleCheckboxChangeGrandeOPM('cpraio')
-              }
-              onBlur={onBlur}
-              //value={value}
-              labelCheckbox={'CPRAIO'}
-              optionsOPMs={optionsCPRAIO}
-            />
-          )}
-        />
-        <Controller
-          name="checkboxcpe"
-          control={control}
-          render={({ field: { onChange, onBlur } }) => (
-            <CheckBoxPattern
-              onChange={onChange}
-              handleCheckbox={handleCheckbox}
-              handleCheckboxChangeGrandeOPM={() =>
-                handleCheckboxChangeGrandeOPM('cpe')
-              }
-              onBlur={onBlur}
-              //value={value}
-              labelCheckbox={'CPE'}
-              optionsOPMs={optionsCPE}
-            />
-          )}
-        />
-        <Controller
-          name="checkboxdgpi"
-          control={control}
-          render={({ field: { onChange, onBlur } }) => (
-            <CheckBoxPattern
-              onChange={onChange}
-              handleCheckbox={handleCheckbox}
-              handleCheckboxChange={() =>
-                handleCheckboxChange('Setores Administrativos')
-              }
-              onBlur={onBlur}
-              //value={value}
-              labelCheckbox={'Setores Instrumentais'}
-              optionsOPMs={optionsDPGI}
-            />
-          )}
-        />
+        <Checkbox
+          colorScheme="green"
+          onChange={async e => {
+            if (e.target.checked) {
+              datasOPMSapm.map(async v => {
+                await loadIdsFromOPMsChildren(v.uni_codigo);
+              });
+            }
+          }}
+        >
+          Todos
+        </Checkbox>
+        {datasOPMSapm.map((data, index) => (
+          <>
+            <Checkbox
+              key={index}
+              onChange={async e => {
+                if (e.currentTarget.checked) {
+                  await handleCheckboxChangeGrandeOPM(data.uni_sigla);
+                } else {
+                  await handleDeleteOpmFromSameFather(data);
+                }
+              }}
+              colorScheme="green"
+            >
+              {data.uni_sigla}
+            </Checkbox>
+          </>
+        ))}
       </Flex>
       <Divider />
       <Flex
@@ -430,80 +238,66 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
         </Flex>
         <Flex gap={1}>
           <Flex
-          //border={'1px solid red'}
+            //border={'1px solid red'}
+            w={'25vw'}
           >
             <Controller
               name="select_opm"
               control={control}
-              render={({
-                field: { onChange, onBlur, value, ref },
-                fieldState: { error },
-              }) => {
-                return (
-                  <SelectPattern
-                    onChange={value => {
-                      onChange(value);
-                    }}
-                    onBlur={onBlur}
-                    w="30vw"
-                    options={optionsOPMs}
+              render={({ field, fieldState: { error } }) => (
+                <>
+                  <AsyncSelectComponent
+                    placeholder="Buscar por OPM"
+                    nameLabel=""
+                    onChange={field.onChange}
                     error={error}
+                    //isOverwriting
+                    loadOptions={loadOptions}
+                    noOptionsMessage={'Nenhuma OPM encontrada'}
                   />
-                );
-              }}
-            />
-          </Flex>
-          <Flex
-          //border={'1px solid red'}
-          >
-            <Controller
-              name="button_apagar"
-              control={control}
-              render={({ field: { onChange, onBlur } }) => (
-                <Button
-                  onClick={value => {
-                    onChange(value);
-                    handleDeleteSelectAllOpm();
-                  }}
-                  colorScheme="blue"
-                  variant="outline"
-                  //color={'#fff'}
-                  onBlur={onBlur}
-                >
-                  Limpar
-                </Button>
+                </>
               )}
             />
           </Flex>
           <Flex
-          //border={'1px solid red'}
+            //border={'1px solid red'}
+            gap={1}
+            align={'center'}
+            justify={'center'}
           >
-            <Controller
-              name="button"
-              control={control}
-              render={({ field: { onChange, onBlur }, formState }) => (
-                <Button
-                  onClick={() => {
-                    const v = getValues('select_opm');
-                    if (v !== undefined && v !== null && v !== '') {
-                      handleSelectOpm((v as unknown) as OPMs);
-                    }
-                    //onChange(v);
-                  }}
-                  bgColor=" #38A169"
-                  _hover={{
-                    bgColor: 'green',
-                    cursor: 'pointer',
-                    transition: '.5s',
-                  }}
-                  color="#fff"
-                  onBlur={onBlur}
-                  variant="ghost"
-                >
-                  Incluir
-                </Button>
-              )}
-            />
+            <Flex
+            //border={'1px solid red'}
+            >
+              <Button
+                onClick={() => {
+                  handleDeleteAllOpmCancel();
+                }}
+                colorScheme="blue"
+                variant="outline"
+              >
+                Limpar
+              </Button>
+            </Flex>
+            <Flex
+            //border={'1px solid red'}
+            >
+              <Button
+                onClick={() => {
+                  const v = getValues('select_opm');
+                  handleSelectOpm(v);
+                }}
+                bgColor="#38A169"
+                _hover={{
+                  bgColor: 'green',
+                  cursor: 'pointer',
+                  transition: '.5s',
+                }}
+                color="#fff"
+                variant="ghost"
+              >
+                Incluir
+              </Button>
+            </Flex>
           </Flex>
         </Flex>
       </Flex>
@@ -553,7 +347,9 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
             onClick={async () => {
               methodsInput.setValue(
                 'input',
-                opm.map(() => methodsInput.watch('totalEfetivo')),
+                datasOPMSapmChildren.map(() =>
+                  methodsInput.watch('totalEfetivo'),
+                ),
               );
             }}
             bgColor=" #38A169"
@@ -584,31 +380,28 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
         gap={4}
       >
         <TableInput
-          isOpen={opm.length > 0}
+          isOpen={datasOPMSapmChildren.length > 0}
           isActions
           isCheckBox
-          lengthData={opm.length}
+          lengthData={datasOPMSapmChildren.length}
           currentPosition={0}
           rowsPerLoad={0}
-          handleDeleteOpm={handleDeleteOpm}
-          opmDatas={opm}
+          handleDeleteOpm={handleDeleteOpmModal}
+          opmDatas={datasOPMSapmChildren}
         />
         {/* <Flex mt={2} flexDirection={'column'} w={'100%'}>
           <TableSolicitacoes
             isActions
             isOpen={true}
             isView={true}
-            columns={[
-              'Matrícula',
-              'Posto/Graduação',
-              'Nome Completo',
-              'Unidade',
-            ]}
-            registers={transformedMiltitares}
+            columns={['OPM']}
+            registers={datasOPMSapmChildren.map(
+              datas => (datas.uni_nome as unknown) as { [key: string]: any }[],
+            )}
             //registers={handleSortByPostoGrad(transformedMiltitares, '1')}
-            label_tooltip="Militar"
+            label_tooltip="OPM"
             height={'32vh'}
-            handleDelete={deletePMByOPM}
+            handleDelete={() => handleDeleteOpmModal}
           />
           <Pagination
             totalPages={totalData}

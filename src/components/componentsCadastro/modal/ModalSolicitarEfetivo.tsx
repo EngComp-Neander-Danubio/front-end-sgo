@@ -10,8 +10,8 @@ import {
   Center,
   useToast,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import { OPMs, optionsOPMs } from '../../../types/typesOPM';
+import React from 'react';
+import { optionsOPMs } from '../../../types/typesOPM';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Militares_service } from '../../../context/requisitosContext/RequisitosContext';
 
@@ -19,7 +19,13 @@ import { FormSolicitacaoEfetivo } from './FormSolicitacaoEfetivo';
 import { yupResolver } from '@hookform/resolvers/yup';
 import solicitacaoEfetivoSchema from '../../../types/yupSolicitacaoEfetiv/yupSolicitacaoEfetivo';
 import api from '../../../services/api';
-
+import { useEvents } from '../../../context/eventContext/useEvents';
+type opmSaPM = {
+  uni_codigo_pai: number;
+  uni_codigo: number;
+  uni_sigla: string;
+  uni_nome: string;
+};
 interface IModal {
   isOpen: boolean;
   onOpen: () => void;
@@ -30,28 +36,22 @@ interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
   input: string[];
-  opmsLabel: string[];
+  opmsLabel: opmSaPM[];
 }
 export const ModalSolicitarEfetivo: React.FC<IModal> = ({
   isOpen,
   onClose,
 }) => {
   const toast = useToast();
-  const [opm, setOPM] = useState<OPMs[]>([]);
-  const handleDeleteSelectAllOpmCancel = () => {
-    try {
-      if (opm.length > 0) {
-        setOPM([]);
-        reset();
-      }
-    } catch (err) {}
+  const { handleDeleteSelectAllOpm } = useEvents();
+  const handleDeleteAllOpm = async () => {
+    await handleDeleteSelectAllOpm();
   };
   const methodsInput = useForm<SolicitacaoForm>({
     resolver: yupResolver(solicitacaoEfetivoSchema),
   });
   const { reset } = methodsInput;
   const onSubmit = async (data: SolicitacaoForm) => {
-    // Mapeia os valores de opmsLabel e busca o valor correspondente em optionsOPMs
     const opms = data.opmsLabel
       .map(op => {
         const option = optionsOPMs.find(o => o.label === op.valueOf());
@@ -63,7 +63,6 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
       opms,
       prazoInicio: data.dataInicio,
       prazoFinal: data.dataFinal,
-      input,
     };
 
     console.log('Dados de solicitação de postos mapeados:', dados);
@@ -109,7 +108,7 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
               <ModalHeader>
                 <Center>Solicitação de Efetivo Policial</Center>
               </ModalHeader>
-              <ModalCloseButton onClick={handleDeleteSelectAllOpmCancel} />
+              <ModalCloseButton onClick={handleDeleteAllOpm} />
               <FormProvider {...methodsInput}>
                 <ModalBody justifyContent="center" padding={4} gap={4}>
                   <FormSolicitacaoEfetivo />
@@ -121,7 +120,7 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
                     onClick={() => {
                       onClose();
                       reset();
-                      handleDeleteSelectAllOpmCancel();
+                      handleDeleteAllOpm();
                     }}
                   >
                     Cancelar

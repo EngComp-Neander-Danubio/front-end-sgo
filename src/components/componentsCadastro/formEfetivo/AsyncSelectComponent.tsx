@@ -29,25 +29,6 @@ export interface Pessoa {
 
 export type OptionType = { label: string; value: string | number };
 
-const promiseOptionsPessoas = async (
-  inputValue: string,
-): Promise<OptionsOrGroups<OptionType, GroupBase<OptionType>>> => {
-  try {
-    const {
-      data: { items },
-    } = await api.get<{ items: Pessoa[] }>(
-      `policiais/asyncselect?query=${inputValue}`,
-    );
-    return items.map(({ pes_codigo, nome }) => ({
-      value: pes_codigo,
-      label: nome,
-    }));
-  } catch (error) {
-    console.error('Failed to fetch options:', error);
-    return []; // Retorna um array vazio em caso de erro
-  }
-};
-
 interface IAsyncSelectProps {
   nameLabel: string;
   placeholder?: string;
@@ -83,13 +64,13 @@ const AsyncSelectComponent: React.FC<IAsyncSelectProps> = ({
       borderRadius: theme.radii.md,
       width: '100%',
       height: '40px',
-      marginBottom: '5px',
+      marginBottom: '7px',
       borderColor: state.isFocused
         ? theme.colors.blue[500]
         : error
         ? theme.colors.red[500]
         : theme.colors.gray[200],
-      padding: '0 1rem',
+      //padding: '0 1rem',
       boxShadow: state.isFocused
         ? `0 0 0 1px ${theme.colors.blue[500]}`
         : error

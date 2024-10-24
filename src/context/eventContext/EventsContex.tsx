@@ -9,7 +9,6 @@ import React, {
 
 import { useToast } from '@chakra-ui/react';
 import api from '../../services/api';
-import { OptionType } from '../../types/typesMilitar';
 
 export interface Event {
   id?: string;
@@ -41,6 +40,7 @@ export interface IContextEventsData {
   handleDeleteOpmModal: (param: opmSaPM) => Promise<void>;
   handleDeleteOpmFromSameFather: (param: opmSaPM) => Promise<void>;
   handleDeleteSelectAllOpm: () => Promise<void>;
+  loadOPMfromLocal: (param: opmSaPM) => Promise<void>;
   currentDataIndex: number;
   dataPerPage: number;
   lastDataIndex: number;
@@ -71,9 +71,9 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
   const currentData = events.slice(firstDataIndex, lastDataIndex);
   const hasMore = lastDataIndex < events.length;
 
-  useEffect(() => {
+  /* useEffect(() => {
     loadEvents();
-  }, []);
+  }, []); */
   useEffect(() => {
     loadIdsFromOPMsMain();
   }, []);
@@ -106,6 +106,17 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       });
     }
   };
+  const loadOPMfromLocal = useCallback(async (data: opmSaPM) => {
+    try {
+      setDatasOPMSapmChildren(datasOPMSapmChildren => [
+        ...datasOPMSapmChildren,
+        data,
+      ]);
+    } catch (error) {
+      console.error('Erro ao carregar dados da OPM:', error);
+    } finally {
+    }
+  }, []);
 
   const loadIdsFromOPMsMain = useCallback(async () => {
     try {
@@ -290,6 +301,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       handleDeleteOpmModal,
       handleDeleteSelectAllOpm,
       handleDeleteOpmFromSameFather,
+      loadOPMfromLocal,
       datasOPMSapm,
       datasOPMSapmChildren,
       events: currentData,
@@ -313,6 +325,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       handleDeleteOpmModal,
       handleDeleteSelectAllOpm,
       handleDeleteOpmFromSameFather,
+      loadOPMfromLocal,
       datasOPMSapm,
       datasOPMSapmChildren,
       events,

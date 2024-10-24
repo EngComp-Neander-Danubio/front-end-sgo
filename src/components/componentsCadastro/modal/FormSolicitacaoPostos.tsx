@@ -11,32 +11,28 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { OptionType, SelectPattern } from './SelectPattern';
-import { OPMOption, options } from '../../../types/typesMilitar';
-import { optionsOPMs, OPMs } from '../../../types/typesOPM';
+import { options } from '../../../types/typesMilitar';
 import { DatePickerEvent } from '../formGrandeEvento/DatePickerEvent';
-import { CheckBoxPattern } from './CheckboxPattern';
 import { useEvents } from '../../../context/eventContext/useEvents';
 import AsyncSelectComponent from '../formEfetivo/AsyncSelectComponent';
 import { OptionsOrGroups, GroupBase } from 'react-select';
+import { AccordionCheckbox } from '../acordion-checkbox/AccordionCheckbox';
 
 interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
   opmsLabel: opmSaPM[];
-  select_opm: OPMs;
+  select_opm: opmSaPM;
   checkbox: opmSaPM[];
 }
 type opmSaPM = {
   uni_codigo_pai: number;
-  uni_codigo: string;
+  uni_codigo: number;
   uni_sigla: string;
   uni_nome: string;
 };
 export const FormSolicitacaoPostos: React.FC = () => {
-  const { control, setValue, reset, getValues, watch } = useFormContext<
-    SolicitacaoForm
-  >();
+  const { control, setValue, getValues } = useFormContext<SolicitacaoForm>();
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const {
@@ -46,6 +42,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
     handleDeleteOpmModal,
     handleDeleteSelectAllOpm,
     handleDeleteOpmFromSameFather,
+    loadOPMfromLocal,
   } = useEvents();
 
   useEffect(() => {
@@ -55,8 +52,6 @@ export const FormSolicitacaoPostos: React.FC = () => {
   const handleDeleteAllOpmCancel = async () => {
     await handleDeleteSelectAllOpm();
   };
-
-  const [opm, setOPM] = useState<OPMs[]>([]);
   const toast = useToast();
   const handleCheckboxChangeGrandeOPM = async (option: string) => {
     const dados = datasOPMSapm.find(o => o.uni_sigla.includes(option));
@@ -66,8 +61,11 @@ export const FormSolicitacaoPostos: React.FC = () => {
     await loadIdsFromOPMsChildren(dados.uni_codigo);
   };
 
-  const handleSelectOpm = (option: opmSaPM) => {
-    if (datasOPMSapmChildren.find(o => o.valueOf() === option.valueOf())) {
+  const handleSelectOpm = async (data: opmSaPM) => {
+    const dataExists = datasOPMSapmChildren.some(
+      dataValue => dataValue.uni_codigo === data.uni_codigo,
+    );
+    if (dataExists) {
       toast({
         title: 'OPM já inclusa.',
         description: 'OPM já incluída.',
@@ -86,10 +84,8 @@ export const FormSolicitacaoPostos: React.FC = () => {
         isClosable: true,
         position: 'top-right',
       });
-      setOPM(prev => [...prev, option]);
+      await loadOPMfromLocal(data);
     }
-
-    console.log(opm);
   };
   const loadOptions = async (
     inputValue: string,
@@ -212,35 +208,36 @@ export const FormSolicitacaoPostos: React.FC = () => {
         align="center"
         justify={'center'}
         justifyContent="space-between"
+        gap={1}
       >
         <Flex
         //border={'1px solid red'}
         >
           <Text w={'7vw'}>Busca por OPM:</Text>
         </Flex>
+        <Flex
+          //border={'1px solid red'}
+          w={'25vw'}
+        >
+          <Controller
+            name="select_opm"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <>
+                <AsyncSelectComponent
+                  placeholder="Buscar por OPM"
+                  nameLabel=""
+                  onChange={field.onChange}
+                  error={error}
+                  //isOverwriting
+                  loadOptions={loadOptions}
+                  noOptionsMessage={'Nenhuma OPM encontrada'}
+                />
+              </>
+            )}
+          />
+        </Flex>
         <Flex gap={1} align={'center'} justify={'center'}>
-          <Flex
-            //border={'1px solid red'}
-            w={'400px'}
-          >
-            <Controller
-              name="select_opm"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <>
-                  <AsyncSelectComponent
-                    placeholder="Informe a OPM"
-                    nameLabel=""
-                    onChange={field.onChange}
-                    error={error}
-                    //isOverwriting
-                    loadOptions={loadOptions}
-                    noOptionsMessage={'Nenhuma OPM encontrada'}
-                  />
-                </>
-              )}
-            />
-          </Flex>
           <Flex
           //border={'1px solid red'}
           >
@@ -260,10 +257,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
             <Button
               onClick={() => {
                 const v = getValues('select_opm');
-                if (v !== undefined && v !== null && v !== ('' as OPMs)) {
-                  handleSelectOpm((v as unknown) as OPMs);
-                }
-                //onChange(v);
+                handleSelectOpm(v);
               }}
               bgColor="#38A169"
               _hover={{
@@ -294,37 +288,55 @@ export const FormSolicitacaoPostos: React.FC = () => {
         p={2}
         gap={4}
       >
-        {datasOPMSapmChildren.map((item, index) => {
+        {/* {datasOPMSapmChildren.map((item, index) => {
           return (
-            <Flex key={index}>
-              <Controller
-                name={`opmsLabel.${index}`}
-                control={control}
-                render={({ field: { onBlur, onChange } }) => (
-                  <>
-                    <Checkbox
-                      size="md"
-                      isChecked
-                      onBlur={onBlur}
-                      onChange={async () => {
-                        await handleDeleteOpmModal(item);
-                      }}
-                      colorScheme={'green'}
-                    >
-                      <Input
-                        value={item.uni_nome || 'Item não encontrado'}
-                        onChange={e => onChange(e.target.value)}
-                        border={'none'}
-                        w={'50vw'}
-                        h={'2vh'}
-                      />
-                    </Checkbox>
-                  </>
-                )}
-              />
-            </Flex>
+            <>
+              <Flex key={index}>
+                <Controller
+                  name={`opmsLabel.${index}`}
+                  control={control}
+                  render={({ field: { onBlur, onChange } }) => (
+                    <>
+                      <Checkbox
+                        size="md"
+                        isChecked
+                        onBlur={onBlur}
+                        onChange={async () => {
+                          await handleDeleteOpmModal(item);
+                        }}
+                        colorScheme={'green'}
+                      >
+                        <Input
+                          value={
+                            item.uni_sigla.includes('1ºCRPM') ||
+                            item.uni_sigla.includes('2ºCRPM') ||
+                            item.uni_sigla.includes('3ºCRPM') ||
+                            item.uni_sigla.includes('4ºCRPM')
+                              ? item.uni_sigla + ' - ' + item.uni_nome
+                              : item.uni_nome || 'Item não encontrado'
+                          }
+                          onChange={e => onChange(e.target.value)}
+                          border={'none'}
+                          w={'50vw'}
+                          h={'2vh'}
+                        />
+                      </Checkbox>
+                    </>
+                  )}
+                />
+              </Flex>
+              <AccordionCheckbox
+                handleDeleteOpmModal={handleDeleteOpmModal}
+                dataOPMs={datasOPMSapmChildren}
+              ></AccordionCheckbox>
+            </>
           );
-        })}
+        })} */}
+        <AccordionCheckbox
+          handleDeleteOpmModal={handleDeleteOpmModal}
+          dataOPMs={datasOPMSapmChildren}
+          filhas={datasOPMSapmChildren}
+        ></AccordionCheckbox>
       </Flex>
     </FormControl>
   );

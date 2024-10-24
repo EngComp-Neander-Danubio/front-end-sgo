@@ -1,10 +1,12 @@
 import { Flex, FormLabel, FormControl, FlexboxProps } from '@chakra-ui/react';
-import React, { SetStateAction, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
 import AsyncSelectComponent from './AsyncSelectComponent';
 import { OptionsOrGroups, GroupBase } from 'react-select';
 import { options } from '../../../types/typesMilitar';
+import api from '../../../services/api';
+import debounce from 'lodash.debounce';
 
 interface IForm {
   busca: string;
@@ -13,7 +15,12 @@ interface IForm {
   matricula: string;
   posto_grad: string;
 }
-
+interface Militar {
+  pessoa_pes_codigo: number;
+  pessoa_pes_nome: string;
+  gra_nome: string;
+  unidade_uni_nome: string;
+}
 interface IFormProps extends FlexboxProps {
   widthSelect?: string;
   isLoadingRequest?: boolean;
@@ -25,9 +32,11 @@ export const FormEfetivoBySearch: React.FC<IFormProps> = ({
   ...props
 }) => {
   const { control, setValue, watch } = useFormContext<IForm>();
-  const dadoPm = options.find(o => o.value === watch('busca'));
+  const [dadoPm, setDadoPm] = useState<{ label: string; value: string }[]>([]);
 
-  const loadOptions = async (
+  const cache = new Map<string, any>();
+
+  /* const loadOptions = async (
     inputValue: string,
   ): Promise<OptionsOrGroups<
     { label: string; value: string },
@@ -43,19 +52,53 @@ export const FormEfetivoBySearch: React.FC<IFormProps> = ({
         //setDataValue(filteredOptions);
       }, 1000);
     });
-  };
+  }; */
+  // Função load com debounce
+  const load = debounce(async (pes_nome: string): Promise<
+    OptionsOrGroups<
+      { label: string; value: string },
+      GroupBase<{ label: string; value: string }>
+    >
+  > => {
+    if (cache.has(pes_nome)) {
+      return cache.get(pes_nome);
+    }
+    try {
+      const response = await api.get<Militar[]>(`/policiais`, {
+        params: { pes_nome: pes_nome },
+      });
+
+      const filteredOptions = response.data
+        .filter(option =>
+          option.pessoa_pes_nome.toLowerCase().includes(pes_nome.toLowerCase()),
+        )
+        .map(option => ({
+          label: `${option.gra_nome} PM ${option.pessoa_pes_nome} - Matrícula: ${option.pessoa_pes_codigo} - Unidade: ${option.unidade_uni_nome}`,
+          value: (option.pessoa_pes_codigo as unknown) as string,
+        }));
+
+      cache.set(pes_nome, filteredOptions);
+      setDadoPm(filteredOptions); // Atualiza o estado com as opções filtradas
+      return filteredOptions;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return [];
+    }
+  }, 30);
 
   const separateNounsByMilitar = useCallback(() => {
-    if (dadoPm) {
-      const [gradAndName, rest] = dadoPm?.label.split(' - ');
-      const [part1, part2] = dadoPm?.label.split(' - Unidade: ');
+    if (dadoPm && dadoPm.length > 0) {
+      const [gradAndName, rest] = dadoPm[0].label.split(' - ');
+      const [part1, part2] = dadoPm[0].label.split(' - Unidade: ');
+
       const matricula = rest.match(/\d+/)?.[0];
-      setValue('matricula', matricula as string);
+      setValue('matricula', matricula || '');
+
       const [grad, ...nameParts] = gradAndName.split(' PM ');
       const name = nameParts.join(' ');
       setValue('nome_completo', name);
       setValue('posto_grad', grad.trim() + ' PM');
-      setValue('opm', part2?.trim());
+      setValue('opm', part2?.trim() || '');
     }
   }, [dadoPm, setValue]);
 
@@ -76,12 +119,15 @@ export const FormEfetivoBySearch: React.FC<IFormProps> = ({
             control={control}
             render={({ field, fieldState: { error } }) => (
               <AsyncSelectComponent
+                {...field}
                 nameLabel="Busca"
+                placeholder="Busque por um Militar"
                 onChange={field.onChange}
-                loadOptions={loadOptions}
+                loadOptions={load}
                 //value={field.value}
                 error={error}
                 isOverwriting={false}
+                noOptionsMessage="Nenhum Militar encontrado"
               />
             )}
           />
