@@ -36,23 +36,6 @@ export const FormEfetivoBySearch: React.FC<IFormProps> = ({
 
   const cache = new Map<string, any>();
 
-  /* const loadOptions = async (
-    inputValue: string,
-  ): Promise<OptionsOrGroups<
-    { label: string; value: string },
-    GroupBase<{ label: string; value: string }>
-  >> => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        const filteredOptions = options.filter(option =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase()),
-        );
-
-        resolve(filteredOptions);
-        //setDataValue(filteredOptions);
-      }, 1000);
-    });
-  }; */
   // Função load com debounce
   const load = debounce(async (pes_nome: string): Promise<
     OptionsOrGroups<
