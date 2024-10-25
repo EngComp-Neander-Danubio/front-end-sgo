@@ -35,7 +35,7 @@ interface IAsyncSelectProps {
   error?: FieldError;
   onChange: (value: string | number) => void;
   loadOptions: (
-    inputValue: string,
+    pes_codigo: string,
   ) => Promise<
     OptionsOrGroups<
       { label: string; value: string },
@@ -114,7 +114,7 @@ const AsyncSelectComponent: React.FC<IAsyncSelectProps> = ({
         inputId="asyncSelect"
         cacheOptions
         loadOptions={loadOptions}
-        defaultOptions
+        defaultOptions={[]}
         noOptionsMessage={() => `${noOptionsMessage}`}
         styles={customStyles}
         onChange={option => onChange(option ? option.value : '')}

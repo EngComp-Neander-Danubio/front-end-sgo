@@ -6,38 +6,66 @@ import { InputPatternController } from '../inputPatternController/InputPatternCo
 import { useState } from 'react';
 import AsyncSelectComponent from '../formEfetivo/AsyncSelectComponent';
 import { OptionsOrGroups, GroupBase } from 'react-select';
-import { options } from '../../../types/typesMilitar';
+import debounce from 'debounce-promise';
+import api from '../../../services/api';
 
 interface IFormProps extends FlexboxProps {
   widthSelect?: string;
   isLoadingRequest?: boolean;
   isEditing?: boolean;
 }
-
+interface Militar {
+  pessoa_pes_codigo: number;
+  pessoa_pes_nome: string;
+  gra_nome: string;
+  unidade_uni_nome: string;
+}
 export const FormGrandeEvento: React.FC<IFormProps> = ({
   widthSelect,
   ...props
 }) => {
-  const { control } = useFormContext();
+  const { control, watch, setValue, getValues } = useFormContext();
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
-  const loadOptions = async (
-    inputValue: string,
-  ): Promise<OptionsOrGroups<
-    { label: string; value: string },
-    GroupBase<{ label: string; value: string }>
-  >> => {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        const filteredOptions = options.filter(option =>
-          option.label.toLowerCase().includes(inputValue.toLowerCase()),
-        );
+  const [dadosPM, setDadosPM] = useState<{ label: string; value: string }[]>(
+    [],
+  );
+  const data = watch('busca');
+  const cache = new Map<string, any>();
 
-        resolve(filteredOptions);
-        //setDataValue(filteredOptions);
-      }, 1000);
-    });
-  };
+  const load = debounce(async (pes_nome: string): Promise<
+    OptionsOrGroups<
+      { label: string; value: string },
+      GroupBase<{ label: string; value: string }>
+    >
+  > => {
+    if (cache.has(pes_nome)) {
+      return Promise.resolve(cache.get(pes_nome));
+    }
+    try {
+      const response = await api.get<Militar[]>(`/policiais`, {
+        params: { pes_nome: pes_nome },
+      });
+
+      const filteredOptions = response.data
+        .filter(option =>
+          option.pessoa_pes_nome.toLowerCase().includes(pes_nome.toLowerCase()),
+        )
+        .map(option => ({
+          label: `${option.gra_nome} PM ${option.pessoa_pes_nome} - Matrícula: ${option.pessoa_pes_codigo} - Unidade: ${option.unidade_uni_nome}`,
+          value: (option.pessoa_pes_codigo as unknown) as string,
+        }));
+
+      cache.set(pes_nome, filteredOptions);
+
+      setDadosPM(filteredOptions);
+
+      return filteredOptions;
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      return [];
+    }
+  }, 300);
   return (
     <FormControl
       //border={'1px solid green'}
@@ -78,7 +106,7 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
                   onChange={field.onChange}
                   error={error}
                   isOverwriting
-                  loadOptions={loadOptions}
+                  loadOptions={load}
                   noOptionsMessage="Nenhum Militar encontrado"
                 />
               )}

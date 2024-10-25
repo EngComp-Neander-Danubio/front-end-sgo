@@ -4,9 +4,8 @@ import { Controller, useFormContext } from 'react-hook-form';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
 import AsyncSelectComponent from './AsyncSelectComponent';
 import { OptionsOrGroups, GroupBase } from 'react-select';
-import { options } from '../../../types/typesMilitar';
 import api from '../../../services/api';
-import debounce from 'lodash.debounce';
+import debounce from 'debounce-promise';
 
 interface IForm {
   busca: string;
@@ -31,12 +30,13 @@ export const FormEfetivoBySearch: React.FC<IFormProps> = ({
   widthSelect,
   ...props
 }) => {
-  const { control, setValue, watch } = useFormContext<IForm>();
-  const [dadoPm, setDadoPm] = useState<{ label: string; value: string }[]>([]);
-
+  const { control, setValue, watch, getValues } = useFormContext<IForm>();
+  const [dadosPM, setDadosPM] = useState<{ label: string; value: string }[]>(
+    [],
+  );
+  const data = watch('busca');
   const cache = new Map<string, any>();
 
-  // Função load com debounce
   const load = debounce(async (pes_nome: string): Promise<
     OptionsOrGroups<
       { label: string; value: string },
@@ -44,7 +44,7 @@ export const FormEfetivoBySearch: React.FC<IFormProps> = ({
     >
   > => {
     if (cache.has(pes_nome)) {
-      return cache.get(pes_nome);
+      return Promise.resolve(cache.get(pes_nome));
     }
     try {
       const response = await api.get<Militar[]>(`/policiais`, {
@@ -61,18 +61,22 @@ export const FormEfetivoBySearch: React.FC<IFormProps> = ({
         }));
 
       cache.set(pes_nome, filteredOptions);
-      setDadoPm(filteredOptions); // Atualiza o estado com as opções filtradas
+
+      setDadosPM(filteredOptions);
+
       return filteredOptions;
     } catch (error) {
       console.error('Error fetching data:', error);
       return [];
     }
-  }, 30);
+  }, 300);
 
   const separateNounsByMilitar = useCallback(() => {
-    if (dadoPm && dadoPm.length > 0) {
-      const [gradAndName, rest] = dadoPm[0].label.split(' - ');
-      const [part1, part2] = dadoPm[0].label.split(' - Unidade: ');
+    const selectedOption = dadosPM.find(p => p.value === data);
+    //console.log(selectedOption, dadosPM, data);
+    if (selectedOption) {
+      const [gradAndName, rest] = selectedOption.label.split(' - ');
+      const [, unitPart] = selectedOption.label.split(' - Unidade: ');
 
       const matricula = rest.match(/\d+/)?.[0];
       setValue('matricula', matricula || '');
@@ -81,13 +85,14 @@ export const FormEfetivoBySearch: React.FC<IFormProps> = ({
       const name = nameParts.join(' ');
       setValue('nome_completo', name);
       setValue('posto_grad', grad.trim() + ' PM');
-      setValue('opm', part2?.trim() || '');
+      setValue('opm', unitPart?.trim() || '');
     }
-  }, [dadoPm, setValue]);
+  }, [dadosPM, data, setValue]);
 
   useEffect(() => {
     separateNounsByMilitar();
-  }, [dadoPm]);
+  }, [data, dadosPM, getValues, separateNounsByMilitar]);
+
   return (
     <FormControl {...props}>
       <Flex

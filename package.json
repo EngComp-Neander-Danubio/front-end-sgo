@@ -25,6 +25,7 @@
     "axios": "^1.6.8",
     "combinatorial-generators": "^1.1.2",
     "date-fns": "^3.6.0",
+    "debounce-promise": "^3.1.2",
     "dotenv": "^16.4.5",
     "flowbite-react": "^0.10.1",
     "framer-motion": "^11.3.8",
@@ -49,6 +50,7 @@
   },
   "devDependencies": {
     "@types/csv-parse": "^1.1.12",
+    "@types/debounce-promise": "^3.1.9",
     "@types/lodash.debounce": "^4.0.9",
     "@types/papaparse": "^5.3.14",
     "@types/react": "^18.3.3",
