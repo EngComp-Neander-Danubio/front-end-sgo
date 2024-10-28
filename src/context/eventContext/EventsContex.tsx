@@ -9,6 +9,7 @@ import React, {
 
 import { useToast } from '@chakra-ui/react';
 import api from '../../services/api';
+import { number } from 'prop-types';
 
 export interface Event {
   id?: string;
@@ -22,7 +23,9 @@ interface opmSaPM {
   uni_codigo: number;
   uni_sigla: string;
   uni_nome: string;
+  opm_filha?: opmSaPM[];
 }
+
 export interface IContextEventsData {
   events: Event[];
   eventById: Event;
@@ -37,15 +40,16 @@ export interface IContextEventsData {
   loadLessEvents: () => void;
   loadIdsFromOPMsMain: () => Promise<void>;
   loadIdsFromOPMsChildren: (param: number) => Promise<opmSaPM[]>;
+  loadOpmChild: (param: number) => Promise<opmSaPM[]>;
   handleDeleteOpmModal: (param: opmSaPM) => Promise<void>;
   handleDeleteOpmFromSameFather: (param: opmSaPM) => Promise<void>;
   handleDeleteSelectAllOpm: () => Promise<void>;
-  loadOPMfromLocal: (param: opmSaPM) => Promise<void>;
   currentDataIndex: number;
   dataPerPage: number;
   lastDataIndex: number;
   firstDataIndex: number;
   totalData: number;
+  isLoadingOpm: boolean;
 }
 
 export const EventsContext = createContext<IContextEventsData | undefined>(
@@ -63,6 +67,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
   );
   const [eventById, setEventById] = useState<Event>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingOpm, setIsLoadingOpm] = useState<boolean>(false);
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
   const [dataPerPage] = useState(8);
   const lastDataIndex = (currentDataIndex + 1) * dataPerPage;
@@ -71,9 +76,10 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
   const currentData = events.slice(firstDataIndex, lastDataIndex);
   const hasMore = lastDataIndex < events.length;
 
-  /* useEffect(() => {
+  useEffect(() => {
     loadEvents();
-  }, []); */
+  }, []);
+
   useEffect(() => {
     loadIdsFromOPMsMain();
   }, []);
@@ -106,48 +112,92 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       });
     }
   };
-  const loadOPMfromLocal = useCallback(async (data: opmSaPM) => {
-    try {
-      setDatasOPMSapmChildren(datasOPMSapmChildren => [
-        ...datasOPMSapmChildren,
-        data,
-      ]);
-    } catch (error) {
-      console.error('Erro ao carregar dados da OPM:', error);
-    } finally {
-    }
-  }, []);
 
   const loadIdsFromOPMsMain = useCallback(async () => {
     try {
       const response = await api.get<opmSaPM[]>('/unidades');
-      setDatasOPMSapm(response.data);
-      console.log('Dados recebidos da API:', response.data);
+      const dados = response.data.map(item => ({
+        ...item,
+        opm_filha: [],
+      }));
+      setDatasOPMSapm(dados);
     } catch (error) {
-    } finally {
+      console.error('Erro ao carregar as unidades principais:', error);
     }
   }, []);
 
-  const loadIdsFromOPMsChildren = useCallback(async (param: number) => {
+  const rec_opm = async (param: number, new_opm: opmSaPM[], opm?: opmSaPM) => {
+    console.log(`Entrando na recursão com opm:`, opm);
+    console.log(`param`, param);
+    const opmForm = new_opm.map(o => ({
+      ...o,
+      opm_filha: o.opm_filha || [],
+    }));
+
+    if (opm?.opm_filha) {
+      await rec_opm(param, opmForm, opm.opm_filha);
+    }
+    if (opm?.uni_codigo === param) {
+      opm.opm_filha = opmForm;
+      return opm;
+    }
+    console.log(`Saindo da recursão com opm:`, opm);
+    return;
+  };
+
+  const loadIdsFromOPMsChildren = useCallback(
+    async (param: number) => {
+      try {
+        const gra_cmd = datasOPMSapmChildren.find(o => o.uni_codigo === param);
+        if (!gra_cmd) {
+          const uni = datasOPMSapm.find(o => o.uni_codigo === param);
+          setDatasOPMSapmChildren(prev => [...prev, uni]);
+        }
+
+        const response = await api.get<opmSaPM[]>(`/unidadesfilhas/${param}`);
+
+        await Promise.all(
+          datasOPMSapmChildren.map(async o => {
+            await rec_opm(param, response.data, o);
+          }),
+        );
+
+        setIsLoadingOpm(true);
+      } catch (error) {
+        console.error('Erro ao carregar as unidades:', error);
+        setIsLoadingOpm(false);
+      }
+    },
+    [datasOPMSapmChildren, datasOPMSapm],
+  );
+
+  useEffect(() => {}, [datasOPMSapmChildren, datasOPMSapm, rec_opm]);
+
+  const loadOpmChild = useCallback(async (param: number) => {
     try {
-      const response = await api.get<opmSaPM[]>(`/listar-opms/${param}`);
-      const dados = response.data.map(opm => ({
-        ...opm,
-        uni_codigo_pai: param,
-      }));
-      setDatasOPMSapmChildren(prev => [...prev, ...dados]);
+      const response = await api.get<opmSaPM[]>(`/unidadesfilhas/${param}`);
+      setDatasOPMSapmChildren(prev => [...prev, ...response.data]);
+      setIsLoadingOpm(true);
     } catch (error) {
       console.error('Erro ao carregar as unidades:', error);
-    } finally {
+      setIsLoadingOpm(false);
     }
   }, []);
 
   const handleDeleteOpmModal = useCallback(async (param: opmSaPM) => {
-    setDatasOPMSapmChildren(dataOpmChildren => {
-      return dataOpmChildren.filter(o => {
-        return !o.uni_sigla.includes(param.uni_sigla);
+    if (!param.opm_filha) {
+      setDatasOPMSapmChildren(dataOpmChildren => {
+        return dataOpmChildren.filter(o => {
+          return !o.uni_sigla.includes(param.uni_sigla);
+        });
       });
-    });
+    } else {
+      setDatasOPMSapmChildren(dataOpmChildren => {
+        return dataOpmChildren.filter(o => {
+          return !o.uni_sigla.includes(param.uni_sigla);
+        });
+      });
+    }
   }, []);
   const handleDeleteOpmFromSameFather = useCallback(
     async (param: opmSaPM) => {
@@ -282,11 +332,17 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
-  useEffect(() => {}, [
+  useEffect(() => {
+    //console.log(datasOPMSapmChildren);
+    //console.log(datasOPMSapm);
+  }, [
     handleDeleteOpmFromSameFather,
     datasOPMSapm,
     datasOPMSapmChildren,
+    rec_opm,
+    loadIdsFromOPMsChildren,
   ]);
+
   const contextValue = useMemo(
     () => ({
       uploadEvent,
@@ -298,10 +354,10 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       loadMoreEvents,
       loadIdsFromOPMsMain,
       loadIdsFromOPMsChildren,
+      loadOpmChild,
       handleDeleteOpmModal,
       handleDeleteSelectAllOpm,
       handleDeleteOpmFromSameFather,
-      loadOPMfromLocal,
       datasOPMSapm,
       datasOPMSapmChildren,
       events: currentData,
@@ -311,6 +367,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       lastDataIndex,
       currentDataIndex,
       dataPerPage,
+      isLoadingOpm,
     }),
     [
       uploadEvent,
@@ -322,10 +379,10 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       loadMoreEvents,
       loadIdsFromOPMsMain,
       loadIdsFromOPMsChildren,
+      loadOpmChild,
       handleDeleteOpmModal,
       handleDeleteSelectAllOpm,
       handleDeleteOpmFromSameFather,
-      loadOPMfromLocal,
       datasOPMSapm,
       datasOPMSapmChildren,
       events,
@@ -335,6 +392,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       lastDataIndex,
       currentDataIndex,
       dataPerPage,
+      isLoadingOpm,
     ],
   );
 
@@ -344,3 +402,104 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     </EventsContext.Provider>
   );
 };
+
+/*
+const mockData = [
+    {
+      uni_codigo_pai: 0,
+      uni_codigo: 1,
+      uni_sigla: '1ºCRPM',
+      uni_nome: 'Comando Regional de Policiamento Metropolitano',
+      opm_filha: [
+        {
+          uni_codigo_pai: 1,
+          uni_codigo: 11,
+          uni_sigla: '1ºBPM',
+          uni_nome: '1º Batalhão de Polícia Militar',
+          opm_filha: [
+            {
+              uni_codigo_pai: 11,
+              uni_codigo: 111,
+              uni_sigla: '1ªCIA',
+              uni_nome: '1ª Companhia do 1º Batalhão',
+            },
+            {
+              uni_codigo_pai: 11,
+              uni_codigo: 112,
+              uni_sigla: '2ªCIA',
+              uni_nome: '2ª Companhia do 1º Batalhão',
+            },
+          ],
+        },
+        {
+          uni_codigo_pai: 1,
+          uni_codigo: 12,
+          uni_sigla: '2ºBPM',
+          uni_nome: '2º Batalhão de Polícia Militar',
+          opm_filha: [
+            {
+              uni_codigo_pai: 12,
+              uni_codigo: 121,
+              uni_sigla: '1ªCIA',
+              uni_nome: '1ª Companhia do 2º Batalhão',
+            },
+            {
+              uni_codigo_pai: 12,
+              uni_codigo: 122,
+              uni_sigla: '2ªCIA',
+              uni_nome: '2ª Companhia do 2º Batalhão',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      uni_codigo_pai: 0,
+      uni_codigo: 2,
+      uni_sigla: '2ºCRPM',
+      uni_nome: 'Comando Regional de Policiamento do Interior',
+      opm_filha: [
+        {
+          uni_codigo_pai: 2,
+          uni_codigo: 21,
+          uni_sigla: '3ºBPM',
+          uni_nome: '3º Batalhão de Polícia Militar',
+          opm_filha: [
+            {
+              uni_codigo_pai: 21,
+              uni_codigo: 211,
+              uni_sigla: '1ªCIA',
+              uni_nome: '1ª Companhia do 3º Batalhão',
+            },
+            {
+              uni_codigo_pai: 21,
+              uni_codigo: 212,
+              uni_sigla: '2ªCIA',
+              uni_nome: '2ª Companhia do 3º Batalhão',
+            },
+          ],
+        },
+        {
+          uni_codigo_pai: 2,
+          uni_codigo: 22,
+          uni_sigla: '4ºBPM',
+          uni_nome: '4º Batalhão de Polícia Militar',
+          opm_filha: [
+            {
+              uni_codigo_pai: 22,
+              uni_codigo: 221,
+              uni_sigla: '1ªCIA',
+              uni_nome: '1ª Companhia do 4º Batalhão',
+            },
+            {
+              uni_codigo_pai: 22,
+              uni_codigo: 222,
+              uni_sigla: '2ªCIA',
+              uni_nome: '2ª Companhia do 4º Batalhão',
+            },
+          ],
+        },
+      ],
+    },
+  ];
+ */

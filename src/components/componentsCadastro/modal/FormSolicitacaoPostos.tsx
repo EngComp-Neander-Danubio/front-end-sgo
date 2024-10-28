@@ -7,7 +7,6 @@ import {
   Checkbox,
   Divider,
   useToast,
-  Input,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
@@ -17,6 +16,7 @@ import { useEvents } from '../../../context/eventContext/useEvents';
 import AsyncSelectComponent from '../formEfetivo/AsyncSelectComponent';
 import { OptionsOrGroups, GroupBase } from 'react-select';
 import { AccordionCheckbox } from '../acordion-checkbox/AccordionCheckbox';
+import api from '../../../services/api';
 
 interface SolicitacaoForm {
   dataInicio: Date;
@@ -30,19 +30,20 @@ type opmSaPM = {
   uni_codigo: number;
   uni_sigla: string;
   uni_nome: string;
+  opm_filha: opmSaPM[];
 };
 export const FormSolicitacaoPostos: React.FC = () => {
   const { control, setValue, getValues } = useFormContext<SolicitacaoForm>();
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
+  const [dataGraCmd, setdataGraCmd] = useState<opmSaPM[]>([]);
+  const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
   const {
     loadIdsFromOPMsChildren,
-    datasOPMSapm,
     datasOPMSapmChildren,
     handleDeleteOpmModal,
     handleDeleteSelectAllOpm,
     handleDeleteOpmFromSameFather,
-    loadOPMfromLocal,
   } = useEvents();
 
   useEffect(() => {
@@ -53,16 +54,174 @@ export const FormSolicitacaoPostos: React.FC = () => {
     await handleDeleteSelectAllOpm();
   };
   const toast = useToast();
+  const handleLoadGrandeComandos = async () => {
+    console.log('carregou os grande comandos');
+    try {
+      //const response = await api.get<opmSaPM[]>('/unidades');
+      /* const dados = response.data.map(item => ({
+        ...item,
+        opm_filha: [],
+      })); */
+      setdataGraCmd([
+        {
+          uni_codigo_pai: 0,
+          uni_codigo: 1,
+          uni_sigla: '1ºCRPM',
+          uni_nome: 'Comando Regional de Policiamento Metropolitano',
+          opm_filha: [
+            {
+              uni_codigo_pai: 1,
+              uni_codigo: 11,
+              uni_sigla: '1ºBPM',
+              uni_nome: '1º Batalhão de Polícia Militar',
+              opm_filha: [
+                {
+                  uni_codigo_pai: 11,
+                  uni_codigo: 111,
+                  uni_sigla: '1ªCIA',
+                  uni_nome: '1ª Companhia do 1º Batalhão',
+                  opm_filha: [],
+                },
+                {
+                  uni_codigo_pai: 11,
+                  uni_codigo: 112,
+                  uni_sigla: '2ªCIA',
+                  uni_nome: '2ª Companhia do 1º Batalhão',
+                  opm_filha: [],
+                },
+              ],
+            },
+            {
+              uni_codigo_pai: 1,
+              uni_codigo: 12,
+              uni_sigla: '2ºBPM',
+              uni_nome: '2º Batalhão de Polícia Militar',
+              opm_filha: [
+                {
+                  uni_codigo_pai: 12,
+                  uni_codigo: 121,
+                  uni_sigla: '1ªCIA',
+                  uni_nome: '1ª Companhia do 2º Batalhão',
+                  opm_filha: [],
+                },
+                {
+                  uni_codigo_pai: 12,
+                  uni_codigo: 122,
+                  uni_sigla: '2ªCIA',
+                  uni_nome: '2ª Companhia do 2º Batalhão',
+                  opm_filha: [],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          uni_codigo_pai: 0,
+          uni_codigo: 2,
+          uni_sigla: '2ºCRPM',
+          uni_nome: 'Comando Regional de Policiamento do Interior',
+          opm_filha: [
+            {
+              uni_codigo_pai: 2,
+              uni_codigo: 21,
+              uni_sigla: '3ºBPM',
+              uni_nome: '3º Batalhão de Polícia Militar',
+              opm_filha: [
+                {
+                  uni_codigo_pai: 21,
+                  uni_codigo: 211,
+                  uni_sigla: '1ªCIA',
+                  uni_nome: '1ª Companhia do 3º Batalhão',
+                  opm_filha: [],
+                },
+                {
+                  uni_codigo_pai: 21,
+                  uni_codigo: 212,
+                  uni_sigla: '2ªCIA',
+                  uni_nome: '2ª Companhia do 3º Batalhão',
+                  opm_filha: [],
+                },
+              ],
+            },
+            {
+              uni_codigo_pai: 2,
+              uni_codigo: 22,
+              uni_sigla: '4ºBPM',
+              uni_nome: '4º Batalhão de Polícia Militar',
+              opm_filha: [
+                {
+                  uni_codigo_pai: 22,
+                  uni_codigo: 221,
+                  uni_sigla: '1ªCIA',
+                  uni_nome: '1ª Companhia do 4º Batalhão',
+                  opm_filha: [],
+                },
+                {
+                  uni_codigo_pai: 22,
+                  uni_codigo: 222,
+                  uni_sigla: '2ªCIA',
+                  uni_nome: '2ª Companhia do 4º Batalhão',
+                  opm_filha: [],
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+      console.log(dataGraCmd);
+    } catch (error) {
+      console.error('Erro ao carregar as unidades principais:', error);
+    }
+  };
+  useEffect(() => {
+    handleLoadGrandeComandos();
+  }, []);
+  const rec_opm = async (param: number, new_opm: opmSaPM[], opm: opmSaPM) => {
+    const opmForm = new_opm.map(o => ({
+      ...o,
+      opm_filha: o.opm_filha || [],
+    }));
+
+    if (opm?.opm_filha) {
+      await rec_opm(param, opmForm, opm.opm_filha);
+    }
+    if (opm?.uni_codigo === param) {
+      opm.opm_filha = opmForm;
+      return opm;
+    }
+    return;
+  };
+  const handleLoadOpmFilhas = async (param: number) => {
+    try {
+      const gra_cmd = datasOpmFilhas.find(o => o.uni_codigo === param);
+      if (!gra_cmd) {
+        const uni = dataGraCmd.find(o => o.uni_codigo === param);
+        setDatasOpmFilhas(prev => [...prev, uni]);
+      }
+      //const response = await api.get<opmSaPM[]>(`/unidadesfilhas/${param}`);
+
+      /* await Promise.all(
+        datasOPMSapmChildren.map(async o => {
+          await rec_opm(param, response.data, o);
+        }),
+      ); */
+      datasOpmFilhas.map(async o => {
+        await rec_opm(param, dataGraCmd, o?.opm_filha);
+      });
+    } catch (error) {
+      console.error('Erro ao carregar as unidades:', error);
+    }
+  };
   const handleCheckboxChangeGrandeOPM = async (option: string) => {
-    const dados = datasOPMSapm.find(o => o.uni_sigla.includes(option));
+    const dados = dataGraCmd.find(o => o.uni_sigla.includes(option));
     if (!dados) {
       throw new Error('Grande Comando não encontrado');
     }
-    await loadIdsFromOPMsChildren(dados.uni_codigo);
+    handleLoadOpmFilhas(dados.uni_codigo);
   };
 
   const handleSelectOpm = async (data: opmSaPM) => {
-    const dataExists = datasOPMSapmChildren.some(
+    const dataExists = datasOpmFilhas.some(
       dataValue => dataValue.uni_codigo === data.uni_codigo,
     );
     if (dataExists) {
@@ -84,7 +243,6 @@ export const FormSolicitacaoPostos: React.FC = () => {
         isClosable: true,
         position: 'top-right',
       });
-      await loadOPMfromLocal(data);
     }
   };
   const loadOptions = async (
@@ -104,6 +262,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
       }, 1000);
     });
   };
+
   return (
     <FormControl
       //border={'1px solid green'}
@@ -172,7 +331,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
           colorScheme="green"
           onChange={async e => {
             if (e.target.checked) {
-              datasOPMSapm.map(async v => {
+              dataGraCmd.map(async v => {
                 await loadIdsFromOPMsChildren(v.uni_codigo);
               });
             }
@@ -180,7 +339,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
         >
           Todos
         </Checkbox>
-        {datasOPMSapm.map((data, index) => (
+        {dataGraCmd.map((data, index) => (
           <>
             <Checkbox
               key={index}
@@ -288,54 +447,9 @@ export const FormSolicitacaoPostos: React.FC = () => {
         p={2}
         gap={4}
       >
-        {/* {datasOPMSapmChildren.map((item, index) => {
-          return (
-            <>
-              <Flex key={index}>
-                <Controller
-                  name={`opmsLabel.${index}`}
-                  control={control}
-                  render={({ field: { onBlur, onChange } }) => (
-                    <>
-                      <Checkbox
-                        size="md"
-                        isChecked
-                        onBlur={onBlur}
-                        onChange={async () => {
-                          await handleDeleteOpmModal(item);
-                        }}
-                        colorScheme={'green'}
-                      >
-                        <Input
-                          value={
-                            item.uni_sigla.includes('1ºCRPM') ||
-                            item.uni_sigla.includes('2ºCRPM') ||
-                            item.uni_sigla.includes('3ºCRPM') ||
-                            item.uni_sigla.includes('4ºCRPM')
-                              ? item.uni_sigla + ' - ' + item.uni_nome
-                              : item.uni_nome || 'Item não encontrado'
-                          }
-                          onChange={e => onChange(e.target.value)}
-                          border={'none'}
-                          w={'50vw'}
-                          h={'2vh'}
-                        />
-                      </Checkbox>
-                    </>
-                  )}
-                />
-              </Flex>
-              <AccordionCheckbox
-                handleDeleteOpmModal={handleDeleteOpmModal}
-                dataOPMs={datasOPMSapmChildren}
-              ></AccordionCheckbox>
-            </>
-          );
-        })} */}
         <AccordionCheckbox
           handleDeleteOpmModal={handleDeleteOpmModal}
-          dataOPMs={datasOPMSapmChildren}
-          filhas={datasOPMSapmChildren}
+          opm={datasOpmFilhas}
         ></AccordionCheckbox>
       </Flex>
     </FormControl>

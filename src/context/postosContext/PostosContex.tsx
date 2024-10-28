@@ -429,9 +429,7 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
         //console.log('delete com index');
         const indexDeletedOpm =
           currentDataIndex * (lastDataIndex - firstDataIndex) + Number(index);
-        /* console.log('index', indexDeletedOpm);
-        console.log('currentDataIndex', currentDataIndex);
-        console.log('currentData.length', currentData.length); */
+
         if (indexDeletedOpm < 0 || indexDeletedOpm >= postosLocal.length) {
           toast({
             title: 'Erro!',
