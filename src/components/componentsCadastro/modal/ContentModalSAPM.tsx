@@ -10,6 +10,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  useToast,
 } from '@chakra-ui/react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useEvents } from '../../../context/eventContext/useEvents';
@@ -21,6 +22,9 @@ import { columnsMapMilitar } from '../../../types/typesMilitar';
 import { useSolicitacoesOPMPMs } from '../../../context/solicitacoesOPMPMsContext copy/useSolicitacoesOPMPMs';
 import { TableSolicitacoes } from '../table-solicitacoes';
 import { Pagination } from '../pagination/Pagination';
+import { useCallback, useEffect, useState } from 'react';
+import api from '../../../services/api';
+import { FormEfetivoBySearch } from '../formEfetivo/FormEfetivoBySearch';
 
 interface SolicitacaoForm {
   dataInicio: Date;
@@ -34,26 +38,59 @@ type opmSaPM = {
   uni_codigo: number;
   uni_sigla: string;
   uni_nome: string;
+  opm_filha: opmSaPM[];
 };
 export const ContentModalSAPM: React.FC = () => {
   const { control, setValue, getValues } = useFormContext<SolicitacaoForm>();
   const {
-    loadIdsFromOPMsChildren,
-    datasOPMSapm,
-    datasOPMSapmChildren,
     handleDeleteOpmModal,
     handleDeleteSelectAllOpm,
     handleDeleteOpmFromSameFather,
-    loadOPMfromLocal,
   } = useEvents();
+  const [dataGraCmd, setDataGraCmd] = useState<opmSaPM[]>([]);
+  const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
+  const handleDeleteAllOpmCancel = async () => {
+    await handleDeleteSelectAllOpm();
+  };
+
+  const toast = useToast();
+  const handleLoadGrandeComandos = useCallback(async () => {
+    try {
+      const response = await api.get<opmSaPM[]>('/unidades');
+      const dados = response.data.map(item => ({
+        ...item,
+        opm_filha: [],
+      }));
+      setDataGraCmd(dados);
+    } catch (error) {
+      console.error('Erro ao carregar as unidades principais:', error);
+    }
+  }, []);
+  useEffect(() => {
+    handleLoadGrandeComandos();
+  }, [handleLoadGrandeComandos]);
+
+  const handleLoadOpmFilhas = async (param: number) => {
+    try {
+      // funcionando ok
+      const gra_cmd = datasOpmFilhas.find(o => o.uni_codigo === param);
+      if (!gra_cmd) {
+        const uni = dataGraCmd.find(o => o.uni_codigo === param);
+        setDatasOpmFilhas(prev => [...prev, uni]);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar as unidades:', error);
+    }
+  };
 
   const handleCheckboxChangeGrandeOPM = async (option: string) => {
-    const dados = datasOPMSapm.find(o => o.uni_sigla.includes(option));
+    const dados = dataGraCmd.find(o => o.uni_sigla.includes(option));
     if (!dados) {
       throw new Error('Grande Comando não encontrado');
     }
-    await loadIdsFromOPMsChildren(dados.uni_codigo);
+    handleLoadOpmFilhas(dados.uni_codigo);
   };
+
   const {
     pms,
     handleClick,
@@ -93,15 +130,15 @@ export const ContentModalSAPM: React.FC = () => {
                 colorScheme="green"
                 onChange={async e => {
                   if (e.target.checked) {
-                    datasOPMSapm.map(async v => {
-                      await loadIdsFromOPMsChildren(v.uni_codigo);
+                    dataGraCmd.map(async v => {
+                      await handleLoadOpmFilhas(v.uni_codigo);
                     });
                   }
                 }}
               >
                 Todos
               </Checkbox>
-              {datasOPMSapm.map((data, index) => (
+              {dataGraCmd.map((data, index) => (
                 <>
                   <Checkbox
                     key={index}
@@ -114,7 +151,9 @@ export const ContentModalSAPM: React.FC = () => {
                     }}
                     colorScheme="green"
                   >
-                    {data.uni_sigla}
+                    {data.uni_sigla.includes('CMTE-GERAL')
+                      ? 'ADM'
+                      : data.uni_sigla}
                   </Checkbox>
                 </>
               ))}
@@ -212,9 +251,9 @@ export const ContentModalSAPM: React.FC = () => {
             >
               <AccordionCheckbox
                 handleDeleteOpmModal={handleDeleteOpmModal}
-                dataOPMs={datasOPMSapmChildren}
-                filhas={datasOPMSapmChildren}
-              ></AccordionCheckbox>
+                opm={datasOpmFilhas}
+                setDatasOpmFilhas={setDatasOpmFilhas}
+              />
             </Flex>
             <Flex
               border="1px solid rgba(0, 0, 0, 0.16)"
@@ -256,9 +295,9 @@ export const ContentModalSAPM: React.FC = () => {
             </Flex>
           </TabPanel>
           <TabPanel>
-            <FormEditarEfetivo />
+            {/* <FormEditarEfetivo /> */}
 
-            {/* <FormEfetivoBySearch /> */}
+            <FormEfetivoBySearch />
           </TabPanel>
         </TabPanels>
       </Tabs>

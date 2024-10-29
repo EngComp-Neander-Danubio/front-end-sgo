@@ -56,8 +56,7 @@ export const FormEfetivoBySearch: React.FC<IFormProps> = ({
           option.pessoa_pes_nome.toLowerCase().includes(pes_nome.toLowerCase()),
         )
         .map(option => ({
-          label: `${option.gra_nome} PM ${option.pessoa_pes_nome} -
-          Matrícula: ${option.pessoa_pes_codigo} - Unidade: ${option.unidade_uni_sigla}`,
+          label: `${option.gra_nome} PM ${option.pessoa_pes_nome} - Matrícula: ${option.pessoa_pes_codigo} - Unidade: ${option.unidade_uni_sigla}`,
           value: (option.pessoa_pes_codigo as unknown) as string,
         }));
 
@@ -77,9 +76,9 @@ export const FormEfetivoBySearch: React.FC<IFormProps> = ({
     //console.log(selectedOption, dadosPM, data);
     if (selectedOption) {
       const [gradAndName, rest] = selectedOption.label.split(' - ');
-      const [, unitPart] = selectedOption.label.split(' - Unidade: ');
+      const [mat, unitPart] = selectedOption.label.split(' - Unidade: ');
 
-      const matricula = rest.match(/\d+/)?.[0];
+      const matricula = mat.match(/\d+/)?.[0];
       setValue('matricula', matricula || '');
 
       const [grad, ...nameParts] = gradAndName.split(' PM ');

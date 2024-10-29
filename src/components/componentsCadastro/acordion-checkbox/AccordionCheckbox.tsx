@@ -136,7 +136,11 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                             control={control}
                             render={({ field: { onChange, value } }) => (
                               <Input
-                                value={item?.uni_sigla}
+                                value={
+                                  item?.uni_sigla.includes('CMTE-GERAL')
+                                    ? 'ADM'
+                                    : item?.uni_sigla
+                                }
                                 onChange={e => onChange(e.target.value)}
                                 border="none"
                                 w="40vw"

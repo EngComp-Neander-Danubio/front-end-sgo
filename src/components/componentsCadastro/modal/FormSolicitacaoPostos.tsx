@@ -222,7 +222,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
               }}
               colorScheme="green"
             >
-              {data.uni_sigla}
+              {data.uni_sigla.includes('CMTE-GERAL') ? 'ADM' : data.uni_sigla}
             </Checkbox>
           </>
         ))}

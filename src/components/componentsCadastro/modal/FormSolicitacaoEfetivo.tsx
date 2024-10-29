@@ -8,7 +8,7 @@ import {
   Divider,
   useToast,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { OptionType, SelectPattern } from './SelectPattern';
 import { OPMOption, options } from '../../../types/typesMilitar';
@@ -22,6 +22,7 @@ import { CheckBoxPattern } from './CheckboxPattern';
 import { useEvents } from '../../../context/eventContext/useEvents';
 import AsyncSelectComponent from '../formEfetivo/AsyncSelectComponent';
 import { OptionsOrGroups, GroupBase } from 'react-select';
+import api from '../../../services/api';
 type opmSaPM = {
   uni_codigo_pai: number;
   uni_codigo: number;
@@ -39,6 +40,9 @@ interface SolicitacaoForm {
 export const FormSolicitacaoEfetivo: React.FC = () => {
   const { control, reset } = useFormContext<SolicitacaoForm>();
   const [opm, setOPM] = useState<OPMs[]>([]);
+  const [dataGraCmd, setDataGraCmd] = useState<opmSaPM[]>([]);
+  const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
+
   const methodsInput = useFormContext();
   const { getValues, setValue } = methodsInput;
   const {
@@ -54,7 +58,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
   const [endDate, setEndDate] = useState<Date>();
 
   useEffect(() => {
-    opm.forEach((_, index) => {
+    datasOpmFilhas.forEach((_, index) => {
       const inputTotalValue = getValues('totalEfetivo');
       const currentValue = getValues(`input.${index}`) ?? '';
 
@@ -68,20 +72,50 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
         methodsInput.setValue(`checkbox.${index}`, true);
       }
     });
-  }, [opm, getValues, methodsInput.setValue]);
+  }, [datasOpmFilhas, getValues, methodsInput.setValue]);
   useEffect(() => {
     setValue('dataInicio', startDate || new Date());
   }, [startDate, setValue]);
+
   const handleDeleteAllOpmCancel = async () => {
     await handleDeleteSelectAllOpm();
   };
   const toast = useToast();
+  const handleLoadGrandeComandos = useCallback(async () => {
+    try {
+      const response = await api.get<opmSaPM[]>('/unidades');
+      const dados = response.data.map(item => ({
+        ...item,
+        opm_filha: [],
+      }));
+      setDataGraCmd(dados);
+    } catch (error) {
+      console.error('Erro ao carregar as unidades principais:', error);
+    }
+  }, []);
+  useEffect(() => {
+    handleLoadGrandeComandos();
+  }, [handleLoadGrandeComandos]);
+
+  const handleLoadOpmFilhas = async (param: number) => {
+    try {
+      // funcionando ok
+      const gra_cmd = datasOpmFilhas.find(o => o.uni_codigo === param);
+      if (!gra_cmd) {
+        const uni = dataGraCmd.find(o => o.uni_codigo === param);
+        setDatasOpmFilhas(prev => [...prev, uni]);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar as unidades:', error);
+    }
+  };
+
   const handleCheckboxChangeGrandeOPM = async (option: string) => {
-    const dados = datasOPMSapm.find(o => o.uni_sigla.includes(option));
+    const dados = dataGraCmd.find(o => o.uni_sigla.includes(option));
     if (!dados) {
       throw new Error('Grande Comando não encontrado');
     }
-    await loadIdsFromOPMsChildren(dados.uni_codigo);
+    handleLoadOpmFilhas(dados.uni_codigo);
   };
 
   const handleSelectOpm = async (data: opmSaPM) => {
@@ -195,15 +229,15 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
           colorScheme="green"
           onChange={async e => {
             if (e.target.checked) {
-              datasOPMSapm.map(async v => {
-                await loadIdsFromOPMsChildren(v.uni_codigo);
+              dataGraCmd.map(async v => {
+                await handleLoadOpmFilhas(v.uni_codigo);
               });
             }
           }}
         >
           Todos
         </Checkbox>
-        {datasOPMSapm.map((data, index) => (
+        {dataGraCmd.map((data, index) => (
           <>
             <Checkbox
               key={index}
@@ -216,7 +250,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
               }}
               colorScheme="green"
             >
-              {data.uni_sigla}
+              {data.uni_sigla.includes('CMTE-GERAL') ? 'ADM' : data.uni_sigla}
             </Checkbox>
           </>
         ))}
@@ -347,9 +381,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
             onClick={async () => {
               methodsInput.setValue(
                 'input',
-                datasOPMSapmChildren.map(() =>
-                  methodsInput.watch('totalEfetivo'),
-                ),
+                datasOpmFilhas.map(() => methodsInput.watch('totalEfetivo')),
               );
             }}
             bgColor=" #38A169"
@@ -380,14 +412,14 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
         gap={4}
       >
         <TableInput
-          isOpen={datasOPMSapmChildren.length > 0}
+          isOpen={datasOpmFilhas.length > 0}
           isActions
           isCheckBox
-          lengthData={datasOPMSapmChildren.length}
+          lengthData={datasOpmFilhas.length}
           currentPosition={0}
           rowsPerLoad={0}
           handleDeleteOpm={handleDeleteOpmModal}
-          opmDatas={datasOPMSapmChildren}
+          opmDatas={datasOpmFilhas}
         />
         {/* <Flex mt={2} flexDirection={'column'} w={'100%'}>
           <TableSolicitacoes
