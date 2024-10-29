@@ -40,6 +40,9 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
   };
   const methodsInput = useForm<SolicitacaoForm>({
     resolver: yupResolver(solicitacaoPostosSchema),
+    defaultValues: {
+      dataInicio: new Date(),
+    },
   });
   const { reset } = methodsInput;
   const onSubmit = async (data: SolicitacaoForm) => {
