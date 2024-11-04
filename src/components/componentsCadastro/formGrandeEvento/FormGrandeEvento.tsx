@@ -24,13 +24,13 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
   widthSelect,
   ...props
 }) => {
-  const { control, watch, setValue, getValues } = useFormContext();
+  const { control } = useFormContext();
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [dadosPM, setDadosPM] = useState<{ label: string; value: string }[]>(
     [],
   );
-  const data = watch('busca');
+
   const cache = new Map<string, any>();
 
   const load = debounce(async (pes_nome: string): Promise<
@@ -65,7 +65,7 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
       console.error('Error fetching data:', error);
       return [];
     }
-  }, 300);
+  }, 100);
   return (
     <FormControl
       //border={'1px solid green'}

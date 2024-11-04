@@ -10,16 +10,10 @@ import {
 } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { OptionType, SelectPattern } from './SelectPattern';
-import { OPMOption, options } from '../../../types/typesMilitar';
-import { OPMs } from '../../../types/typesOPM';
+import { options } from '../../../types/typesMilitar';
 import { DatePickerEvent } from '../formGrandeEvento/DatePickerEvent';
 import { TableInput } from '../tableInput/TableInput';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
-import { Pagination } from '../pagination/Pagination';
-import { TableSolicitacoes } from '../table-solicitacoes';
-import { CheckBoxPattern } from './CheckboxPattern';
-import { useEvents } from '../../../context/eventContext/useEvents';
 import AsyncSelectComponent from '../formEfetivo/AsyncSelectComponent';
 import { OptionsOrGroups, GroupBase } from 'react-select';
 import api from '../../../services/api';
@@ -38,25 +32,18 @@ interface SolicitacaoForm {
   input: string[];
 }
 export const FormSolicitacaoEfetivo: React.FC = () => {
-  const { control, reset } = useFormContext<SolicitacaoForm>();
-  const [opm, setOPM] = useState<OPMs[]>([]);
+  const { control } = useFormContext<SolicitacaoForm>();
   const [dataGraCmd, setDataGraCmd] = useState<opmSaPM[]>([]);
   const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
 
   const methodsInput = useFormContext();
   const { getValues, setValue } = methodsInput;
-  const {
-    loadIdsFromOPMsChildren,
-    datasOPMSapm,
-    datasOPMSapmChildren,
-    handleDeleteOpmModal,
-    handleDeleteSelectAllOpm,
-    handleDeleteOpmFromSameFather,
-    loadOPMfromLocal,
-  } = useEvents();
+
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
-
+  const handleDeleteAllOpmCancel = async () => {
+    setDatasOpmFilhas([]);
+  };
   useEffect(() => {
     datasOpmFilhas.forEach((_, index) => {
       const inputTotalValue = getValues('totalEfetivo');
@@ -77,9 +64,6 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
     setValue('dataInicio', startDate || new Date());
   }, [startDate, setValue]);
 
-  const handleDeleteAllOpmCancel = async () => {
-    await handleDeleteSelectAllOpm();
-  };
   const toast = useToast();
   const handleLoadGrandeComandos = useCallback(async () => {
     try {
@@ -119,7 +103,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
   };
 
   const handleSelectOpm = async (data: opmSaPM) => {
-    const dataExists = datasOPMSapmChildren.some(
+    const dataExists = datasOpmFilhas.some(
       dataValue => dataValue.uni_codigo === data.uni_codigo,
     );
     if (dataExists) {
@@ -141,7 +125,6 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
         isClosable: true,
         position: 'top-right',
       });
-      await loadOPMfromLocal(data);
     }
   };
   const loadOptions = async (
@@ -245,7 +228,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                 if (e.currentTarget.checked) {
                   await handleCheckboxChangeGrandeOPM(data.uni_sigla);
                 } else {
-                  await handleDeleteOpmFromSameFather(data);
+                  setDatasOpmFilhas([]);
                 }
               }}
               colorScheme="green"
@@ -418,7 +401,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
           lengthData={datasOpmFilhas.length}
           currentPosition={0}
           rowsPerLoad={0}
-          handleDeleteOpm={handleDeleteOpmModal}
+          handleDeleteOpm={() => {}}
           opmDatas={datasOpmFilhas}
         />
         {/* <Flex mt={2} flexDirection={'column'} w={'100%'}>

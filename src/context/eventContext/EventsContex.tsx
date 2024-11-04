@@ -9,7 +9,6 @@ import React, {
 
 import { useToast } from '@chakra-ui/react';
 import api from '../../services/api';
-import { number } from 'prop-types';
 
 export interface Event {
   id?: string;
@@ -18,19 +17,10 @@ export interface Event {
   dataInicio: Date;
   dataFinal: Date;
 }
-interface opmSaPM {
-  uni_codigo_pai: number;
-  uni_codigo: number;
-  uni_sigla: string;
-  uni_nome: string;
-  opm_filha?: opmSaPM[];
-}
 
 export interface IContextEventsData {
   events: Event[];
   eventById: Event;
-  datasOPMSapm: opmSaPM[];
-  datasOPMSapmChildren: opmSaPM[];
   uploadEvent: (data: Event) => Promise<void>;
   loadEvents: (param?: string) => Promise<void>;
   loadEventsById: (id: string) => Promise<void>;
@@ -38,18 +28,11 @@ export interface IContextEventsData {
   deleteEvent: (id: string) => Promise<void>;
   loadMoreEvents: () => void;
   loadLessEvents: () => void;
-  loadIdsFromOPMsMain: () => Promise<void>;
-  loadIdsFromOPMsChildren: (param: number) => Promise<opmSaPM[]>;
-  loadOpmChild: (param: number) => Promise<opmSaPM[]>;
-  handleDeleteOpmModal: (param: opmSaPM) => Promise<void>;
-  handleDeleteOpmFromSameFather: (param: opmSaPM) => Promise<void>;
-  handleDeleteSelectAllOpm: () => Promise<void>;
   currentDataIndex: number;
   dataPerPage: number;
   lastDataIndex: number;
   firstDataIndex: number;
   totalData: number;
-  isLoadingOpm: boolean;
 }
 
 export const EventsContext = createContext<IContextEventsData | undefined>(
@@ -61,13 +44,8 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const toast = useToast();
   const [events, setEvents] = useState<Event[]>([]);
-  const [datasOPMSapm, setDatasOPMSapm] = useState<opmSaPM[]>([]);
-  const [datasOPMSapmChildren, setDatasOPMSapmChildren] = useState<opmSaPM[]>(
-    [],
-  );
   const [eventById, setEventById] = useState<Event>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isLoadingOpm, setIsLoadingOpm] = useState<boolean>(false);
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
   const [dataPerPage] = useState(8);
   const lastDataIndex = (currentDataIndex + 1) * dataPerPage;
@@ -80,9 +58,6 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     loadEvents();
   }, []);
 
-  useEffect(() => {
-    loadIdsFromOPMsMain();
-  }, []);
   const loadMoreEvents = () => {
     if (hasMore) {
       setCurrentDataIndex(prevIndex => prevIndex + 1);
@@ -113,112 +88,12 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  const loadIdsFromOPMsMain = useCallback(async () => {
-    try {
-      const response = await api.get<opmSaPM[]>('/unidades');
-      const dados = response.data.map(item => ({
-        ...item,
-        opm_filha: [],
-      }));
-      setDatasOPMSapm(dados);
-    } catch (error) {
-      console.error('Erro ao carregar as unidades principais:', error);
-    }
-  }, []);
-
-  const rec_opm = async (param: number, new_opm: opmSaPM[], opm?: opmSaPM) => {
-    console.log(`Entrando na recursão com opm:`, opm);
-    console.log(`param`, param);
-    const opmForm = new_opm.map(o => ({
-      ...o,
-      opm_filha: o.opm_filha || [],
-    }));
-
-    if (opm?.opm_filha) {
-      await rec_opm(param, opmForm, opm.opm_filha);
-    }
-    if (opm?.uni_codigo === param) {
-      opm.opm_filha = opmForm;
-      return opm;
-    }
-    console.log(`Saindo da recursão com opm:`, opm);
-    return;
-  };
-
-  const loadIdsFromOPMsChildren = useCallback(
-    async (param: number) => {
-      try {
-        const gra_cmd = datasOPMSapmChildren.find(o => o.uni_codigo === param);
-        if (!gra_cmd) {
-          const uni = datasOPMSapm.find(o => o.uni_codigo === param);
-          setDatasOPMSapmChildren(prev => [...prev, uni]);
-        }
-
-        const response = await api.get<opmSaPM[]>(`/unidadesfilhas/${param}`);
-
-        await Promise.all(
-          datasOPMSapmChildren.map(async o => {
-            await rec_opm(param, response.data, o);
-          }),
-        );
-
-        setIsLoadingOpm(true);
-      } catch (error) {
-        console.error('Erro ao carregar as unidades:', error);
-        setIsLoadingOpm(false);
-      }
-    },
-    [datasOPMSapmChildren, datasOPMSapm],
-  );
-
-  useEffect(() => {}, [datasOPMSapmChildren, datasOPMSapm, rec_opm]);
-
-  const loadOpmChild = useCallback(async (param: number) => {
-    try {
-      const response = await api.get<opmSaPM[]>(`/unidadesfilhas/${param}`);
-      setDatasOPMSapmChildren(prev => [...prev, ...response.data]);
-      setIsLoadingOpm(true);
-    } catch (error) {
-      console.error('Erro ao carregar as unidades:', error);
-      setIsLoadingOpm(false);
-    }
-  }, []);
-
-  const handleDeleteOpmModal = useCallback(async (param: opmSaPM) => {
-    if (!param.opm_filha) {
-      setDatasOPMSapmChildren(dataOpmChildren => {
-        return dataOpmChildren.filter(o => {
-          return !o.uni_sigla.includes(param.uni_sigla);
-        });
-      });
-    } else {
-      setDatasOPMSapmChildren(dataOpmChildren => {
-        return dataOpmChildren.filter(o => {
-          return !o.uni_sigla.includes(param.uni_sigla);
-        });
-      });
-    }
-  }, []);
-  const handleDeleteOpmFromSameFather = useCallback(
-    async (param: opmSaPM) => {
-      setDatasOPMSapmChildren(() => {
-        return datasOPMSapmChildren.filter(
-          o => o.uni_codigo_pai !== param.uni_codigo,
-        );
-      });
-    },
-    [datasOPMSapmChildren],
-  );
-
-  const handleDeleteSelectAllOpm = useCallback(async () => {
-    setDatasOPMSapmChildren([]);
-  }, []);
   const uploadEvent = useCallback(
     async (data: Event) => {
       setIsLoading(true);
 
       try {
-        const response = await api.post('/operacao', data);
+        await api.post('/operacao', data);
         toast({
           title: 'Sucesso',
           description: 'Evento/Operação atualizada com sucesso',
@@ -249,7 +124,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     const parameters = param !== undefined ? param : '';
     try {
       const response = await api.get<{ items: Event[] }>(
-        `operacao/${parameters}`,
+        `operacoes/${parameters}`,
       );
       //setEvents((response.data as unknown) as Event[]);
       setEvents(prevArray => [
@@ -257,7 +132,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
         ...((response.data as unknown) as Event[]),
       ]);
     } catch (error) {
-      console.error('Falha ao carregar os eventos/operações:', error);
+      console.error('Falha ao carregar os Operações:', error);
     } finally {
       setIsLoading(false);
     }
@@ -278,7 +153,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
         // await loadTasks();
         toast({
           title: 'Sucesso',
-          description: 'Tarefa atualizada com sucesso',
+          description: 'Operação atualizada com sucesso',
           status: 'success',
           position: 'top-right',
           duration: 9000,
@@ -286,10 +161,9 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
         });
         setEventById((null as unknown) as Event);
       } catch (error) {
-        console.error('Falha ao atualizar a tarefa:', error);
         toast({
           title: 'Erro',
-          description: 'Falha ao atualizar a tarefa',
+          description: `${error}, 'Falha ao atualizar Operação`,
           status: 'error',
           position: 'top-right',
           duration: 9000,
@@ -332,17 +206,6 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
-  useEffect(() => {
-    //console.log(datasOPMSapmChildren);
-    //console.log(datasOPMSapm);
-  }, [
-    handleDeleteOpmFromSameFather,
-    datasOPMSapm,
-    datasOPMSapmChildren,
-    rec_opm,
-    loadIdsFromOPMsChildren,
-  ]);
-
   const contextValue = useMemo(
     () => ({
       uploadEvent,
@@ -352,14 +215,6 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       loadEventsById,
       loadLessEvents,
       loadMoreEvents,
-      loadIdsFromOPMsMain,
-      loadIdsFromOPMsChildren,
-      loadOpmChild,
-      handleDeleteOpmModal,
-      handleDeleteSelectAllOpm,
-      handleDeleteOpmFromSameFather,
-      datasOPMSapm,
-      datasOPMSapmChildren,
       events: currentData,
       eventById,
       totalData,
@@ -367,7 +222,6 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       lastDataIndex,
       currentDataIndex,
       dataPerPage,
-      isLoadingOpm,
     }),
     [
       uploadEvent,
@@ -377,14 +231,6 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       loadEventsById,
       loadLessEvents,
       loadMoreEvents,
-      loadIdsFromOPMsMain,
-      loadIdsFromOPMsChildren,
-      loadOpmChild,
-      handleDeleteOpmModal,
-      handleDeleteSelectAllOpm,
-      handleDeleteOpmFromSameFather,
-      datasOPMSapm,
-      datasOPMSapmChildren,
       events,
       eventById,
       totalData,
@@ -392,7 +238,6 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
       lastDataIndex,
       currentDataIndex,
       dataPerPage,
-      isLoadingOpm,
     ],
   );
 
@@ -402,104 +247,3 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     </EventsContext.Provider>
   );
 };
-
-/*
-const mockData = [
-    {
-      uni_codigo_pai: 0,
-      uni_codigo: 1,
-      uni_sigla: '1ºCRPM',
-      uni_nome: 'Comando Regional de Policiamento Metropolitano',
-      opm_filha: [
-        {
-          uni_codigo_pai: 1,
-          uni_codigo: 11,
-          uni_sigla: '1ºBPM',
-          uni_nome: '1º Batalhão de Polícia Militar',
-          opm_filha: [
-            {
-              uni_codigo_pai: 11,
-              uni_codigo: 111,
-              uni_sigla: '1ªCIA',
-              uni_nome: '1ª Companhia do 1º Batalhão',
-            },
-            {
-              uni_codigo_pai: 11,
-              uni_codigo: 112,
-              uni_sigla: '2ªCIA',
-              uni_nome: '2ª Companhia do 1º Batalhão',
-            },
-          ],
-        },
-        {
-          uni_codigo_pai: 1,
-          uni_codigo: 12,
-          uni_sigla: '2ºBPM',
-          uni_nome: '2º Batalhão de Polícia Militar',
-          opm_filha: [
-            {
-              uni_codigo_pai: 12,
-              uni_codigo: 121,
-              uni_sigla: '1ªCIA',
-              uni_nome: '1ª Companhia do 2º Batalhão',
-            },
-            {
-              uni_codigo_pai: 12,
-              uni_codigo: 122,
-              uni_sigla: '2ªCIA',
-              uni_nome: '2ª Companhia do 2º Batalhão',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      uni_codigo_pai: 0,
-      uni_codigo: 2,
-      uni_sigla: '2ºCRPM',
-      uni_nome: 'Comando Regional de Policiamento do Interior',
-      opm_filha: [
-        {
-          uni_codigo_pai: 2,
-          uni_codigo: 21,
-          uni_sigla: '3ºBPM',
-          uni_nome: '3º Batalhão de Polícia Militar',
-          opm_filha: [
-            {
-              uni_codigo_pai: 21,
-              uni_codigo: 211,
-              uni_sigla: '1ªCIA',
-              uni_nome: '1ª Companhia do 3º Batalhão',
-            },
-            {
-              uni_codigo_pai: 21,
-              uni_codigo: 212,
-              uni_sigla: '2ªCIA',
-              uni_nome: '2ª Companhia do 3º Batalhão',
-            },
-          ],
-        },
-        {
-          uni_codigo_pai: 2,
-          uni_codigo: 22,
-          uni_sigla: '4ºBPM',
-          uni_nome: '4º Batalhão de Polícia Militar',
-          opm_filha: [
-            {
-              uni_codigo_pai: 22,
-              uni_codigo: 221,
-              uni_sigla: '1ªCIA',
-              uni_nome: '1ª Companhia do 4º Batalhão',
-            },
-            {
-              uni_codigo_pai: 22,
-              uni_codigo: 222,
-              uni_sigla: '2ªCIA',
-              uni_nome: '2ª Companhia do 4º Batalhão',
-            },
-          ],
-        },
-      ],
-    },
-  ];
- */

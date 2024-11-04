@@ -4,6 +4,7 @@ import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
 import { ModalAlertSolicitacaoPMs } from '../modal/ModalAlertSolicitacaoPMs';
 import { Pagination } from '../pagination/Pagination';
 import { useSolicitacoesPMs } from '../../../context/solicitacoesPMsContext/useSolicitacoesPMs';
+import { ModalSolicitacarEfetivoRed } from '../modal/redistribuicao-efetivo/ModalSolicitarEfetivoRed';
 
 // lista as solicitacoes da OPM no que se refere ao efetivo policial
 export const ToListSolicitacoesPMsContent = () => {
@@ -48,6 +49,11 @@ export const ToListSolicitacoesPMsContent = () => {
     onOpen: onOpenAlertSolicitacao,
     onClose: onCloseAlertSolicitacao,
   } = useDisclosure();
+  const {
+    isOpen: isOpenFormRedSolEfetivo,
+    onOpen: onOpenFormRedSolEfetivo,
+    onClose: onCloseFormRedSolEfetivo,
+  } = useDisclosure();
 
   return (
     <>
@@ -58,11 +64,12 @@ export const ToListSolicitacoesPMsContent = () => {
           isActions={true}
           label_tooltip={'Solicitação de PMs'}
           openModalAdd={onOpenFormAddMilitar}
-          openModalSend={onOpenAlertSolicitacao}
+          //openModalSend={onOpenAlertSolicitacao}
           height={''}
           handleDelete={function(id?: string, index?: string): {} {
             throw new Error('Function not implemented.');
           }}
+          openModalSend={onOpenFormRedSolEfetivo}
         />
         {/* Componente de paginação */}
         <Pagination
@@ -85,6 +92,11 @@ export const ToListSolicitacoesPMsContent = () => {
           isOpen={isOpenAlertSolicitacao}
           onOpen={onOpenAlertSolicitacao}
           onClose={onCloseAlertSolicitacao}
+        />
+        <ModalSolicitacarEfetivoRed
+          isOpen={isOpenFormRedSolEfetivo}
+          onOpen={onOpenFormRedSolEfetivo}
+          onClose={onCloseFormRedSolEfetivo}
         />
       </Flex>
     </>

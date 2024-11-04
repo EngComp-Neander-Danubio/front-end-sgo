@@ -2,6 +2,8 @@ import { TableSolicitacoes } from '../table-solicitacoes';
 import { Flex, useDisclosure } from '@chakra-ui/react';
 import { Pagination } from '../pagination/Pagination';
 import { useSolicitacoesPostos } from '../../../context/solicitacoesPostosContext/useSolicitacoesPostos';
+import { ModalSolicitacarPostosRed } from '../modal/redistribuicao-postos/ModalSolicitarPostosRed';
+
 // lista as solicitacoes da OPM no que se refere ao posto de serviço
 export const ToListSolicitacoesPostosContent = () => {
   const {
@@ -36,11 +38,11 @@ export const ToListSolicitacoesPostosContent = () => {
     return transformedPosto;
   });
 
-  /*  const {
-    isOpen: isOpenFormAddPosto,
-    onOpen: onOpenFormAddPosto,
-    onClose: onCloseFormAddPosto,
-  } = useDisclosure(); */
+  const {
+    isOpen: isOpenFormRedSolPosto,
+    onOpen: onOpenFormRedSolPosto,
+    onClose: onCloseFormRedSolPosto,
+  } = useDisclosure();
   return (
     <>
       <Flex flexDirection={'column'} w={'100%'}>
@@ -51,6 +53,10 @@ export const ToListSolicitacoesPostosContent = () => {
           isActions={true}
           label_tooltip={'Solicitação de Postos'}
           height={'60vh'}
+          handleDelete={function(id?: string, index?: string): {} {
+            throw new Error('Function not implemented.');
+          }}
+          openModalSend={onOpenFormRedSolPosto}
         />
 
         {/* Componente de paginação */}
@@ -63,6 +69,11 @@ export const ToListSolicitacoesPostosContent = () => {
           loadMore={loadMoreSolicitacoesPostos}
         />
       </Flex>
+      <ModalSolicitacarPostosRed
+        isOpen={isOpenFormRedSolPosto}
+        onOpen={onOpenFormRedSolPosto}
+        onClose={onCloseFormRedSolPosto}
+      />
     </>
   );
 };

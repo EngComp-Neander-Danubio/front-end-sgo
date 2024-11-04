@@ -40,6 +40,7 @@ export const TableSolicitacoes: React.FC<ITable> = ({
   label_tooltip,
   height,
   handleDelete,
+  openModalSend,
 }) => {
   const navigate = useNavigate();
   return (
@@ -121,6 +122,11 @@ export const TableSolicitacoes: React.FC<ITable> = ({
                                 navigate('/listar-solicitacao-posto')
                               }
                             />,
+                            <IconeRedistribuir
+                              key="redistribuir"
+                              label_tooltip={label_tooltip}
+                              onOpen={openModalSend}
+                            />,
                           ]
                         : !isView
                         ? [
@@ -132,6 +138,7 @@ export const TableSolicitacoes: React.FC<ITable> = ({
                             <IconeRedistribuir
                               key="redistribuir"
                               label_tooltip={label_tooltip}
+                              onOpen={openModalSend}
                             />,
                           ]
                         : isView &&

@@ -13,9 +13,8 @@ import {
 import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { FormSolicitacaoPostos } from './FormSolicitacaoPostos';
-import { solicitacaoPostosSchema } from '../../../types/yupSolicitacaoPostos/yupSolicitacaoPostos';
-import api from '../../../services/api';
+import { FormSolicitacaoEfetivoRed } from './FormSolicitacaoEfetivoRed';
+import { solicitacaoPostosSchema } from '../../../../types/yupSolicitacaoPostos/yupSolicitacaoPostos';
 
 interface IModal {
   isOpen: boolean;
@@ -37,7 +36,7 @@ interface SolicitacaoForm {
   operacao_id?: string;
   select_opm?: string;
 }
-export const ModalSolicitacarPostos: React.FC<IModal> = ({
+export const ModalSolicitacarEfetivoRed: React.FC<IModal> = ({
   isOpen,
   onClose,
 }) => {
@@ -87,14 +86,16 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
             w={'fit-content'}
             //h={'90vh'}
             maxH="100vh"
-            minH="65vh"
+            //minH="65vh"
           >
             <ModalHeader>
-              <Center>Solicitação de Postos</Center>
+              <Center color={'rgba(0, 0, 0, 0.48)'}>
+                Redistribuição de Solicitação de Efetivo
+              </Center>
             </ModalHeader>
             <ModalCloseButton onClick={() => reset()} />
             <ModalBody justifyContent="center" padding={4} gap={4}>
-              <FormSolicitacaoPostos />
+              <FormSolicitacaoEfetivoRed />
             </ModalBody>
             <ModalFooter>
               <Button
@@ -121,7 +122,7 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
                 }}
                 type="submit"
               >
-                Salvar
+                Enviar
               </Button>
             </ModalFooter>
           </ModalContent>

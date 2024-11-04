@@ -8,11 +8,10 @@ import {
   Divider,
   useToast,
 } from '@chakra-ui/react';
-import { SetStateAction, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { options } from '../../../types/typesMilitar';
 import { DatePickerEvent } from '../formGrandeEvento/DatePickerEvent';
-import { useEvents } from '../../../context/eventContext/useEvents';
 import AsyncSelectComponent from '../formEfetivo/AsyncSelectComponent';
 import { OptionsOrGroups, GroupBase } from 'react-select';
 import { AccordionCheckbox } from '../acordion-checkbox/AccordionCheckbox';
@@ -21,10 +20,10 @@ import api from '../../../services/api';
 interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
-  opmsLabel: opmSaPM[];
-  select_opm: opmSaPM;
-  checkbox: opmSaPM[];
+  uni_codigo: opmSaPM[];
+  select_opm?: opmSaPM;
 }
+
 type opmSaPM = {
   uni_codigo_pai: number;
   uni_codigo: number;
@@ -33,23 +32,14 @@ type opmSaPM = {
   opm_filha: opmSaPM[];
 };
 export const FormSolicitacaoPostos: React.FC = () => {
-  const { control, setValue, getValues, watch } = useFormContext<
-    SolicitacaoForm
-  >();
+  const { control, getValues } = useFormContext<SolicitacaoForm>();
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
-  const [loading, setLoading] = useState(false);
   const [dataGraCmd, setDataGraCmd] = useState<opmSaPM[]>([]);
   const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
-
-  const {
-    handleDeleteOpmModal,
-    handleDeleteSelectAllOpm,
-    handleDeleteOpmFromSameFather,
-  } = useEvents();
-
+  console.log(datasOpmFilhas);
   const handleDeleteAllOpmCancel = async () => {
-    await handleDeleteSelectAllOpm();
+    setDatasOpmFilhas([]);
   };
   const toast = useToast();
   const handleLoadGrandeComandos = useCallback(async () => {
@@ -74,10 +64,9 @@ export const FormSolicitacaoPostos: React.FC = () => {
       const gra_cmd = datasOpmFilhas.find(o => o.uni_codigo === param);
       if (!gra_cmd) {
         const uni = dataGraCmd.find(o => o.uni_codigo === param);
-        setDatasOpmFilhas(prev => [...prev, uni]);
+        setDatasOpmFilhas(prev => [...prev, uni as opmSaPM]);
       }
     } catch (error) {
-      setLoading(false);
       console.error('Erro ao carregar as unidades:', error);
     }
   };
@@ -134,16 +123,8 @@ export const FormSolicitacaoPostos: React.FC = () => {
   };
 
   return (
-    <FormControl
-      //border={'1px solid green'}
-      mb={4}
-      zIndex={0.1}
-    >
-      <Flex
-        align="center"
-        //justify="center"
-        gap={2}
-      >
+    <FormControl mb={4}>
+      <Flex align="center" gap={2}>
         <Flex
           align={'center'}
           justify="center"
@@ -217,7 +198,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
                 if (e.currentTarget.checked) {
                   await handleCheckboxChangeGrandeOPM(data.uni_sigla);
                 } else {
-                  await handleDeleteOpmFromSameFather(data);
+                  setDatasOpmFilhas([]);
                 }
               }}
               colorScheme="green"
@@ -284,9 +265,9 @@ export const FormSolicitacaoPostos: React.FC = () => {
           //border={'1px solid red'}
           >
             <Button
-              onClick={() => {
+              onClick={async () => {
                 const v = getValues('select_opm');
-                handleSelectOpm(v);
+                if (v) await handleSelectOpm(v);
               }}
               bgColor="#38A169"
               _hover={{
@@ -317,16 +298,9 @@ export const FormSolicitacaoPostos: React.FC = () => {
         p={2}
         gap={4}
       >
-        <Controller
-          name={`checkbox`}
-          control={control}
-          render={({}) => (
-            <AccordionCheckbox
-              handleDeleteOpmModal={handleDeleteOpmModal}
-              opm={datasOpmFilhas}
-              setDatasOpmFilhas={setDatasOpmFilhas}
-            />
-          )}
+        <AccordionCheckbox
+          opm={datasOpmFilhas}
+          setDatasOpmFilhas={setDatasOpmFilhas}
         />
       </Flex>
     </FormControl>

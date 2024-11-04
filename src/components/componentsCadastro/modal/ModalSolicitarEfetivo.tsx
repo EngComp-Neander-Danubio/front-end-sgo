@@ -36,23 +36,19 @@ interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
   input: string[];
-  opmsLabel: opmSaPM[];
+  uni_codigo: string[];
 }
 export const ModalSolicitarEfetivo: React.FC<IModal> = ({
   isOpen,
   onClose,
 }) => {
   const toast = useToast();
-  const { handleDeleteSelectAllOpm } = useEvents();
-  const handleDeleteAllOpm = async () => {
-    await handleDeleteSelectAllOpm();
-  };
   const methodsInput = useForm<SolicitacaoForm>({
     resolver: yupResolver(solicitacaoEfetivoSchema),
   });
   const { reset } = methodsInput;
   const onSubmit = async (data: SolicitacaoForm) => {
-    const opms = data.opmsLabel
+    const opms = data.uni_codigo
       .map(op => {
         const option = optionsOPMs.find(o => o.label === op.valueOf());
         return option ? option.value : null;
@@ -108,39 +104,37 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
               <ModalHeader>
                 <Center>Solicitação de Efetivo Policial</Center>
               </ModalHeader>
-              <ModalCloseButton onClick={handleDeleteAllOpm} />
-              <FormProvider {...methodsInput}>
-                <ModalBody justifyContent="center" padding={4} gap={4}>
-                  <FormSolicitacaoEfetivo />
-                </ModalBody>
-                <ModalFooter>
-                  <Button
-                    colorScheme="red"
-                    mr={3}
-                    onClick={() => {
-                      onClose();
-                      reset();
-                      handleDeleteAllOpm();
-                    }}
-                  >
-                    Cancelar
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    bgColor=" #38A169"
-                    _hover={{
-                      bgColor: 'green',
-                      cursor: 'pointer',
-                      transition: '.5s',
-                    }}
-                    color="#fff"
-                    type="submit"
-                    //onClick={reset}
-                  >
-                    Salvar
-                  </Button>
-                </ModalFooter>
-              </FormProvider>
+              <ModalCloseButton onClick={() => reset()} />
+
+              <ModalBody justifyContent="center" padding={4} gap={4}>
+                <FormSolicitacaoEfetivo />
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  colorScheme="red"
+                  mr={3}
+                  onClick={() => {
+                    onClose();
+                    reset();
+                  }}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  variant="ghost"
+                  bgColor=" #38A169"
+                  _hover={{
+                    bgColor: 'green',
+                    cursor: 'pointer',
+                    transition: '.5s',
+                  }}
+                  color="#fff"
+                  type="submit"
+                  //onClick={reset}
+                >
+                  Salvar
+                </Button>
+              </ModalFooter>
             </ModalContent>
           </form>
         </FormProvider>
