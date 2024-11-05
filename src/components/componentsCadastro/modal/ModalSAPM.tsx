@@ -14,7 +14,6 @@ import { OPMs } from '../../../types/typesOPM';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { militarSchema } from '../../../types/yupMilitares/yupMilitares';
-import { useEvents } from '../../../context/eventContext/useEvents';
 import { ContentModalSAPM } from './ContentModalSAPM';
 type Militar = {
   uni_codigo_pai: number;
@@ -31,10 +30,6 @@ interface IModal {
 }
 
 export const ModalSAPM: React.FC<IModal> = ({ isOpen, onClose }) => {
-  const { handleDeleteSelectAllOpm } = useEvents();
-  const handleDeleteAllOpm = async () => {
-    await handleDeleteSelectAllOpm();
-  };
   const methodsInput = useForm<Militar>({
     resolver: yupResolver(militarSchema),
   });
@@ -73,7 +68,6 @@ export const ModalSAPM: React.FC<IModal> = ({ isOpen, onClose }) => {
                   onClick={() => {
                     onClose();
                     reset();
-                    handleDeleteAllOpm();
                   }}
                 >
                   Cancelar

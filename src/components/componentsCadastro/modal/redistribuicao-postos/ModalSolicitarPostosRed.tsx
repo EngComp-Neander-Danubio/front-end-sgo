@@ -14,7 +14,7 @@ import React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormSolicitacaoPostosRed } from './FormSolicitacaoPostosRed';
-import { solicitacaoPostosSchema } from '../../../../types/yupSolicitacaoPostos/yupSolicitacaoPostos';
+import { solicitacaoPostosSchemaRed } from '../../../../types/yupSolicitacaoPostosRed/yupSolicitacaoPostosRed';
 
 interface IModal {
   isOpen: boolean;
@@ -29,31 +29,29 @@ type opmSaPM = {
   opm_filha: opmSaPM[];
 };
 
-interface SolicitacaoForm {
+type SolicitacaoForm = {
   dataInicio: Date;
   dataFinal: Date;
-  uni_codigo: opmSaPM[];
-  operacao_id?: string;
-  select_opm?: string;
-}
+  uni_codigo: number[];
+};
 export const ModalSolicitacarPostosRed: React.FC<IModal> = ({
   isOpen,
   onClose,
 }) => {
   const toast = useToast();
   const methodsInput = useForm<SolicitacaoForm>({
-    resolver: yupResolver(solicitacaoPostosSchema),
+    resolver: yupResolver(solicitacaoPostosSchemaRed),
     defaultValues: {
       dataInicio: new Date(),
-      operacao_id: '02/2024',
     },
   });
+
   const { reset } = methodsInput;
   const onSubmit = async (data: SolicitacaoForm) => {
     try {
+      await console.log('data', data);
       //console.log(' dados', dados);
       //await api.post('/solicitacao-postos', dados);
-      console.log('chamou o post');
       toast({
         title: 'Solicitações de Postos.',
         description: 'Solicitação Salva.',
@@ -109,6 +107,7 @@ export const ModalSolicitacarPostosRed: React.FC<IModal> = ({
                 Cancelar
               </Button>
               <Button
+                type="submit"
                 variant="ghost"
                 bgColor=" #38A169"
                 _hover={{
@@ -117,10 +116,6 @@ export const ModalSolicitacarPostosRed: React.FC<IModal> = ({
                   transition: '.5s',
                 }}
                 color="#fff"
-                onClick={() => {
-                  console.log('clicado');
-                }}
-                type="submit"
               >
                 Enviar
               </Button>

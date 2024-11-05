@@ -212,9 +212,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   // Verifique as mudanças no estado `pms`
-  useEffect(() => {
-    console.log('PMs atualizados:', pms);
-  }, [pms]);
+  useEffect(() => {}, [pms]);
 
   // Função para lidar com o clique no input de arquivo
   const handleClickMilitar = () => {

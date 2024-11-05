@@ -32,7 +32,7 @@ type opmSaPM = {
 interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
-  uni_codigo: opmSaPM[];
+  uni_codigo: number[];
   operacao_id?: string;
   select_opm?: string;
 }

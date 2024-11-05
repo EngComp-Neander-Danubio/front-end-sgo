@@ -33,7 +33,7 @@ type opmSaPM = {
 interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
-  uni_codigo: opmSaPM[];
+  uni_codigo: number[];
   operacao_id?: string;
   select_opm?: string;
 }
@@ -52,9 +52,9 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
   const { reset } = methodsInput;
   const onSubmit = async (data: SolicitacaoForm) => {
     try {
-      //console.log(' dados', dados);
-      //await api.post('/solicitacao-postos', dados);
-      console.log('chamou o post');
+      console.log(' dados', data);
+      await api.post('/solicitacao-postos', data);
+      //console.log('chamou o post');
       toast({
         title: 'Solicitações de Postos.',
         description: 'Solicitação Salva.',

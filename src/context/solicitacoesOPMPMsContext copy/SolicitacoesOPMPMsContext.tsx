@@ -204,9 +204,7 @@ export const SolicitacoesOPMPMsProvider: React.FC<{
     }
   };
 
-  useEffect(() => {
-    console.log('PMs atualizados:', pms);
-  }, [pms]);
+  useEffect(() => {}, [pms]);
 
   // Função para lidar com o clique no input de arquivo
   const handleClick = () => {

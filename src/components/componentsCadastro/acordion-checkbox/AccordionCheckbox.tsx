@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Flex,
   Input,
@@ -34,8 +34,15 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
   setDatasOpmFilhas,
   opm = [],
 }) => {
-  const { control } = useFormContext();
+  const methodsInput = useFormContext();
+  const { control } = methodsInput;
   const [loadingResponse, setResponseLoading] = useState<boolean>();
+  useEffect(() => {
+    opm.forEach(o => {
+      const currentValues = methodsInput.getValues('uni_codigo') || [];
+      methodsInput.setValue('uni_codigo', [...currentValues, o.uni_codigo]);
+    });
+  }, []);
 
   const rec_opm = async (param: number, new_opm: opmSaPM[], opm: opmSaPM) => {
     if (!opm) return;
@@ -101,19 +108,33 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
           <AccordionItem border="none" w={'100%'} key={index}>
             <AccordionButton>
               <Box flex="1" textAlign="left">
-                <Checkbox
+                <Controller
                   key={item?.uni_codigo || index}
-                  size="md"
-                  defaultChecked
-                  colorScheme="green"
-                  onChange={e => {
-                    if (e.currentTarget.checked) {
-                      !!e.currentTarget.checked;
-                    }
-                  }}
-                >
-                  {item?.uni_sigla}
-                </Checkbox>
+                  name={`uni_codigo`}
+                  control={control}
+                  render={({ field }) => (
+                    <Checkbox
+                      size="md"
+                      colorScheme="green"
+                      //isChecked={field.value?.includes(item?.uni_codigo)}
+                      isChecked
+                      onChange={e => {
+                        const isChecked = e.target.checked;
+                        const currentValue = field.value || [];
+
+                        field.onChange(
+                          isChecked
+                            ? [...currentValue, item.uni_codigo]
+                            : currentValue.filter(
+                                (codigo: number) => codigo !== item.uni_codigo,
+                              ),
+                        );
+                      }}
+                    >
+                      {item?.uni_sigla}
+                    </Checkbox>
+                  )}
+                />
               </Box>
               <AccordionIcon
                 as={HiPlusCircle}

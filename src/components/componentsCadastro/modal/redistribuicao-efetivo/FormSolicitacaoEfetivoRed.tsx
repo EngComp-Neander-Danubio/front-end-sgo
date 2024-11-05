@@ -3,29 +3,21 @@ import {
   Text,
   FormControl,
   FormLabel,
-  Button,
   Checkbox,
   Divider,
-  useToast,
   Spinner,
   Center,
-  Input,
-  InputGroup,
   Grid,
 } from '@chakra-ui/react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { OptionsOrGroups, GroupBase } from 'react-select';
 import api from '../../../../services/api';
-import { options } from '../../../../types/typesMilitar';
-import { AccordionCheckbox } from '../../acordion-checkbox/AccordionCheckbox';
-import AsyncSelectComponent from '../../formEfetivo/AsyncSelectComponent';
 import { DatePickerEvent } from '../../formGrandeEvento/DatePickerEvent';
 
 interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
-  uni_codigo: opmSaPM[];
+  uni_codigo: number[];
   select_opm?: opmSaPM;
 }
 
@@ -37,12 +29,11 @@ type opmSaPM = {
   opm_filha: opmSaPM[];
 };
 export const FormSolicitacaoEfetivoRed: React.FC = () => {
-  const { control, getValues } = useFormContext<SolicitacaoForm>();
+  const methodsInput = useFormContext<SolicitacaoForm>();
+  const { control } = methodsInput;
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
-  const toast = useToast();
-
   const handleLoadOpmFilhas = async (param: number) => {
     try {
       const response = await api.get<opmSaPM[]>(`/unidadesfilhas/${param}`);
@@ -52,9 +43,12 @@ export const FormSolicitacaoEfetivoRed: React.FC = () => {
     }
   };
   useEffect(() => {
-    handleLoadOpmFilhas(1908);
-  }, [handleLoadOpmFilhas]);
-
+    handleLoadOpmFilhas(1800);
+    datasOpmFilhas.forEach(o => {
+      const currentValues = methodsInput.getValues('uni_codigo') || [];
+      methodsInput.setValue('uni_codigo', [...currentValues, o.uni_codigo]);
+    });
+  }, []);
   return (
     <FormControl mb={4}>
       <Divider />
@@ -181,19 +175,32 @@ export const FormSolicitacaoEfetivoRed: React.FC = () => {
         {datasOpmFilhas.length > 0 ? (
           <Grid templateColumns="repeat(2, 1fr)" gap={2} w="full">
             {datasOpmFilhas.map((item, index) => (
-              <Checkbox
+              <Controller
                 key={item?.uni_codigo || index}
-                size="md"
-                defaultChecked
-                colorScheme="green"
-                onChange={e => {
-                  if (e.currentTarget.checked) {
-                    !!e.currentTarget.checked;
-                  }
-                }}
-              >
-                {item?.uni_sigla}
-              </Checkbox>
+                name={`uni_codigo`}
+                control={control}
+                render={({ field }) => (
+                  <Checkbox
+                    size="md"
+                    colorScheme="green"
+                    isChecked={field.value?.includes(item?.uni_codigo)}
+                    onChange={e => {
+                      const isChecked = e.target.checked;
+                      const currentValue = field.value || [];
+
+                      field.onChange(
+                        isChecked
+                          ? [...currentValue, item.uni_codigo]
+                          : currentValue.filter(
+                              (codigo: number) => codigo !== item.uni_codigo,
+                            ),
+                      );
+                    }}
+                  >
+                    {item?.uni_sigla}
+                  </Checkbox>
+                )}
+              />
             ))}
           </Grid>
         ) : (
