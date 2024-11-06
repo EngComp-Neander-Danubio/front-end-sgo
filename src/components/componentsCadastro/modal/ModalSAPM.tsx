@@ -10,27 +10,33 @@ import {
   Center,
 } from '@chakra-ui/react';
 import React from 'react';
-import { OPMs } from '../../../types/typesOPM';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { militarSchema } from '../../../types/yupMilitares/yupMilitares';
 import { ContentModalSAPM } from './ContentModalSAPM';
 type Militar = {
-  uni_codigo_pai: number;
-  uni_codigo: number;
-  uni_sigla: string;
-  uni_nome: string;
+  pessoa_pes_codigo: number;
+  pessoa_pes_nome: string;
+  gra_nome: string;
+  unidade_uni_sigla: string;
+  uni_codigo: number[];
+};
+type SolicitacaoForm = {
+  busca: string;
+  pessoa_pes_codigo: number;
+  pessoa_pes_nome: string;
+  gra_nome: string;
+  unidade_uni_sigla: string;
+  uni_codigo: number[];
 };
 interface IModal {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
-  opms: OPMs[];
-  select_opm: OPMs;
 }
 
 export const ModalSAPM: React.FC<IModal> = ({ isOpen, onClose }) => {
-  const methodsInput = useForm<Militar>({
+  const methodsInput = useForm<SolicitacaoForm>({
     resolver: yupResolver(militarSchema),
   });
   const { reset } = methodsInput;
@@ -54,7 +60,9 @@ export const ModalSAPM: React.FC<IModal> = ({ isOpen, onClose }) => {
               minH="fit-content"
             >
               <ModalHeader>
-                <Center>Adicionar OPM</Center>
+                <Center color={'rgba(0, 0, 0, 0.48)'}>
+                  Adicionar Militares
+                </Center>
               </ModalHeader>
               <ModalCloseButton />
               <ModalBody justifyContent="center" padding={4} gap={4}>

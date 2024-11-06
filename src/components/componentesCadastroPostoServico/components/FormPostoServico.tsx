@@ -64,7 +64,13 @@ export const FormPostoServico = () => {
   };
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Flex flexDirection={'row'}  w={'1500px'} gap={8} border={'1px solid red'} p={2}>
+      <Flex
+        flexDirection={'row'}
+        w={'1500px'}
+        gap={8}
+        border={'1px solid red'}
+        p={2}
+      >
         <Flex flexDirection={'column'} w={'100%'}>
           <FormLabel>Nome</FormLabel>
           <Controller

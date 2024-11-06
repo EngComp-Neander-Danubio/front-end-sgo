@@ -18,7 +18,7 @@ interface Militar {
   pessoa_pes_codigo: number;
   pessoa_pes_nome: string;
   gra_nome: string;
-  unidade_uni_nome: string;
+  unidade_uni_sigla: string;
 }
 export const FormGrandeEvento: React.FC<IFormProps> = ({
   widthSelect,
@@ -52,14 +52,12 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
           option.pessoa_pes_nome.toLowerCase().includes(pes_nome.toLowerCase()),
         )
         .map(option => ({
-          label: `${option.gra_nome} PM ${option.pessoa_pes_nome} - Matrícula: ${option.pessoa_pes_codigo} - Unidade: ${option.unidade_uni_nome}`,
+          label: `${option.gra_nome} PM ${option.pessoa_pes_nome} - Matrícula: ${option.pessoa_pes_codigo} - Unidade: ${option.unidade_uni_sigla}`,
           value: (option.pessoa_pes_codigo as unknown) as string,
         }));
 
       cache.set(pes_nome, filteredOptions);
-
       setDadosPM(filteredOptions);
-
       return filteredOptions;
     } catch (error) {
       console.error('Error fetching data:', error);

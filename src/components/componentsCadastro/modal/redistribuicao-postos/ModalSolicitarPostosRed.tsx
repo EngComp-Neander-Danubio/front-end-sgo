@@ -10,7 +10,7 @@ import {
   Center,
   useToast,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormSolicitacaoPostosRed } from './FormSolicitacaoPostosRed';
@@ -49,7 +49,7 @@ export const ModalSolicitacarPostosRed: React.FC<IModal> = ({
   const { reset } = methodsInput;
   const onSubmit = async (data: SolicitacaoForm) => {
     try {
-      await console.log('data', data);
+      console.log('data', data);
       //console.log(' dados', dados);
       //await api.post('/solicitacao-postos', dados);
       toast({

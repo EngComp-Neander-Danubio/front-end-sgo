@@ -87,7 +87,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
       const gra_cmd = datasOpmFilhas.find(o => o.uni_codigo === param);
       if (!gra_cmd) {
         const uni = dataGraCmd.find(o => o.uni_codigo === param);
-        setDatasOpmFilhas(prev => [...prev, uni]);
+        if (uni) setDatasOpmFilhas(prev => [...prev, uni]);
       }
     } catch (error) {
       console.error('Erro ao carregar as unidades:', error);
@@ -228,7 +228,10 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
                 if (e.currentTarget.checked) {
                   await handleCheckboxChangeGrandeOPM(data.uni_sigla);
                 } else {
-                  setDatasOpmFilhas([]);
+                  const new_datas = datasOpmFilhas.filter(
+                    o => o.uni_codigo !== data.uni_codigo,
+                  );
+                  setDatasOpmFilhas(new_datas);
                 }
               }}
               colorScheme="green"

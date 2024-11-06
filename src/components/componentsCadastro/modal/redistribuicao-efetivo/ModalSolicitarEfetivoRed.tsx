@@ -49,13 +49,16 @@ export const ModalSolicitacarEfetivoRed: React.FC<IModal> = ({
     },
   });
   const { reset } = methodsInput;
+  const handleReset = async () => {
+    reset();
+  };
   const onSubmit = async (data: SolicitacaoForm) => {
     try {
-      //console.log(' dados', dados);
+      console.log(' dados', data);
       //await api.post('/solicitacao-postos', dados);
-      console.log('chamou o post');
+
       toast({
-        title: 'Solicitações de Postos.',
+        title: 'Solicitações de Efetivo.',
         description: 'Solicitação Salva.',
         status: 'success',
         duration: 3000,
@@ -93,7 +96,7 @@ export const ModalSolicitacarEfetivoRed: React.FC<IModal> = ({
                 Redistribuição de Solicitação de Efetivo
               </Center>
             </ModalHeader>
-            <ModalCloseButton onClick={() => reset()} />
+            <ModalCloseButton onClick={async () => await handleReset()} />
             <ModalBody justifyContent="center" padding={4} gap={4}>
               <FormSolicitacaoEfetivoRed />
             </ModalBody>
@@ -117,9 +120,6 @@ export const ModalSolicitacarEfetivoRed: React.FC<IModal> = ({
                   transition: '.5s',
                 }}
                 color="#fff"
-                onClick={() => {
-                  console.log('clicado');
-                }}
                 type="submit"
               >
                 Enviar

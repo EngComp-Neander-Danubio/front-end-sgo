@@ -10,12 +10,9 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
-  useToast,
 } from '@chakra-ui/react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { useEvents } from '../../../context/eventContext/useEvents';
-import { optionsOPMs, OPMs } from '../../../types/typesOPM';
-import { FormEditarEfetivo } from '../formEfetivo/FormEditarEfetivo';
+import { optionsOPMs } from '../../../types/typesOPM';
 import { SelectPattern } from './SelectPattern';
 import { AccordionCheckbox } from '../acordion-checkbox/AccordionCheckbox';
 import { columnsMapMilitar } from '../../../types/typesMilitar';
@@ -41,19 +38,12 @@ type opmSaPM = {
   opm_filha: opmSaPM[];
 };
 export const ContentModalSAPM: React.FC = () => {
-  const { control, setValue, getValues } = useFormContext<SolicitacaoForm>();
-  const {
-    handleDeleteOpmModal,
-    handleDeleteSelectAllOpm,
-    handleDeleteOpmFromSameFather,
-  } = useEvents();
+  const { control, getValues } = useFormContext<SolicitacaoForm>();
   const [dataGraCmd, setDataGraCmd] = useState<opmSaPM[]>([]);
   const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
   const handleDeleteAllOpmCancel = async () => {
-    await handleDeleteSelectAllOpm();
+    setDatasOpmFilhas([]);
   };
-
-  const toast = useToast();
   const handleLoadGrandeComandos = useCallback(async () => {
     try {
       const response = await api.get<opmSaPM[]>('/unidades');
@@ -68,7 +58,7 @@ export const ContentModalSAPM: React.FC = () => {
   }, []);
   useEffect(() => {
     handleLoadGrandeComandos();
-  }, [handleLoadGrandeComandos]);
+  }, []);
 
   const handleLoadOpmFilhas = async (param: number) => {
     try {
@@ -76,7 +66,7 @@ export const ContentModalSAPM: React.FC = () => {
       const gra_cmd = datasOpmFilhas.find(o => o.uni_codigo === param);
       if (!gra_cmd) {
         const uni = dataGraCmd.find(o => o.uni_codigo === param);
-        setDatasOpmFilhas(prev => [...prev, uni]);
+        setDatasOpmFilhas(prev => [...prev, uni as opmSaPM]);
       }
     } catch (error) {
       console.error('Erro ao carregar as unidades:', error);
@@ -93,14 +83,10 @@ export const ContentModalSAPM: React.FC = () => {
 
   const {
     pms,
-    handleClick,
-    handleOnChange,
-    handleOnSubmit,
     firstDataIndex,
     lastDataIndex,
     loadLessSolicitacoesOPMPMs,
     loadMoreSolicitacoesOPMPMs,
-    loadPMByOPM,
     totalData,
     dataPerPage,
     deletePMByOPM,
@@ -146,7 +132,10 @@ export const ContentModalSAPM: React.FC = () => {
                       if (e.currentTarget.checked) {
                         await handleCheckboxChangeGrandeOPM(data.uni_sigla);
                       } else {
-                        await handleDeleteOpmFromSameFather(data);
+                        const new_datas = datasOpmFilhas.filter(
+                          o => o.uni_codigo !== data.uni_codigo,
+                        );
+                        setDatasOpmFilhas(new_datas);
                       }
                     }}
                     colorScheme="green"
@@ -205,7 +194,7 @@ export const ContentModalSAPM: React.FC = () => {
                 >
                   <Button
                     onClick={() => {
-                      handleDeleteSelectAllOpm();
+                      handleDeleteAllOpmCancel();
                     }}
                     colorScheme="blue"
                     variant="outline"
@@ -250,7 +239,6 @@ export const ContentModalSAPM: React.FC = () => {
               gap={4}
             >
               <AccordionCheckbox
-                handleDeleteOpmModal={handleDeleteOpmModal}
                 opm={datasOpmFilhas}
                 setDatasOpmFilhas={setDatasOpmFilhas}
               />

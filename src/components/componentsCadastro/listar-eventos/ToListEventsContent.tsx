@@ -1,9 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useEvents } from '../../../context/eventContext/useEvents';
-import { TableFicha } from '../../componentesFicha/table';
-import { IconeEditar, IconeDeletar } from '../../ViewLogin';
-import { useNavigate } from 'react-router-dom';
-import { TableEvent } from '../table';
 import { TableSolicitacoes } from '../table-solicitacoes';
 import { Pagination } from '../pagination/Pagination';
 import { Flex } from '@chakra-ui/react';
@@ -60,13 +56,6 @@ export const ToListEventsContent: React.FC<IToListEventsContent> = ({
           isActions
           isOpen={true}
           isView={true}
-          /* columns={[
-            'id',
-            'Título do Operação',
-            'Comandante',
-            'Data inicial',
-            'Data final',
-          ]} */
           columns={columns}
           registers={transformedEvents}
           label_tooltip="Operação"

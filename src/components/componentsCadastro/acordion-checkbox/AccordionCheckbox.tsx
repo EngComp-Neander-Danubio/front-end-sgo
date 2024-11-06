@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Flex,
-  Input,
   Checkbox,
   Box,
   Accordion,
@@ -9,7 +7,6 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
-  InputGroup,
   Spinner,
   Center,
   FormControl,
@@ -35,14 +32,30 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
   opm = [],
 }) => {
   const methodsInput = useFormContext();
+
+  console.log({
+    values: methodsInput.watch(),
+    opm,
+  });
+
   const { control } = methodsInput;
   const [loadingResponse, setResponseLoading] = useState<boolean>();
-  useEffect(() => {
+  /* useEffect(() => {
     opm.forEach(o => {
       const currentValues = methodsInput.getValues('uni_codigo') || [];
       methodsInput.setValue('uni_codigo', [...currentValues, o.uni_codigo]);
     });
-  }, []);
+  }, [methodsInput.getValues('uni_codigo').length]); */
+  /* useEffect(() => {
+    const loadDefaultValues = async () => {
+      const values = await Promise.all(
+        opm.map(item => rec_opm_to_default_values(item)),
+      );
+      methodsInput.setValue('uni_codigo', values.filter(Boolean));
+    };
+
+    loadDefaultValues();
+  }, [opm, methodsInput.setValue]); */
 
   const rec_opm = async (param: number, new_opm: opmSaPM[], opm: opmSaPM) => {
     if (!opm) return;
@@ -64,6 +77,14 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
       );
     }
     return;
+  };
+
+  const rec_opm_to_default_values = (opm: opmSaPM) => {
+    if (!opm) return 0;
+    if (opm.opm_filha) {
+      rec_opm_to_default_values((opm.opm_filha as unknown) as opmSaPM);
+    }
+    if (opm.opm_filha && opm.uni_codigo) return opm.uni_codigo;
   };
 
   const handleLoadOpmFilhas = async (param: number) => {
@@ -101,27 +122,26 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
       console.error('Erro ao carregar as unidades:', error);
     }
   };
+
   return (
     <FormControl>
       {opm?.map((item, index) => (
         <Accordion defaultIndex={[1]} allowMultiple>
-          <AccordionItem border="none" w={'100%'} key={index}>
+          <AccordionItem border="none" w={'100%'} key={index.toString()}>
             <AccordionButton>
               <Box flex="1" textAlign="left">
                 <Controller
-                  key={item?.uni_codigo || index}
                   name={`uni_codigo`}
                   control={control}
                   render={({ field }) => (
                     <Checkbox
                       size="md"
                       colorScheme="green"
-                      //isChecked={field.value?.includes(item?.uni_codigo)}
-                      isChecked
+                      isChecked={field.value?.includes(item?.uni_codigo)}
+                      //defaultChecked
                       onChange={e => {
                         const isChecked = e.target.checked;
-                        const currentValue = field.value || [];
-
+                        const currentValue = field?.value ?? [];
                         field.onChange(
                           isChecked
                             ? [...currentValue, item.uni_codigo]

@@ -33,21 +33,16 @@ export const FormSolicitacaoPostosRed: React.FC = () => {
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
-
   const handleLoadOpmFilhas = async (param: number) => {
     try {
       const response = await api.get<opmSaPM[]>(`/unidadesfilhas/${param}`);
       setDatasOpmFilhas(response.data);
     } catch (error) {}
   };
+
   useEffect(() => {
     handleLoadOpmFilhas(1800);
-    datasOpmFilhas.forEach(o => {
-      const currentValues = methodsInput.getValues('uni_codigo') || [];
-      methodsInput.setValue('uni_codigo', [...currentValues, o.uni_codigo]);
-    });
   }, []);
-
   return (
     <FormControl {...methodsInput} mb={4}>
       <Divider />
@@ -178,6 +173,7 @@ export const FormSolicitacaoPostosRed: React.FC = () => {
                 key={item?.uni_codigo || index}
                 name={`uni_codigo`}
                 control={control}
+                defaultValue={datasOpmFilhas.map(item => item.uni_codigo)}
                 render={({ field }) => (
                   <>
                     <Checkbox
@@ -186,7 +182,9 @@ export const FormSolicitacaoPostosRed: React.FC = () => {
                       isChecked={field.value?.includes(item?.uni_codigo)}
                       onChange={e => {
                         const isChecked = e.target.checked;
+                        //console.log(field.value);
                         const currentValue = field.value || [];
+                        //console.log(field.value);
                         field.onChange(
                           isChecked
                             ? [...currentValue, item.uni_codigo]

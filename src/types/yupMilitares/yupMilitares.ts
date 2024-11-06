@@ -4,6 +4,8 @@ export const militarSchema = yup.object().shape({
   'opm': yup.string().required('Campo obrigatório'),
   'matricula': yup.string().required('Campo obrigatório'),
   'posto_grad': yup.string().required('Campo obrigatório'),
+  'uni_codigo': yup.array().of(yup.number().required('Campo obrigatório')).required('Campo obrigatório'),
+
 });
 
 /* const headerKeys =

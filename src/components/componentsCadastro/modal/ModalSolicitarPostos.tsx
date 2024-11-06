@@ -10,7 +10,7 @@ import {
   Center,
   useToast,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormSolicitacaoPostos } from './FormSolicitacaoPostos';
@@ -47,13 +47,19 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
     defaultValues: {
       dataInicio: new Date(),
       operacao_id: '02/2024',
+      uni_codigo: [],
     },
   });
+  /* useEffect(() => {
+    const uniCodigoValues = methodsInput.getValues('uni_codigo');
+    methodsInput.setValue('uni_codigo', uniCodigoValues);
+  }, [methodsInput]);
+ */
   const { reset } = methodsInput;
   const onSubmit = async (data: SolicitacaoForm) => {
     try {
       console.log(' dados', data);
-      await api.post('/solicitacao-postos', data);
+      //await api.post('/solicitacao-postos', data);
       //console.log('chamou o post');
       toast({
         title: 'Solicitações de Postos.',
@@ -74,6 +80,7 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
       });
     }
     onClose();
+    reset();
   };
 
   return (
@@ -90,7 +97,9 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
             minH="65vh"
           >
             <ModalHeader>
-              <Center>Solicitação de Postos</Center>
+              <Center color={'rgba(0, 0, 0, 0.48)'}>
+                Solicitação de Postos
+              </Center>
             </ModalHeader>
             <ModalCloseButton onClick={() => reset()} />
             <ModalBody justifyContent="center" padding={4} gap={4}>
@@ -116,9 +125,6 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
                   transition: '.5s',
                 }}
                 color="#fff"
-                onClick={() => {
-                  console.log('clicado');
-                }}
                 type="submit"
               >
                 Salvar

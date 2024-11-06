@@ -20,8 +20,9 @@ import api from '../../../services/api';
 interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
-  uni_codigo: opmSaPM[];
+  uni_codigo: number[];
   select_opm?: opmSaPM;
+  operacao_id?: string;
 }
 
 type opmSaPM = {
@@ -32,12 +33,14 @@ type opmSaPM = {
   opm_filha: opmSaPM[];
 };
 export const FormSolicitacaoPostos: React.FC = () => {
-  const { control, getValues } = useFormContext<SolicitacaoForm>();
+  const { control, getValues, setValue, watch } = useFormContext<
+    SolicitacaoForm
+  >();
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [dataGraCmd, setDataGraCmd] = useState<opmSaPM[]>([]);
   const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
-  console.log(datasOpmFilhas);
+
   const handleDeleteAllOpmCancel = async () => {
     setDatasOpmFilhas([]);
   };
@@ -56,7 +59,8 @@ export const FormSolicitacaoPostos: React.FC = () => {
   }, []);
   useEffect(() => {
     handleLoadGrandeComandos();
-  }, [handleLoadGrandeComandos]);
+    handleDeleteAllOpmCancel();
+  }, []);
 
   const handleLoadOpmFilhas = async (param: number) => {
     try {
@@ -197,8 +201,15 @@ export const FormSolicitacaoPostos: React.FC = () => {
               onChange={async e => {
                 if (e.currentTarget.checked) {
                   await handleCheckboxChangeGrandeOPM(data.uni_sigla);
+                  setValue('uni_codigo', [
+                    ...watch('uni_codigo'),
+                    data.uni_codigo,
+                  ]);
                 } else {
-                  setDatasOpmFilhas([]);
+                  const new_datas = datasOpmFilhas.filter(
+                    o => o.uni_codigo !== data.uni_codigo,
+                  );
+                  setDatasOpmFilhas(new_datas);
                 }
               }}
               colorScheme="green"

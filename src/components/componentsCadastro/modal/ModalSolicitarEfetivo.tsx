@@ -11,21 +11,13 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import React from 'react';
-import { optionsOPMs } from '../../../types/typesOPM';
 import { FormProvider, useForm } from 'react-hook-form';
 import { Militares_service } from '../../../context/requisitosContext/RequisitosContext';
-
 import { FormSolicitacaoEfetivo } from './FormSolicitacaoEfetivo';
 import { yupResolver } from '@hookform/resolvers/yup';
 import solicitacaoEfetivoSchema from '../../../types/yupSolicitacaoEfetiv/yupSolicitacaoEfetivo';
 import api from '../../../services/api';
-import { useEvents } from '../../../context/eventContext/useEvents';
-type opmSaPM = {
-  uni_codigo_pai: number;
-  uni_codigo: number;
-  uni_sigla: string;
-  uni_nome: string;
-};
+
 interface IModal {
   isOpen: boolean;
   onOpen: () => void;
@@ -48,23 +40,8 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
   });
   const { reset } = methodsInput;
   const onSubmit = async (data: SolicitacaoForm) => {
-    const opms = data.uni_codigo
-      .map(op => {
-        const option = optionsOPMs.find(o => o.label === op.valueOf());
-        return option ? option.value : null;
-      })
-      .filter(Boolean); // Remove valores nulos
-
-    const dados = {
-      opms,
-      prazoInicio: data.dataInicio,
-      prazoFinal: data.dataFinal,
-    };
-
-    console.log('Dados de solicitação de postos mapeados:', dados);
-    console.log('Dados de solicitação de postos originais:', data);
     try {
-      await api.post('/solicitacao', dados);
+      await api.post('/solicitacao', data);
       toast({
         title: 'Solicitações de Postos.',
         description: 'Solicitação Salva.',
@@ -84,6 +61,7 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
       });
     }
     onClose();
+    reset();
   };
 
   return (
@@ -102,7 +80,9 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
               minH="fit-content"
             >
               <ModalHeader>
-                <Center>Solicitação de Efetivo Policial</Center>
+                <Center color={'rgba(0, 0, 0, 0.48)'}>
+                  Solicitação de Efetivo Policial
+                </Center>
               </ModalHeader>
               <ModalCloseButton onClick={() => reset()} />
 

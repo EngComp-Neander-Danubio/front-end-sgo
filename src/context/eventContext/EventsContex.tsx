@@ -64,7 +64,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     } else {
       toast({
         title: 'Fim dos dados',
-        description: 'Não há mais PPMM para carregar.',
+        description: 'Não há mais Operações para carregar.',
         status: 'info',
         duration: 3000,
         isClosable: true,

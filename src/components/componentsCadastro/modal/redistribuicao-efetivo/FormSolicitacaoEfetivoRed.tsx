@@ -44,10 +44,6 @@ export const FormSolicitacaoEfetivoRed: React.FC = () => {
   };
   useEffect(() => {
     handleLoadOpmFilhas(1800);
-    datasOpmFilhas.forEach(o => {
-      const currentValues = methodsInput.getValues('uni_codigo') || [];
-      methodsInput.setValue('uni_codigo', [...currentValues, o.uni_codigo]);
-    });
   }, []);
   return (
     <FormControl mb={4}>
@@ -179,6 +175,7 @@ export const FormSolicitacaoEfetivoRed: React.FC = () => {
                 key={item?.uni_codigo || index}
                 name={`uni_codigo`}
                 control={control}
+                defaultValue={datasOpmFilhas.map(item => item.uni_codigo)}
                 render={({ field }) => (
                   <Checkbox
                     size="md"
