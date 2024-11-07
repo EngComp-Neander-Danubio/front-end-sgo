@@ -32,30 +32,24 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
   opm = [],
 }) => {
   const methodsInput = useFormContext();
-
-  console.log({
-    values: methodsInput.watch(),
-    opm,
-  });
-
   const { control } = methodsInput;
   const [loadingResponse, setResponseLoading] = useState<boolean>();
-  /* useEffect(() => {
-    opm.forEach(o => {
-      const currentValues = methodsInput.getValues('uni_codigo') || [];
-      methodsInput.setValue('uni_codigo', [...currentValues, o.uni_codigo]);
-    });
-  }, [methodsInput.getValues('uni_codigo').length]); */
-  /* useEffect(() => {
+  useEffect(() => {
     const loadDefaultValues = async () => {
       const values = await Promise.all(
         opm.map(item => rec_opm_to_default_values(item)),
       );
-      methodsInput.setValue('uni_codigo', values.filter(Boolean));
+      console.log('values', values);
+      const currentValues = methodsInput.watch('uni_codigo') || [];
+      const uniqueValues = [
+        ...new Set([...currentValues, ...values.filter(Boolean)]),
+      ];
+      methodsInput.setValue('uni_codigo', uniqueValues);
     };
 
     loadDefaultValues();
-  }, [opm, methodsInput.setValue]); */
+  }, [opm]);
+
 
   const rec_opm = async (param: number, new_opm: opmSaPM[], opm: opmSaPM) => {
     if (!opm) return;
@@ -79,12 +73,16 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
     return;
   };
 
-  const rec_opm_to_default_values = (opm: opmSaPM) => {
-    if (!opm) return 0;
-    if (opm.opm_filha) {
-      rec_opm_to_default_values((opm.opm_filha as unknown) as opmSaPM);
+  const rec_opm_to_default_values = async (opm: opmSaPM) => {
+    if (!opm) return;
+    if (opm.uni_codigo) return opm.uni_codigo;
+    //return opm.uni_codigo;
+    if (opm.opm_filha && Array.isArray(opm.opm_filha)) {
+      await Promise.all(
+        opm.opm_filha.map(opm_filha => rec_opm_to_default_values(opm_filha)),
+      );
     }
-    if (opm.opm_filha && opm.uni_codigo) return opm.uni_codigo;
+    return opm.uni_codigo;
   };
 
   const handleLoadOpmFilhas = async (param: number) => {

@@ -26,30 +26,28 @@ if ('serviceWorker' in navigator) {
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <ChakraProvider theme={theme}>
-      <AuthProvider>
-        <EventsProvider>
-          <SolicitacoesPostosProvider>
-            <SolicitacoesPMsProvider>
-              <SolicitacoesOPMPostosProvider>
-                <SolicitacoesOPMPMsProvider>
-                  <TotalEfetivoOPMsProvider>
-                    <MilitaresProvider>
-                      <PostosProvider>
-                        <RequisitosProvider>
-                          <CSSReset />
-                          <App />
-                        </RequisitosProvider>
-                      </PostosProvider>
-                    </MilitaresProvider>
-                  </TotalEfetivoOPMsProvider>
-                </SolicitacoesOPMPMsProvider>
-              </SolicitacoesOPMPostosProvider>
-            </SolicitacoesPMsProvider>
-          </SolicitacoesPostosProvider>
-        </EventsProvider>
-      </AuthProvider>
-    </ChakraProvider>
-  </React.StrictMode>,
+  <ChakraProvider theme={theme}>
+    <AuthProvider>
+      <EventsProvider>
+        <SolicitacoesPostosProvider>
+          <SolicitacoesPMsProvider>
+            <SolicitacoesOPMPostosProvider>
+              <SolicitacoesOPMPMsProvider>
+                <TotalEfetivoOPMsProvider>
+                  <MilitaresProvider>
+                    <PostosProvider>
+                      <RequisitosProvider>
+                        <CSSReset />
+                        <App />
+                      </RequisitosProvider>
+                    </PostosProvider>
+                  </MilitaresProvider>
+                </TotalEfetivoOPMsProvider>
+              </SolicitacoesOPMPMsProvider>
+            </SolicitacoesOPMPostosProvider>
+          </SolicitacoesPMsProvider>
+        </SolicitacoesPostosProvider>
+      </EventsProvider>
+    </AuthProvider>
+  </ChakraProvider>,
 );
