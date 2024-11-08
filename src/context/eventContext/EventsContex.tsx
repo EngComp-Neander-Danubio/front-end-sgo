@@ -9,13 +9,20 @@ import React, {
 
 import { useToast } from '@chakra-ui/react';
 import api from '../../services/api';
+import debounce from 'debounce-promise';
 
 export interface Event {
   id?: string;
   nomeOperacao: string;
-  comandante: string;
+  comandante: number;
   dataInicio: Date;
   dataFinal: Date;
+}
+interface Militar {
+  pes_codigo: number;
+  pes_nome: string;
+  gra_nome: string;
+  unidade_uni_sigla: string;
 }
 
 export interface IContextEventsData {
@@ -53,7 +60,6 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
   const totalData = events.length;
   const currentData = events.slice(firstDataIndex, lastDataIndex);
   const hasMore = lastDataIndex < events.length;
-
   useEffect(() => {
     loadEvents();
   }, []);
@@ -119,22 +125,54 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
-  const loadEvents = useCallback(async (param?: string) => {
-    setIsLoading(true);
-    const parameters = param !== undefined ? param : '';
+
+  const cache = new Map<string | number, any>();
+
+  const load = async (
+    pes_nome: string | number,
+  ): Promise<Militar[] | undefined> => {
+    if (cache.has(pes_nome)) {
+      return Promise.resolve(cache.get(pes_nome));
+    }
     try {
-      const response = await api.get<{ items: Event[] }>(
-        `operacoes/${parameters}`,
-      );
-      //setEvents((response.data as unknown) as Event[]);
-      setEvents(prevArray => [
-        ...prevArray,
-        ...((response.data as unknown) as Event[]),
-      ]);
+      const response = await api.get<Militar[]>(`/policiais`, {
+        params: { pes_nome },
+      });
+      return [...response.data];
     } catch (error) {
-      console.error('Falha ao carregar os Operações:', error);
-    } finally {
-      setIsLoading(false);
+      console.error('Error fetching data:', error);
+    }
+  };
+  const loadEvents = useCallback(async (param?: string) => {
+    const parameters = param || '';
+    try {
+      const response = await api.get<Event[]>(`operacoes/${parameters}`);
+
+      const datasFormatted = await Promise.all(
+        response.data.map(async item => {
+          const v: Militar[] | undefined = await load(item.comandante);
+          console.log('consulta de policiais', v);
+
+          return {
+            ...item,
+            comandante: v ? v[0].pes_nome : undefined,
+            dataFinal: new Date(item.dataFinal).toLocaleDateString('pt-BR', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+            }),
+            dataInicio: new Date(item.dataInicio).toLocaleDateString('pt-BR', {
+              day: '2-digit',
+              month: '2-digit',
+              year: 'numeric',
+            }),
+          };
+        }),
+      );
+
+      setEvents((datasFormatted as unknown) as Event[]);
+    } catch (error) {
+      console.error('Falha ao carregar as Operações:', error);
     }
   }, []);
 

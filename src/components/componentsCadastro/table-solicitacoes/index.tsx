@@ -15,6 +15,8 @@ import { BotaoAlert, IconeDeletar, IconeEditar } from '../../ViewLogin';
 import { useNavigate } from 'react-router-dom';
 import { IconeVisualizar } from '../../componentesFicha/registrosMedicos/icones/iconeVisualizarSolicitacao';
 import { IconeRedistribuir } from '../../componentesFicha/registrosMedicos/icones/iconeRedistribuir';
+import { IconeGeralTabelas } from '../iconeGeralTabelas';
+import { BsPencilSquare } from 'react-icons/bs';
 
 interface ITable {
   isOpen?: boolean;

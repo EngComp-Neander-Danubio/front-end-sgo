@@ -178,13 +178,12 @@ export const FormSolicitacaoPostosRed: React.FC = () => {
                   <>
                     <Checkbox
                       size="md"
+                      w={'fit-content'}
                       colorScheme="green"
                       isChecked={field.value?.includes(item?.uni_codigo)}
                       onChange={e => {
                         const isChecked = e.target.checked;
-                        //console.log(field.value);
                         const currentValue = field.value || [];
-                        //console.log(field.value);
                         field.onChange(
                           isChecked
                             ? [...currentValue, item.uni_codigo]

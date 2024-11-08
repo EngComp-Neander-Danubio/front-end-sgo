@@ -50,11 +50,6 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
       uni_codigo: [],
     },
   });
-  /* useEffect(() => {
-    const uniCodigoValues = methodsInput.getValues('uni_codigo');
-    methodsInput.setValue('uni_codigo', uniCodigoValues);
-  }, [methodsInput]);
- */
   const { reset } = methodsInput;
   const onSubmit = async (data: SolicitacaoForm) => {
     try {

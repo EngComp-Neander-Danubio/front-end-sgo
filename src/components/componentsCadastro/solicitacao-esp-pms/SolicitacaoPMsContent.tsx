@@ -8,7 +8,7 @@ import { TableSolicitacoes } from '../table-solicitacoes';
 import { columnsMapMilitar } from '../../../types/typesMilitar';
 import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
 import { Pagination } from '../pagination/Pagination';
-import { useSolicitacoesOPMPMs } from '../../../context/solicitacoesOPMPMsContext copy/useSolicitacoesOPMPMs';
+import { useSolicitacoesOPMPMs } from '../../../context/solicitacoesOPMPMsContext/useSolicitacoesOPMPMs';
 import { IoIosSend } from 'react-icons/io';
 interface IFlexCadastrar {
   isOpen: boolean;

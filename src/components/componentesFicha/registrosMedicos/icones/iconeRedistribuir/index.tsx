@@ -1,12 +1,12 @@
 import { IconProps, Tooltip } from '@chakra-ui/react';
 import React from 'react';
-import { IoIosSend } from 'react-icons/io';
 import { RiShareCircleLine } from 'react-icons/ri';
 interface IIcone extends IconProps {
   label_tooltip?: string;
   isOpen?: boolean;
   onOpen?: () => void;
 }
+
 export const IconeRedistribuir: React.FC<IIcone> = ({
   label_tooltip,
   onOpen,
@@ -21,7 +21,7 @@ export const IconeRedistribuir: React.FC<IIcone> = ({
         <span
           style={{
             cursor: 'pointer',
-            transition: '.5s',
+            //transition: '.5s',
           }}
         >
           <RiShareCircleLine color="#A0AEC0" size="20px" onClick={onOpen} />

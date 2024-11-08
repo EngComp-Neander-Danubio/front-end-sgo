@@ -186,9 +186,7 @@ export const TableInput: React.FC<ITable> = ({
                   <Td>
                     <Flex align="center" justify="center" gap={2}>
                       <span key={opmDatas[index].uni_sigla}>
-                        {opmDatas[index].uni_sigla +
-                          ' - ' +
-                          opmDatas[index].uni_nome}
+                        {opmDatas[index].uni_sigla}
                       </span>
                     </Flex>
                   </Td>

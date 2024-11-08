@@ -16,7 +16,7 @@ import { optionsOPMs } from '../../../types/typesOPM';
 import { SelectPattern } from './SelectPattern';
 import { AccordionCheckbox } from '../acordion-checkbox/AccordionCheckbox';
 import { columnsMapMilitar } from '../../../types/typesMilitar';
-import { useSolicitacoesOPMPMs } from '../../../context/solicitacoesOPMPMsContext copy/useSolicitacoesOPMPMs';
+import { useSolicitacoesOPMPMs } from '../../../context/solicitacoesOPMPMsContext/useSolicitacoesOPMPMs';
 import { TableSolicitacoes } from '../table-solicitacoes';
 import { Pagination } from '../pagination/Pagination';
 import { useCallback, useEffect, useState } from 'react';

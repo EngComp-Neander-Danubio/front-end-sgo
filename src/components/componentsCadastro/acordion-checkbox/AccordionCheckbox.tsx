@@ -12,7 +12,7 @@ import {
   FormControl,
 } from '@chakra-ui/react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { HiPlusCircle } from 'react-icons/hi';
+import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi';
 import api from '../../../services/api';
 
 type opmSaPM = {
@@ -33,13 +33,13 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
 }) => {
   const methodsInput = useFormContext();
   const { control } = methodsInput;
-  const [loadingResponse, setResponseLoading] = useState<boolean>();
+  const [loadingResponse, setLoadingResponse] = useState<boolean>(false);
   useEffect(() => {
     const loadDefaultValues = async () => {
       const values = await Promise.all(
         opm.map(item => rec_opm_to_default_values(item)),
       );
-      console.log('values', values);
+      //console.log('values', values);
       const currentValues = methodsInput.watch('uni_codigo') || [];
       const uniqueValues = [
         ...new Set([...currentValues, ...values.filter(Boolean)]),
@@ -48,8 +48,7 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
     };
 
     loadDefaultValues();
-  }, [opm]);
-
+  }, [methodsInput.setValue, methodsInput.watch, opm]);
 
   const rec_opm = async (param: number, new_opm: opmSaPM[], opm: opmSaPM) => {
     if (!opm) return;
@@ -72,7 +71,7 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
     }
     return;
   };
-
+  //used to default values from checkboxes
   const rec_opm_to_default_values = async (opm: opmSaPM) => {
     if (!opm) return;
     if (opm.uni_codigo) return opm.uni_codigo;
@@ -84,11 +83,12 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
     }
     return opm.uni_codigo;
   };
-
+  //used for loading son's opms
   const handleLoadOpmFilhas = async (param: number) => {
     try {
       if (!opm || opm.length === 0) return;
       const response = await api.get<opmSaPM[]>(`/unidadesfilhas/${param}`);
+
       const updatedOpm = await Promise.all(
         opm.map(async o => {
           const result = await rec_opm(param, response.data, o);
@@ -110,77 +110,82 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
         }
         return opm.opm_filha ? rec_add_opm(param, opm.opm_filha) : false;
       };
-      setResponseLoading(true);
+
       setDatasOpmFilhas(prev => [
         ...prev,
         ...updatedOpm.filter(item => !rec_add_opm(item.uni_codigo, prev)),
       ]);
+
+      if (response) setLoadingResponse(true);
     } catch (error) {
-      setResponseLoading(false);
+      setLoadingResponse(false);
       console.error('Erro ao carregar as unidades:', error);
     }
   };
-
   return (
     <FormControl>
       {opm?.map((item, index) => (
         <Accordion defaultIndex={[1]} allowMultiple>
           <AccordionItem border="none" w={'100%'} key={index.toString()}>
-            <AccordionButton>
-              <Box flex="1" textAlign="left">
-                <Controller
-                  name={`uni_codigo`}
-                  control={control}
-                  render={({ field }) => (
-                    <Checkbox
-                      size="md"
-                      colorScheme="green"
-                      isChecked={field.value?.includes(item?.uni_codigo)}
-                      //defaultChecked
-                      onChange={e => {
-                        const isChecked = e.target.checked;
-                        const currentValue = field?.value ?? [];
-                        field.onChange(
-                          isChecked
-                            ? [...currentValue, item.uni_codigo]
-                            : currentValue.filter(
-                                (codigo: number) => codigo !== item.uni_codigo,
-                              ),
-                        );
-                      }}
-                    >
-                      {item?.uni_sigla}
-                    </Checkbox>
-                  )}
-                />
-              </Box>
-              <AccordionIcon
-                as={HiPlusCircle}
-                color="#A0AEC0"
-                display={item?.opm_filha ? 'flex' : 'none'}
-                onClick={async () => {
-                  await handleLoadOpmFilhas(item?.uni_codigo);
-                }}
-              />
-            </AccordionButton>
-
-            {item?.opm_filha && loadingResponse ? (
-              <AccordionPanel ml={'auto'}>
-                <AccordionCheckbox
-                  setDatasOpmFilhas={setDatasOpmFilhas}
-                  opm={item?.opm_filha}
-                />
-              </AccordionPanel>
-            ) : (
-              <AccordionPanel ml={'auto'}>
-                <Center>
-                  <Spinner
-                    alignSelf={'center'}
-                    size={'lg'}
-                    justifyContent={'center'}
+            {({ isExpanded }) => (
+              <>
+                <AccordionButton>
+                  <Box flex="1" textAlign="left">
+                    <Controller
+                      name={`uni_codigo`}
+                      control={control}
+                      render={({ field }) => (
+                        <Checkbox
+                          size="md"
+                          colorScheme="green"
+                          isChecked={field.value?.includes(item?.uni_codigo)}
+                          //defaultChecked
+                          onChange={e => {
+                            const isChecked = e.target.checked;
+                            const currentValue = field?.value ?? [];
+                            field.onChange(
+                              isChecked
+                                ? [...currentValue, item.uni_codigo]
+                                : currentValue.filter(
+                                    (codigo: number) =>
+                                      codigo !== item.uni_codigo,
+                                  ),
+                            );
+                          }}
+                        >
+                          {item?.uni_sigla}
+                        </Checkbox>
+                      )}
+                    />
+                  </Box>
+                  <AccordionIcon
+                    as={!isExpanded ? HiPlusCircle : HiMinusCircle}
+                    color="#A0AEC0"
+                    onClick={async () => {
+                      await handleLoadOpmFilhas(item?.uni_codigo);
+                    }}
                   />
-                </Center>
-              </AccordionPanel>
+                </AccordionButton>
+
+                {item?.opm_filha && loadingResponse ? (
+                  <AccordionPanel ml={'auto'}>
+                    <AccordionCheckbox
+                      setDatasOpmFilhas={setDatasOpmFilhas}
+                      opm={item?.opm_filha}
+                    />
+                  </AccordionPanel>
+                ) : (
+                  <AccordionPanel ml={'auto'}>
+                    <Center>
+                      <Spinner
+                        alignSelf={'center'}
+                        size={'lg'}
+                        justifyContent={'center'}
+                      />
+                    </Center>
+                  </AccordionPanel>
+                )}
+              </>
             )}
           </AccordionItem>
         </Accordion>

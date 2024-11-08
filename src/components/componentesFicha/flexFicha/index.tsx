@@ -2,9 +2,6 @@ import React from 'react';
 import { Flex, Box, VStack } from '@chakra-ui/react';
 import { ImgFicha } from '../dadosDaFicha/imgServidor';
 import { TitlePerfil } from '../dadosDaFicha/titlePerfil';
-import {} from '../registrosMedicos/title';
-import { BotaoNovoRegistro } from '../botaoNovoRegistro';
-import {} from '../registrosMedicos/header';
 import { TableFicha } from '../table';
 import { TabFicha } from '../tabFicha';
 import { DadosFicha } from '../dadosDaFicha/dados';
@@ -110,9 +107,7 @@ export const FlexFicha: React.FC<IFlexFicha> = props => {
           </VStack>
         </Flex>
 
-        <Flex mt={4} align={'center'} justify={'center'}>
-          <BotaoNovoRegistro />
-        </Flex>
+        <Flex mt={4} align={'center'} justify={'center'}></Flex>
       </Flex>
     </>
   );

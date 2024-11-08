@@ -1,17 +1,13 @@
 import { Flex, Text } from '@chakra-ui/react';
 import React from 'react';
-import { TitleCadastro } from '../tilteCadastro';
-
-import { useForm } from 'react-hook-form';
-import { AccordinCadastro } from '../accordion/AccordionCadastro';
 import { ToListEventsContent } from './ToListEventsContent';
 import { BreadCrumb } from '../flexMenor/BreadCrumb';
 
-interface IFlexCadastrar {
+interface IToListEventProps {
   isOpen: boolean;
   handleToggle: () => void;
 }
-export const ToListEvents: React.FC<IFlexCadastrar> = ({
+export const ToListEvents: React.FC<IToListEventProps> = ({
   isOpen,
   handleToggle,
 }) => {
@@ -45,7 +41,12 @@ export const ToListEvents: React.FC<IFlexCadastrar> = ({
             color={'rgba(0, 0, 0, 0.48)'}
             fontWeight={'700'}
             //fontSize={'1.2vw'}
-            fontSize={{ base: '25px', lg: '25px', md: '20px', sm: '20px' }}
+            fontSize={{
+              base: '25px',
+              lg: '25px',
+              md: '20px',
+              sm: '20px',
+            }}
             textDecoration={'underline'}
           >
             Lista de Operações
@@ -61,20 +62,6 @@ export const ToListEvents: React.FC<IFlexCadastrar> = ({
           gap={2}
           align={{ base: 'flex-start' }}
         >
-          {/* <Flex
-            borderBottom="1px solid rgba(0, 0, 0, 0.5)"
-            boxShadow="0px 4px 4px -2px rgba(0, 0, 0, 0.5)"
-            borderRadius={'8px'}
-            bg={'white'}
-            //m={4}
-            w={isOpen ? '86vw' : '93vw'} //don't change
-            transitionDuration="1.0s"
-            align={'center'}
-            justifyContent={'center'}
-          >
-
-
-          </Flex> */}
           <Flex p={8} w={isOpen ? '86vw' : '93vw'} transitionDuration="1.0s">
             <ToListEventsContent isOpen={isOpen} handleToggle={handleToggle} />
           </Flex>

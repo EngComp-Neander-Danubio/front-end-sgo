@@ -22,7 +22,7 @@ export const ToListSolicitacoesPostosContent = () => {
     Solicitação: 'solicitacao',
     'Prazo Final': 'prazo',
     'Quantidade de postos': 'qtd_postos',
-    OPM: 'OPM',
+    //OPM: 'OPM',
     Status: 'status',
   };
 

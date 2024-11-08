@@ -125,7 +125,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
       }, 1000);
     });
   };
-  
+
   return (
     <FormControl mb={4}>
       <Flex align="center" gap={2}>

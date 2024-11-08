@@ -179,6 +179,7 @@ export const FormSolicitacaoEfetivoRed: React.FC = () => {
                 render={({ field }) => (
                   <Checkbox
                     size="md"
+                    w={'fit-content'}
                     colorScheme="green"
                     isChecked={field.value?.includes(item?.uni_codigo)}
                     onChange={e => {

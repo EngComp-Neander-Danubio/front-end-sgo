@@ -30,6 +30,7 @@ export const ToListEventsContent: React.FC<IToListEventsContent> = ({
     'Título da Operação': 'nomeOperacao',
     'Data inicial': 'dataInicio',
     'Data final': 'dataFinal',
+    //'Status': 'status',
     Comandante: 'comandante',
   };
 

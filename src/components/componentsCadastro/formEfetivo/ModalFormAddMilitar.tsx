@@ -12,7 +12,7 @@ import { FormEfetivo } from '../formEfetivo/FormEfetivo';
 import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { militarSchema } from '../../../types/yupMilitares/yupMilitares';
-import { Militar } from '../../../context/solicitacoesOPMPMsContext copy/SolicitacoesOPMPMsContext';
+import { Militar } from '../../../context/solicitacoesOPMPMsContext/SolicitacoesOPMPMsContext';
 import { FormEfetivoBySearch } from './FormEfetivoBySearch';
 import { useEffect } from 'react';
 interface IModal {

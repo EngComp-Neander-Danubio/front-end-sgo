@@ -59,7 +59,6 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
   const [file, setFile] = useState<File | null>(null);
   const [postos, setPostos] = useState<PostoForm[]>([]);
   const [postosByAPI, setPostosByAPI] = useState<PostoForm[]>([]);
-  const [posto, setPosto] = useState<PostoForm[]>([]);
   const [postoById, setPostoById] = useState<PostoForm>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // Verifique as mudanças no estado `pms`

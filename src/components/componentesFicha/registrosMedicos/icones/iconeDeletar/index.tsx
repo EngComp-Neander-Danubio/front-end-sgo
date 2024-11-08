@@ -19,8 +19,9 @@ export const IconeDeletar: React.FC<IIcone> = ({
         <span
           style={{
             cursor: 'pointer',
-            transition: '.5s',
+            //transition: '.5s',
           }}
+          tabIndex={0}
         >
           <BiTrash color="#A0AEC0" size={'20px'} onClick={handleDelete} />
         </span>

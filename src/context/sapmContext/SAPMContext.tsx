@@ -7,7 +7,6 @@ import React, {
   useEffect,
 } from 'react';
 import { useToast } from '@chakra-ui/react';
-import { readString } from 'react-papaparse';
 import { Militares_service } from '../requisitosContext/RequisitosContext';
 import api from '../../services/api';
 import { handleSortByPostoGrad } from '../../types/typesMilitar';
@@ -49,7 +48,7 @@ export const SAPMProvider: React.FC<{ children: ReactNode }> = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [pms, setPMs] = useState<Militar[]>([]);
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
-  const [dataPerPage] = useState(8); // Defina o número de registros por página
+  const [dataPerPage] = useState(8);
   const lastDataIndexMilitar = (currentDataIndex + 1) * dataPerPage;
   const firstDataIndexMilitar = lastDataIndexMilitar - dataPerPage;
   const totalData = pms.length;

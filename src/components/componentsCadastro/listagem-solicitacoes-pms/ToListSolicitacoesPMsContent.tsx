@@ -25,7 +25,7 @@ export const ToListSolicitacoesPMsContent = () => {
     //'Prazo Inicial': 'prazoInicial',
     'Quantidade Total Efetivo': 'qtd_efetivo',
     'Quantidade Parcial Efetivo': 'qtd_parcial_efetivo',
-    OPM: 'OPM',
+    //OPM: 'OPM',
     Status: 'status',
   };
   // Use o mapeamento para criar as colunas a serem exibidas
