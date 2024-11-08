@@ -27,6 +27,7 @@ interface IAccordionCheckbox {
   opm: opmSaPM[];
   children?: React.ReactNode;
 }
+
 export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
   setDatasOpmFilhas,
   opm = [],
@@ -34,12 +35,12 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
   const methodsInput = useFormContext();
   const { control } = methodsInput;
   const [loadingResponse, setLoadingResponse] = useState<boolean>(false);
+
   useEffect(() => {
     const loadDefaultValues = async () => {
       const values = await Promise.all(
         opm.map(item => rec_opm_to_default_values(item)),
       );
-      //console.log('values', values);
       const currentValues = methodsInput.watch('uni_codigo') || [];
       const uniqueValues = [
         ...new Set([...currentValues, ...values.filter(Boolean)]),
@@ -71,11 +72,10 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
     }
     return;
   };
-  //used to default values from checkboxes
+
   const rec_opm_to_default_values = async (opm: opmSaPM) => {
     if (!opm) return;
     if (opm.uni_codigo) return opm.uni_codigo;
-    //return opm.uni_codigo;
     if (opm.opm_filha && Array.isArray(opm.opm_filha)) {
       await Promise.all(
         opm.opm_filha.map(opm_filha => rec_opm_to_default_values(opm_filha)),
@@ -83,10 +83,10 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
     }
     return opm.uni_codigo;
   };
-  //used for loading son's opms
+
   const handleLoadOpmFilhas = async (param: number) => {
     try {
-      if (!opm || opm.length === 0) return;
+      setLoadingResponse(true); // Começa o carregamento
       const response = await api.get<opmSaPM[]>(`/unidadesfilhas/${param}`);
 
       const updatedOpm = await Promise.all(
@@ -115,18 +115,18 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
         ...prev,
         ...updatedOpm.filter(item => !rec_add_opm(item.uni_codigo, prev)),
       ]);
-
-      if (response) setLoadingResponse(true);
     } catch (error) {
-      setLoadingResponse(false);
       console.error('Erro ao carregar as unidades:', error);
+    } finally {
+      setLoadingResponse(false); // Conclui o carregamento
     }
   };
+
   return (
     <FormControl>
       {opm?.map((item, index) => (
-        <Accordion defaultIndex={[1]} allowMultiple>
-          <AccordionItem border="none" w={'100%'} key={index.toString()}>
+        <Accordion defaultIndex={[1]} allowMultiple key={index.toString()}>
+          <AccordionItem border="none" w={'100%'}>
             {({ isExpanded }) => (
               <>
                 <AccordionButton>
@@ -139,7 +139,6 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                           size="md"
                           colorScheme="green"
                           isChecked={field.value?.includes(item?.uni_codigo)}
-                          //defaultChecked
                           onChange={e => {
                             const isChecked = e.target.checked;
                             const currentValue = field?.value ?? [];
@@ -167,15 +166,8 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                   />
                 </AccordionButton>
 
-                {item?.opm_filha && loadingResponse ? (
-                  <AccordionPanel ml={'auto'}>
-                    <AccordionCheckbox
-                      setDatasOpmFilhas={setDatasOpmFilhas}
-                      opm={item?.opm_filha}
-                    />
-                  </AccordionPanel>
-                ) : (
-                  <AccordionPanel ml={'auto'}>
+                <AccordionPanel ml={'auto'}>
+                  {loadingResponse ? (
                     <Center>
                       <Spinner
                         alignSelf={'center'}
@@ -183,8 +175,13 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                         justifyContent={'center'}
                       />
                     </Center>
-                  </AccordionPanel>
-                )}
+                  ) : (
+                    <AccordionCheckbox
+                      setDatasOpmFilhas={setDatasOpmFilhas}
+                      opm={item?.opm_filha}
+                    />
+                  )}
+                </AccordionPanel>
               </>
             )}
           </AccordionItem>

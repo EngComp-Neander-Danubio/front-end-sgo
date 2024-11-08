@@ -9,7 +9,6 @@ import React, {
 
 import { useToast } from '@chakra-ui/react';
 import api from '../../services/api';
-import debounce from 'debounce-promise';
 
 export interface Event {
   id?: string;
@@ -97,7 +96,6 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
   const uploadEvent = useCallback(
     async (data: Event) => {
       setIsLoading(true);
-
       try {
         await api.post('/operacao', data);
         toast({
@@ -147,15 +145,14 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     const parameters = param || '';
     try {
       const response = await api.get<Event[]>(`operacoes/${parameters}`);
-
       const datasFormatted = await Promise.all(
         response.data.map(async item => {
-          const v: Militar[] | undefined = await load(item.comandante);
-          console.log('consulta de policiais', v);
+          const v = await load(item.comandante);
+          //console.log('consulta de policiais', v);
 
           return {
             ...item,
-            comandante: v ? v[0].pes_nome : undefined,
+            comandante: v ? v[0]?.pes_nome : '',
             dataFinal: new Date(item.dataFinal).toLocaleDateString('pt-BR', {
               day: '2-digit',
               month: '2-digit',
@@ -169,7 +166,6 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
           };
         }),
       );
-
       setEvents((datasFormatted as unknown) as Event[]);
     } catch (error) {
       console.error('Falha ao carregar as Operações:', error);

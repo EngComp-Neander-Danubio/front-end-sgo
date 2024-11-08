@@ -31,7 +31,7 @@ export const ToListEventsContent: React.FC<IToListEventsContent> = ({
     'Data inicial': 'dataInicio',
     'Data final': 'dataFinal',
     //'Status': 'status',
-    Comandante: 'comandante',
+    'Comandante': 'comandante',
   };
 
   // Use o mapeamento para criar as colunas a serem exibidas
