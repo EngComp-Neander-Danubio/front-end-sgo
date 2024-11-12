@@ -28,11 +28,11 @@ interface SolicitacaoForm {
   operacao_id?: string;
   dataInicio: Date;
   dataFinal: Date;
-  //input: string[];
   totalEfetivo?: number;
   uni_codigo: number[];
   efetivo: number[];
 }
+
 export const ModalSolicitarEfetivo: React.FC<IModal> = ({
   isOpen,
   onClose,
@@ -44,6 +44,7 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
       dataInicio: new Date(),
       operacao_id: '02/2024',
       uni_codigo: [],
+      efetivo: [],
     },
   });
   const { reset } = methodsInput;
