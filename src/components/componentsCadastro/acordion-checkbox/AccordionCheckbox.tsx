@@ -190,11 +190,11 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                           ?.includes(item?.uni_codigo) && (
                           <Flex justify="center">
                             <Controller
-                              name={`efetivo[${index}]`} // Tente usar índice ou identificador único
+                              name={`efetivo[${index}]`}
                               control={control}
                               render={({ field }) => (
                                 <Input
-                                  key={index} // Utilize o índice ou um identificador único
+                                  key={index}
                                   mr={2}
                                   w="6vw"
                                   placeholder="efetivo"
