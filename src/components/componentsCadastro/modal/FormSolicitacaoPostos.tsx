@@ -312,6 +312,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
         <AccordionCheckbox
           opm={datasOpmFilhas}
           setDatasOpmFilhas={setDatasOpmFilhas}
+          isInput={false}
         />
       </Flex>
     </FormControl>

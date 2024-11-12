@@ -10,10 +10,14 @@ import {
   Spinner,
   Center,
   FormControl,
+  Input,
+  Flex,
+  FormLabel,
 } from '@chakra-ui/react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi';
 import api from '../../../services/api';
+import { number } from 'prop-types';
 
 type opmSaPM = {
   uni_codigo_pai: number;
@@ -26,11 +30,13 @@ interface IAccordionCheckbox {
   setDatasOpmFilhas: React.Dispatch<React.SetStateAction<opmSaPM[]>>;
   opm: opmSaPM[];
   children?: React.ReactNode;
+  isInput?: boolean;
 }
 
 export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
   setDatasOpmFilhas,
   opm = [],
+  isInput = false,
 }) => {
   const methodsInput = useFormContext();
   const { control } = methodsInput;
@@ -41,6 +47,7 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
       const values = await Promise.all(
         opm.map(item => rec_opm_to_default_values(item)),
       );
+      //console.log('values', values);
       const currentValues = methodsInput.watch('uni_codigo') || [];
       const uniqueValues = [
         ...new Set([...currentValues, ...values.filter(Boolean)]),
@@ -49,7 +56,7 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
     };
 
     loadDefaultValues();
-  }, [methodsInput.setValue, methodsInput.watch, opm]);
+  }, []);
 
   const rec_opm = async (param: number, new_opm: opmSaPM[], opm: opmSaPM) => {
     if (!opm) return;
@@ -96,6 +103,11 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
         }),
       );
 
+      methodsInput.setValue(
+        'uni_codigo',
+        methodsInput.watch('uni_codigo').filter((f: number) => param !== f),
+      );
+
       const rec_add_opm = (
         param: number,
         opm: opmSaPM | opmSaPM[] | undefined,
@@ -130,40 +142,84 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
             {({ isExpanded }) => (
               <>
                 <AccordionButton>
-                  <Box flex="1" textAlign="left">
-                    <Controller
-                      name={`uni_codigo`}
-                      control={control}
-                      render={({ field }) => (
-                        <Checkbox
-                          size="md"
-                          colorScheme="green"
-                          isChecked={field.value?.includes(item?.uni_codigo)}
-                          onChange={e => {
-                            const isChecked = e.target.checked;
-                            const currentValue = field?.value ?? [];
-                            field.onChange(
-                              isChecked
-                                ? [...currentValue, item.uni_codigo]
-                                : currentValue.filter(
-                                    (codigo: number) =>
-                                      codigo !== item.uni_codigo,
-                                  ),
-                            );
-                          }}
-                        >
-                          {item?.uni_sigla}
-                        </Checkbox>
+                  <Flex
+                    flex="1"
+                    textAlign="left"
+                    //gap={4}
+                    //alignContent={'center'}
+                    //justifyContent={'center'}
+                    w={'100%'}
+                    //border={'1px solid black'}
+                  >
+                    <Flex
+                      gap={4}
+                      //w={'15vw'}
+                      w={'100%'}
+                      justifyContent={'space-between'}
+                      //border={'1px solid black'}
+                    >
+                      <Controller
+                        name={`uni_codigo`}
+                        control={control}
+                        render={({ field }) => (
+                          <Checkbox
+                            size="md"
+                            colorScheme="green"
+                            //defaultChecked
+                            isChecked={field.value?.includes(item.uni_codigo)}
+                            onChange={e => {
+                              const isChecked = e.target.checked;
+                              const currentValue = field?.value ?? [];
+                              field.onChange(
+                                isChecked
+                                  ? [...currentValue, item.uni_codigo]
+                                  : currentValue.filter(
+                                      (codigo: number) =>
+                                        codigo !== item.uni_codigo,
+                                    ),
+                              );
+                            }}
+                          >
+                            {item?.uni_sigla}
+                          </Checkbox>
+                        )}
+                      />
+                      {isInput && !(item?.opm_filha.length > 0) && (
+                        <Flex justify={'center'}>
+                          <Controller
+                            name={`efetivo.${index}` as const}
+                            control={control}
+                            render={({ field }) => (
+                              <Input
+                                key={index ?? item?.uni_codigo}
+                                mr={2}
+                                w="6vw"
+                                placeholder="efetivo"
+                                h="30px"
+                                isDisabled={
+                                  !methodsInput
+                                    .watch('uni_codigo')
+                                    ?.includes(item?.uni_codigo)
+                                }
+                                {...field}
+                              />
+                            )}
+                          />
+                        </Flex>
                       )}
+                    </Flex>
+                  </Flex>
+                  {methodsInput
+                    .watch('uni_codigo')
+                    ?.includes(item?.uni_codigo) && (
+                    <AccordionIcon
+                      as={!isExpanded ? HiPlusCircle : HiMinusCircle}
+                      color="#A0AEC0"
+                      onClick={async () => {
+                        await handleLoadOpmFilhas(item?.uni_codigo);
+                      }}
                     />
-                  </Box>
-                  <AccordionIcon
-                    as={!isExpanded ? HiPlusCircle : HiMinusCircle}
-                    color="#A0AEC0"
-                    onClick={async () => {
-                      await handleLoadOpmFilhas(item?.uni_codigo);
-                    }}
-                  />
+                  )}
                 </AccordionButton>
 
                 <AccordionPanel ml={'auto'}>
@@ -179,6 +235,7 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                     <AccordionCheckbox
                       setDatasOpmFilhas={setDatasOpmFilhas}
                       opm={item?.opm_filha}
+                      isInput={isInput}
                     />
                   )}
                 </AccordionPanel>

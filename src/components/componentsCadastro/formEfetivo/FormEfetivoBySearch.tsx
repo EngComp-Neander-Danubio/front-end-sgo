@@ -15,8 +15,8 @@ interface IForm {
   posto_grad: string;
 }
 interface Militar {
-  pessoa_pes_codigo: number;
-  pessoa_pes_nome: string;
+  pes_codigo: number;
+  pes_nome: string;
   gra_nome: string;
   unidade_uni_sigla: string;
 }
@@ -53,12 +53,13 @@ export const FormEfetivoBySearch: React.FC<IFormProps> = ({
 
       const filteredOptions = response.data
         .filter(option =>
-          option.pessoa_pes_nome.toLowerCase().includes(pes_nome.toLowerCase()),
+          option.pes_nome.toLowerCase().includes(pes_nome.toLowerCase()),
         )
         .map(option => ({
-          label: `${option.gra_nome} PM ${option.pessoa_pes_nome} - Matrícula: ${option.pessoa_pes_codigo} - Unidade: ${option.unidade_uni_sigla}`,
-          value: (option.pessoa_pes_codigo as unknown) as string,
+          label: `${option.gra_nome} PM ${option.pes_nome} - Matrícula: ${option.pes_codigo} - Unidade: ${option.unidade_uni_sigla}`,
+          value: (option.pes_codigo as unknown) as string,
         }));
+        
 
       cache.set(pes_nome, filteredOptions);
 

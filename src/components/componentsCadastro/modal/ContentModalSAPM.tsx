@@ -26,9 +26,9 @@ import { FormEfetivoBySearch } from '../formEfetivo/FormEfetivoBySearch';
 interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
-  opmsLabel: opmSaPM[];
-  select_opm: opmSaPM;
-  checkbox: opmSaPM[];
+  uni_codigo: number[];
+  select_opm?: opmSaPM;
+  operacao_id?: string;
 }
 type opmSaPM = {
   uni_codigo_pai: number;
@@ -38,7 +38,9 @@ type opmSaPM = {
   opm_filha: opmSaPM[];
 };
 export const ContentModalSAPM: React.FC = () => {
-  const { control, getValues } = useFormContext<SolicitacaoForm>();
+  const { control, getValues, setValue, watch } = useFormContext<
+    SolicitacaoForm
+  >();
   const [dataGraCmd, setDataGraCmd] = useState<opmSaPM[]>([]);
   const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
   const handleDeleteAllOpmCancel = async () => {
@@ -58,6 +60,7 @@ export const ContentModalSAPM: React.FC = () => {
   }, []);
   useEffect(() => {
     handleLoadGrandeComandos();
+    handleDeleteAllOpmCancel();
   }, []);
 
   const handleLoadOpmFilhas = async (param: number) => {
@@ -131,6 +134,10 @@ export const ContentModalSAPM: React.FC = () => {
                     onChange={async e => {
                       if (e.currentTarget.checked) {
                         await handleCheckboxChangeGrandeOPM(data.uni_sigla);
+                        setValue('uni_codigo', [
+                          ...watch('uni_codigo'),
+                          data.uni_codigo,
+                        ]);
                       } else {
                         const new_datas = datasOpmFilhas.filter(
                           o => o.uni_codigo !== data.uni_codigo,

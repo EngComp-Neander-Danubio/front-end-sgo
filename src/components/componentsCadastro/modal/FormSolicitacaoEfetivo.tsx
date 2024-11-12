@@ -10,61 +10,98 @@ import {
 } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { options } from '../../../types/typesMilitar';
+import { options, optionsMilitares } from '../../../types/typesMilitar';
 import { DatePickerEvent } from '../formGrandeEvento/DatePickerEvent';
 import { TableInput } from '../tableInput/TableInput';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
 import AsyncSelectComponent from '../formEfetivo/AsyncSelectComponent';
 import { OptionsOrGroups, GroupBase } from 'react-select';
 import api from '../../../services/api';
+import { SelectPattern } from './SelectPattern';
+import { AccordionCheckbox } from '../acordion-checkbox/AccordionCheckbox';
 type opmSaPM = {
   uni_codigo_pai: number;
   uni_codigo: number;
   uni_sigla: string;
   uni_nome: string;
+  opm_filha: opmSaPM[];
 };
 interface SolicitacaoForm {
   dataInicio: Date;
   dataFinal: Date;
-  opmsLabel: opmSaPM[];
-  select_opm: opmSaPM;
-  checkbox: opmSaPM[];
+  uni_codigo: number[];
+  efetivo: number[];
+  select_opm?: opmSaPM;
   input: string[];
 }
 export const FormSolicitacaoEfetivo: React.FC = () => {
-  const { control } = useFormContext<SolicitacaoForm>();
+  const toast = useToast();
+  const { control, setValue, watch } = useFormContext<SolicitacaoForm>();
   const [dataGraCmd, setDataGraCmd] = useState<opmSaPM[]>([]);
   const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
-
   const methodsInput = useFormContext();
-  const { getValues, setValue } = methodsInput;
-
+  const { getValues } = methodsInput;
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const handleDeleteAllOpmCancel = async () => {
     setDatasOpmFilhas([]);
   };
-  useEffect(() => {
-    datasOpmFilhas.forEach((_, index) => {
+  const rec_opm_to_input_values = async (opm: opmSaPM) => {
+    if (!opm) return;
+    if (opm.uni_codigo) {
+      return opm;
+    }
+    if (opm.opm_filha && Array.isArray(opm.opm_filha)) {
+      await Promise.all(
+        opm.opm_filha.map(opm_filha => rec_opm_to_input_values(opm_filha)),
+      );
+    }
+    return opm.uni_codigo;
+  };
+
+  /* useEffect(() => {
+    const loadDefaultValues = async () => {
+      const values = await Promise.all(
+        datasOpmFilhas.map(item => rec_opm_to_default_values(item)),
+      );
+      console.log('values', values);
+      const currentValues = methodsInput.watch('uni_codigo') || [];
+      const uniqueValues = [
+        ...new Set([...currentValues, ...values.filter(Boolean)]),
+      ];
+      methodsInput.setValue('uni_codigo', uniqueValues);
+    };
+
+    loadDefaultValues();
+  }, []);
+  const rec_opm_to_default_values = async (opm: opmSaPM) => {
+    if (!opm) return;
+    if (opm.uni_codigo) return opm.uni_codigo;
+    if (opm.opm_filha && Array.isArray(opm.opm_filha)) {
+      await Promise.all(
+        opm.opm_filha.map(opm_filha => rec_opm_to_default_values(opm_filha)),
+      );
+    }
+    return opm.uni_codigo;
+  }; */
+  /* useEffect(() => {
+    datasOpmFilhas.map((item, index) => {
       const inputTotalValue = getValues('totalEfetivo');
-      const currentValue = getValues(`input.${index}`) ?? '';
+      const currentValue = getValues(`efetivo.${index}`) ?? '';
 
       if (currentValue === undefined || currentValue === null) {
-        methodsInput.setValue(`input.${index}`, '');
+        methodsInput.setValue(`efetivo.${index}`, '');
         //console.log(`input.${index}`);
         //methodsInput.setValue(`checkbox.${index}`, true);
       } else if (currentValue === '') {
         //console.log(`input.${index}`);
-        methodsInput.setValue(`input.${index}`, inputTotalValue || '');
-        methodsInput.setValue(`checkbox.${index}`, true);
+        methodsInput.setValue(`efetivo.${index}`, inputTotalValue || '');
+        //methodsInput.setValue(`checkbox.${index}`, true);
       }
+      rec_opm_to_input_values(item);
     });
-  }, [datasOpmFilhas, getValues, methodsInput.setValue]);
-  useEffect(() => {
-    setValue('dataInicio', startDate || new Date());
-  }, [startDate, setValue]);
+  }, [datasOpmFilhas, getValues, methodsInput.setValue]); */
 
-  const toast = useToast();
   const handleLoadGrandeComandos = useCallback(async () => {
     try {
       const response = await api.get<opmSaPM[]>('/unidades');
@@ -79,20 +116,21 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
   }, []);
   useEffect(() => {
     handleLoadGrandeComandos();
-  }, [handleLoadGrandeComandos]);
+    handleDeleteAllOpmCancel();
+  }, []);
 
-  const handleLoadOpmFilhas = async (param: number) => {
-    try {
-      // funcionando ok
-      const gra_cmd = datasOpmFilhas.find(o => o.uni_codigo === param);
-      if (!gra_cmd) {
-        const uni = dataGraCmd.find(o => o.uni_codigo === param);
-        if (uni) setDatasOpmFilhas(prev => [...prev, uni]);
-      }
-    } catch (error) {
-      console.error('Erro ao carregar as unidades:', error);
-    }
-  };
+   const handleLoadOpmFilhas = async (param: number) => {
+     try {
+       // funcionando ok
+       const gra_cmd = datasOpmFilhas.find(o => o.uni_codigo === param);
+       if (!gra_cmd) {
+         const uni = dataGraCmd.find(o => o.uni_codigo === param);
+         setDatasOpmFilhas(prev => [...prev, uni as opmSaPM]);
+       }
+     } catch (error) {
+       console.error('Erro ao carregar as unidades:', error);
+     }
+   };
 
   const handleCheckboxChangeGrandeOPM = async (option: string) => {
     const dados = dataGraCmd.find(o => o.uni_sigla.includes(option));
@@ -227,6 +265,10 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
               onChange={async e => {
                 if (e.currentTarget.checked) {
                   await handleCheckboxChangeGrandeOPM(data.uni_sigla);
+                  setValue('uni_codigo', [
+                    ...watch('uni_codigo'),
+                    data.uni_codigo,
+                  ]);
                 } else {
                   const new_datas = datasOpmFilhas.filter(
                     o => o.uni_codigo !== data.uni_codigo,
@@ -250,74 +292,68 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
         align="center"
         justify={'center'}
         justifyContent="space-between"
+        gap={1}
       >
         <Flex
         //border={'1px solid red'}
         >
           <Text w={'7vw'}>Busca por OPM:</Text>
         </Flex>
-        <Flex gap={1}>
+        <Flex
+          //border={'1px solid red'}
+          w={'25vw'}
+        >
+          <Controller
+            name="select_opm"
+            control={control}
+            render={({ field, fieldState: { error } }) => (
+              <>
+                <AsyncSelectComponent
+                  placeholder="Buscar por OPM"
+                  nameLabel=""
+                  onChange={field.onChange}
+                  error={error}
+                  //isOverwriting
+                  loadOptions={loadOptions}
+                  noOptionsMessage={'Nenhuma OPM encontrada'}
+                />
+              </>
+            )}
+          />
+        </Flex>
+        <Flex gap={1} align={'center'} justify={'center'}>
           <Flex
-            //border={'1px solid red'}
-            w={'25vw'}
+          //border={'1px solid red'}
           >
-            <Controller
-              name="select_opm"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <>
-                  <AsyncSelectComponent
-                    placeholder="Buscar por OPM"
-                    nameLabel=""
-                    onChange={field.onChange}
-                    error={error}
-                    //isOverwriting
-                    loadOptions={loadOptions}
-                    noOptionsMessage={'Nenhuma OPM encontrada'}
-                  />
-                </>
-              )}
-            />
+            <Button
+              onClick={() => {
+                handleDeleteAllOpmCancel();
+              }}
+              colorScheme="blue"
+              variant="outline"
+            >
+              Limpar
+            </Button>
           </Flex>
           <Flex
-            //border={'1px solid red'}
-            gap={1}
-            align={'center'}
-            justify={'center'}
+          //border={'1px solid red'}
           >
-            <Flex
-            //border={'1px solid red'}
+            <Button
+              onClick={async () => {
+                const v = getValues('select_opm');
+                if (v) await handleSelectOpm(v);
+              }}
+              bgColor="#38A169"
+              _hover={{
+                bgColor: 'green',
+                cursor: 'pointer',
+                transition: '.5s',
+              }}
+              color="#fff"
+              variant="ghost"
             >
-              <Button
-                onClick={() => {
-                  handleDeleteAllOpmCancel();
-                }}
-                colorScheme="blue"
-                variant="outline"
-              >
-                Limpar
-              </Button>
-            </Flex>
-            <Flex
-            //border={'1px solid red'}
-            >
-              <Button
-                onClick={() => {
-                  const v = getValues('select_opm');
-                  handleSelectOpm(v);
-                }}
-                bgColor="#38A169"
-                _hover={{
-                  bgColor: 'green',
-                  cursor: 'pointer',
-                  transition: '.5s',
-                }}
-                color="#fff"
-                variant="ghost"
-              >
-                Incluir
-              </Button>
-            </Flex>
+              Incluir
+            </Button>
           </Flex>
         </Flex>
       </Flex>
@@ -366,8 +402,11 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
           <Button
             onClick={async () => {
               methodsInput.setValue(
-                'input',
-                datasOpmFilhas.map(() => methodsInput.watch('totalEfetivo')),
+                'efetivo',
+                datasOpmFilhas.map(() => {
+                  console.log('clicou em inserir');
+                  methodsInput.watch('totalEfetivo');
+                }),
               );
             }}
             bgColor=" #38A169"
@@ -387,17 +426,17 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
       <Flex
         border="1px solid rgba(0, 0, 0, 0.16)"
         borderRadius="5px"
-        //minH="200px"
-        //h={'fit-content'}
+        //minH="60px"
+        maxH={'30vh'}
+        h={'60vh'}
         w={'full'}
         overflowX={'auto'}
-        overflowY={'auto'}
-        //border={'1px solid red'}
+        flexDirection={'column'}
         mt={4}
         p={2}
         gap={4}
       >
-        <TableInput
+        {/* <TableInput
           isOpen={datasOpmFilhas.length > 0}
           isActions
           isCheckBox
@@ -406,7 +445,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
           rowsPerLoad={0}
           handleDeleteOpm={() => {}}
           opmDatas={datasOpmFilhas}
-        />
+        /> */}
         {/* <Flex mt={2} flexDirection={'column'} w={'100%'}>
           <TableSolicitacoes
             isActions
@@ -430,6 +469,11 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
             loadMore={loadMoreSolicitacoesOPMPMs}
           />
         </Flex> */}
+        <AccordionCheckbox
+          opm={datasOpmFilhas}
+          setDatasOpmFilhas={setDatasOpmFilhas}
+          isInput
+        />
       </Flex>
     </FormControl>
   );

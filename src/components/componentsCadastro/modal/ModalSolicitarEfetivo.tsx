@@ -25,10 +25,13 @@ interface IModal {
   militaresRestantes: Militares_service[];
 }
 interface SolicitacaoForm {
+  operacao_id?: string;
   dataInicio: Date;
   dataFinal: Date;
-  input: string[];
-  uni_codigo: string[];
+  //input: string[];
+  totalEfetivo?: number;
+  uni_codigo: number[];
+  efetivo: number[];
 }
 export const ModalSolicitarEfetivo: React.FC<IModal> = ({
   isOpen,
@@ -37,11 +40,17 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
   const toast = useToast();
   const methodsInput = useForm<SolicitacaoForm>({
     resolver: yupResolver(solicitacaoEfetivoSchema),
+    defaultValues: {
+      dataInicio: new Date(),
+      operacao_id: '02/2024',
+      uni_codigo: [],
+    },
   });
   const { reset } = methodsInput;
   const onSubmit = async (data: SolicitacaoForm) => {
     try {
-      await api.post('/solicitacao', data);
+      console.log(data);
+      //await api.post('/solicitacao', data);
       toast({
         title: 'Solicitações de Postos.',
         description: 'Solicitação Salva.',
