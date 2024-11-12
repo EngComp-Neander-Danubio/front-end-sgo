@@ -119,18 +119,18 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
     handleDeleteAllOpmCancel();
   }, []);
 
-   const handleLoadOpmFilhas = async (param: number) => {
-     try {
-       // funcionando ok
-       const gra_cmd = datasOpmFilhas.find(o => o.uni_codigo === param);
-       if (!gra_cmd) {
-         const uni = dataGraCmd.find(o => o.uni_codigo === param);
-         setDatasOpmFilhas(prev => [...prev, uni as opmSaPM]);
-       }
-     } catch (error) {
-       console.error('Erro ao carregar as unidades:', error);
-     }
-   };
+  const handleLoadOpmFilhas = async (param: number) => {
+    try {
+      // funcionando ok
+      const gra_cmd = datasOpmFilhas.find(o => o.uni_codigo === param);
+      if (!gra_cmd) {
+        const uni = dataGraCmd.find(o => o.uni_codigo === param);
+        setDatasOpmFilhas(prev => [...prev, uni as opmSaPM]);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar as unidades:', error);
+    }
+  };
 
   const handleCheckboxChangeGrandeOPM = async (option: string) => {
     const dados = dataGraCmd.find(o => o.uni_sigla.includes(option));
@@ -436,39 +436,6 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
         p={2}
         gap={4}
       >
-        {/* <TableInput
-          isOpen={datasOpmFilhas.length > 0}
-          isActions
-          isCheckBox
-          lengthData={datasOpmFilhas.length}
-          currentPosition={0}
-          rowsPerLoad={0}
-          handleDeleteOpm={() => {}}
-          opmDatas={datasOpmFilhas}
-        /> */}
-        {/* <Flex mt={2} flexDirection={'column'} w={'100%'}>
-          <TableSolicitacoes
-            isActions
-            isOpen={true}
-            isView={true}
-            columns={['OPM']}
-            registers={datasOPMSapmChildren.map(
-              datas => (datas.uni_nome as unknown) as { [key: string]: any }[],
-            )}
-            //registers={handleSortByPostoGrad(transformedMiltitares, '1')}
-            label_tooltip="OPM"
-            height={'32vh'}
-            handleDelete={() => handleDeleteOpmModal}
-          />
-          <Pagination
-            totalPages={totalData}
-            dataPerPage={dataPerPage}
-            firstDataIndex={firstDataIndex}
-            lastDataIndex={lastDataIndex}
-            loadLess={loadLessSolicitacoesOPMPMs}
-            loadMore={loadMoreSolicitacoesOPMPMs}
-          />
-        </Flex> */}
         <AccordionCheckbox
           opm={datasOpmFilhas}
           setDatasOpmFilhas={setDatasOpmFilhas}

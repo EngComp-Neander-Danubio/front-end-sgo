@@ -6,7 +6,6 @@ const solicitacaoEfetivoSchema = yup.object().shape({
   uni_codigo: yup.array().of(yup.number().required('Campo obrigatório')).required('Campo obrigatório'),
   efetivo: yup.array().of(yup.number().required('Campo obrigatório')).required('Campo obrigatório'),
   totalEfetivo: yup.number().optional(),
-  //input: yup.array().of(yup.string().required('Campo obrigatório')).required('Campo obrigatório'),
   operacao_id: yup.string().optional(),
 });
 

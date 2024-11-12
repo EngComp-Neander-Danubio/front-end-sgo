@@ -57,7 +57,6 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
 
     loadDefaultValues();
   }, []);
-
   const rec_opm = async (param: number, new_opm: opmSaPM[], opm: opmSaPM) => {
     if (!opm) return;
 
@@ -184,29 +183,33 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                           </Checkbox>
                         )}
                       />
-                      {isInput && !(item?.opm_filha.length > 0) && (
-                        <Flex justify={'center'}>
-                          <Controller
-                            name={`efetivo.${index}` as const}
-                            control={control}
-                            render={({ field }) => (
-                              <Input
-                                key={index ?? item?.uni_codigo}
-                                mr={2}
-                                w="6vw"
-                                placeholder="efetivo"
-                                h="30px"
-                                isDisabled={
-                                  !methodsInput
-                                    .watch('uni_codigo')
-                                    ?.includes(item?.uni_codigo)
-                                }
-                                {...field}
-                              />
-                            )}
-                          />
-                        </Flex>
-                      )}
+                      {isInput &&
+                        !(item?.opm_filha.length > 0) &&
+                        methodsInput
+                          .watch('uni_codigo')
+                          ?.includes(item?.uni_codigo) && (
+                          <Flex justify="center">
+                            <Controller
+                              name={`efetivo.${item?.uni_codigo}` as const}
+                              control={control}
+                              render={({ field }) => (
+                                <Input
+                                  key={item?.uni_codigo}
+                                  mr={2}
+                                  w="6vw"
+                                  placeholder="efetivo"
+                                  h="30px"
+                                  /* isDisabled={
+                                    !methodsInput
+                                      .watch('uni_codigo')
+                                      ?.includes(item?.uni_codigo)
+                                  } */
+                                  {...field}
+                                />
+                              )}
+                            />
+                          </Flex>
+                        )}
                     </Flex>
                   </Flex>
                   {methodsInput
