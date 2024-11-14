@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
   Checkbox,
-  Box,
   Accordion,
   AccordionItem,
   AccordionButton,
@@ -12,12 +11,10 @@ import {
   FormControl,
   Input,
   Flex,
-  FormLabel,
 } from '@chakra-ui/react';
 import { Controller, useFormContext } from 'react-hook-form';
 import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi';
 import api from '../../../services/api';
-import { number } from 'prop-types';
 
 type opmSaPM = {
   uni_codigo_pai: number;
@@ -41,7 +38,9 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
   const methodsInput = useFormContext();
   const { control } = methodsInput;
   const [loadingResponse, setLoadingResponse] = useState<boolean>(false);
-
+  useEffect(() => {
+    console.log(methodsInput.watch('efetivo'));
+  }, [methodsInput.watch]);
   useEffect(() => {
     const loadDefaultValues = async () => {
       const values = await Promise.all(
@@ -161,26 +160,45 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                         name={`uni_codigo`}
                         control={control}
                         render={({ field }) => (
-                          <Checkbox
-                            size="md"
-                            colorScheme="green"
-                            //defaultChecked
-                            isChecked={field.value?.includes(item.uni_codigo)}
-                            onChange={e => {
-                              const isChecked = e.target.checked;
-                              const currentValue = field?.value ?? [];
-                              field.onChange(
-                                isChecked
-                                  ? [...currentValue, item.uni_codigo]
-                                  : currentValue.filter(
-                                      (codigo: number) =>
-                                        codigo !== item.uni_codigo,
-                                    ),
-                              );
-                            }}
-                          >
-                            {item?.uni_sigla}
-                          </Checkbox>
+                          <>
+                            <Checkbox
+                              size="md"
+                              colorScheme="green"
+                              //defaultChecked
+                              isChecked={field.value?.includes(item.uni_codigo)}
+                              onChange={e => {
+                                const isChecked = e.target.checked;
+                                const currentValue = field?.value ?? [];
+                                field.onChange(
+                                  isChecked
+                                    ? [...currentValue, item.uni_codigo]
+                                    : currentValue.filter(
+                                        (codigo: number) =>
+                                          codigo !== item.uni_codigo,
+                                      ),
+                                );
+                              }}
+                            >
+                              {item?.uni_sigla}{' '}
+                            </Checkbox>
+                            {/* {isInput &&
+                              !(item?.opm_filha.length > 0) &&
+                              methodsInput
+                                .watch('uni_codigo')
+                                ?.includes(item?.uni_codigo) && (
+                                <Input
+                                  key={index}
+                                  mr={2}
+                                  w="6vw"
+                                  placeholder="efetivo"
+                                  h="30px"
+                                  //value={field.value || ''}
+                                  //onChange={field.onChange}
+                                  //onBlur={field.onBlur}
+                                  ref={field.ref}
+                                />
+                              )} */}
+                          </>
                         )}
                       />
                       {isInput &&
@@ -190,14 +208,15 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                           ?.includes(item?.uni_codigo) && (
                           <Flex justify="center">
                             <Controller
-                              name={`efetivo[${index}]`}
+                              name={`efetivo[${item?.uni_codigo}]`}
                               control={control}
                               render={({ field }) => (
                                 <Input
                                   key={index}
                                   mr={2}
                                   w="6vw"
-                                  placeholder="efetivo"
+                                  //placeholder="efetivo"
+                                  placeholder={`${item?.uni_sigla}`}
                                   h="30px"
                                   value={field.value || ''}
                                   onChange={field.onChange}

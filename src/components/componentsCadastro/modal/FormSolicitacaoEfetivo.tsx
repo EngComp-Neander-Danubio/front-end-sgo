@@ -10,14 +10,12 @@ import {
 } from '@chakra-ui/react';
 import { useCallback, useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
-import { options, optionsMilitares } from '../../../types/typesMilitar';
+import { options } from '../../../types/typesMilitar';
 import { DatePickerEvent } from '../formGrandeEvento/DatePickerEvent';
-import { TableInput } from '../tableInput/TableInput';
 import { InputPatternController } from '../inputPatternController/InputPatternController';
 import AsyncSelectComponent from '../formEfetivo/AsyncSelectComponent';
 import { OptionsOrGroups, GroupBase } from 'react-select';
 import api from '../../../services/api';
-import { SelectPattern } from './SelectPattern';
 import { AccordionCheckbox } from '../acordion-checkbox/AccordionCheckbox';
 type opmSaPM = {
   uni_codigo_pai: number;
@@ -43,8 +41,11 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
   const { getValues } = methodsInput;
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
+  const [checkboxStates, setCheckboxStates] = useState<boolean[]>([]);
+
   const handleDeleteAllOpmCancel = async () => {
     setDatasOpmFilhas([]);
+    methodsInput.setValue('efetivo', []);
   };
   const rec_opm_to_input_values = async (opm: opmSaPM) => {
     if (!opm) return;
@@ -139,7 +140,26 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
     }
     handleLoadOpmFilhas(dados.uni_codigo);
   };
+  const handleCheckboxChange = (
+    index: number,
+    checked: boolean,
+    data: opmSaPM,
+  ) => {
+    // Atualiza o estado específico do checkbox com base no índice
+    setCheckboxStates(prevStates =>
+      prevStates.map((state, i) => (i === index ? checked : state)),
+    );
 
+    if (checked) {
+      handleCheckboxChangeGrandeOPM(data.uni_sigla);
+      setValue('uni_codigo', [...watch('uni_codigo'), data.uni_codigo]);
+    } else {
+      const new_datas = datasOpmFilhas.filter(
+        o => o.uni_codigo !== data.uni_codigo,
+      );
+      setDatasOpmFilhas(new_datas);
+    }
+  };
   const handleSelectOpm = async (data: opmSaPM) => {
     const dataExists = datasOpmFilhas.some(
       dataValue => dataValue.uni_codigo === data.uni_codigo,
@@ -250,37 +270,26 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
           colorScheme="green"
           onChange={async e => {
             if (e.target.checked) {
-              dataGraCmd.map(async v => {
-                await handleLoadOpmFilhas(v.uni_codigo);
-              });
+              dataGraCmd.map(async (data, index) =>
+                handleCheckboxChange(index, e.target.checked, data),
+              );
+            } else {
+              setDatasOpmFilhas([]);
+              setCheckboxStates(Array(dataGraCmd.length).fill(false));
             }
           }}
         >
           Todos
         </Checkbox>
         {dataGraCmd.map((data, index) => (
-          <>
-            <Checkbox
-              key={index}
-              onChange={async e => {
-                if (e.currentTarget.checked) {
-                  await handleCheckboxChangeGrandeOPM(data.uni_sigla);
-                  setValue('uni_codigo', [
-                    ...watch('uni_codigo'),
-                    data.uni_codigo,
-                  ]);
-                } else {
-                  const new_datas = datasOpmFilhas.filter(
-                    o => o.uni_codigo !== data.uni_codigo,
-                  );
-                  setDatasOpmFilhas(new_datas);
-                }
-              }}
-              colorScheme="green"
-            >
-              {data.uni_sigla.includes('CMTE-GERAL') ? 'ADM' : data.uni_sigla}
-            </Checkbox>
-          </>
+          <Checkbox
+            key={index}
+            isChecked={checkboxStates[index]} // Define o estado do checkbox
+            onChange={e => handleCheckboxChange(index, e.target.checked, data)}
+            colorScheme="green"
+          >
+            {data.uni_sigla.includes('CMTE-GERAL') ? 'ADM' : data.uni_sigla}
+          </Checkbox>
         ))}
       </Flex>
       <Divider />
@@ -328,6 +337,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
             <Button
               onClick={() => {
                 handleDeleteAllOpmCancel();
+                setCheckboxStates(Array(dataGraCmd.length).fill(false));
               }}
               colorScheme="blue"
               variant="outline"

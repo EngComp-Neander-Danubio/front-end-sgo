@@ -36,15 +36,15 @@ export const FormSolicitacaoPostos: React.FC = () => {
   const { control, getValues, setValue, watch } = useFormContext<
     SolicitacaoForm
   >();
+  const toast = useToast();
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
   const [dataGraCmd, setDataGraCmd] = useState<opmSaPM[]>([]);
   const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
-
+  const [checkboxStates, setCheckboxStates] = useState<boolean[]>([]);
   const handleDeleteAllOpmCancel = async () => {
     setDatasOpmFilhas([]);
   };
-  const toast = useToast();
   const handleLoadGrandeComandos = useCallback(async () => {
     try {
       const response = await api.get<opmSaPM[]>('/unidades');
@@ -108,11 +108,36 @@ export const FormSolicitacaoPostos: React.FC = () => {
       });
     }
   };
+  const handleCheckboxChange = (
+    index: number,
+    checked: boolean,
+    data: opmSaPM,
+  ) => {
+    // Atualiza o estado específico do checkbox com base no índice
+    setCheckboxStates(prevStates =>
+      prevStates.map((state, i) => (i === index ? checked : state)),
+    );
+    if (checked) {
+      handleCheckboxChangeGrandeOPM(data.uni_sigla);
+      setValue('uni_codigo', [...watch('uni_codigo'), data.uni_codigo]);
+    } else {
+      const new_datas = datasOpmFilhas.filter(
+        o => o.uni_codigo !== data.uni_codigo,
+      );
+      setDatasOpmFilhas(new_datas);
+    }
+  };
   const loadOptions = async (
     inputValue: string,
   ): Promise<OptionsOrGroups<
-    { label: string; value: string },
-    GroupBase<{ label: string; value: string }>
+    {
+      label: string;
+      value: string;
+    },
+    GroupBase<{
+      label: string;
+      value: string;
+    }>
   >> => {
     return new Promise(resolve => {
       setTimeout(() => {
@@ -186,37 +211,26 @@ export const FormSolicitacaoPostos: React.FC = () => {
           colorScheme="green"
           onChange={async e => {
             if (e.target.checked) {
-              dataGraCmd.map(async v => {
-                await handleLoadOpmFilhas(v.uni_codigo);
-              });
+              dataGraCmd.map(async (data, index) =>
+                handleCheckboxChange(index, e.target.checked, data),
+              );
+            } else {
+              setDatasOpmFilhas([]);
+              setCheckboxStates(Array(dataGraCmd.length).fill(false));
             }
           }}
         >
           Todos
         </Checkbox>
         {dataGraCmd.map((data, index) => (
-          <>
-            <Checkbox
-              key={index}
-              onChange={async e => {
-                if (e.currentTarget.checked) {
-                  await handleCheckboxChangeGrandeOPM(data.uni_sigla);
-                  setValue('uni_codigo', [
-                    ...watch('uni_codigo'),
-                    data.uni_codigo,
-                  ]);
-                } else {
-                  const new_datas = datasOpmFilhas.filter(
-                    o => o.uni_codigo !== data.uni_codigo,
-                  );
-                  setDatasOpmFilhas(new_datas);
-                }
-              }}
-              colorScheme="green"
-            >
-              {data.uni_sigla.includes('CMTE-GERAL') ? 'ADM' : data.uni_sigla}
-            </Checkbox>
-          </>
+          <Checkbox
+            key={index}
+            isChecked={checkboxStates[index]} // Define o estado do checkbox
+            onChange={e => handleCheckboxChange(index, e.target.checked, data)}
+            colorScheme="green"
+          >
+            {data.uni_sigla.includes('CMTE-GERAL') ? 'ADM' : data.uni_sigla}
+          </Checkbox>
         ))}
       </Flex>
       <Divider />
@@ -265,6 +279,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
             <Button
               onClick={() => {
                 handleDeleteAllOpmCancel();
+                setCheckboxStates(Array(dataGraCmd.length).fill(false));
               }}
               colorScheme="blue"
               variant="outline"
