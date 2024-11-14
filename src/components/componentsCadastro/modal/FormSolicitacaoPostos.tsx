@@ -211,8 +211,9 @@ export const FormSolicitacaoPostos: React.FC = () => {
           colorScheme="green"
           onChange={async e => {
             if (e.target.checked) {
-              dataGraCmd.map(async (data, index) =>
-                handleCheckboxChange(index, e.target.checked, data),
+              dataGraCmd.map(
+                async (data, index) =>
+                  await handleCheckboxChange(index, e.target.checked, data),
               );
             } else {
               setDatasOpmFilhas([]);
@@ -327,6 +328,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
         <AccordionCheckbox
           opm={datasOpmFilhas}
           setDatasOpmFilhas={setDatasOpmFilhas}
+          setCheckboxStates={setCheckboxStates}
           isInput={false}
         />
       </Flex>

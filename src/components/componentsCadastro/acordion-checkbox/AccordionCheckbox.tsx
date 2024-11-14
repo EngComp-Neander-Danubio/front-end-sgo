@@ -25,6 +25,7 @@ type opmSaPM = {
 };
 interface IAccordionCheckbox {
   setDatasOpmFilhas: React.Dispatch<React.SetStateAction<opmSaPM[]>>;
+  setCheckboxStates?: React.Dispatch<React.SetStateAction<boolean[]>>;
   opm: opmSaPM[];
   children?: React.ReactNode;
   isInput?: boolean;
@@ -32,6 +33,7 @@ interface IAccordionCheckbox {
 
 export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
   setDatasOpmFilhas,
+  setCheckboxStates,
   opm = [],
   isInput = false,
 }) => {
@@ -177,6 +179,12 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                                           codigo !== item.uni_codigo,
                                       ),
                                 );
+                                if (setCheckboxStates)
+                                  setCheckboxStates(prevStates =>
+                                    prevStates.map((state, i) =>
+                                      i === index ? isChecked : state,
+                                    ),
+                                  );
                               }}
                             >
                               {item?.uni_sigla}{' '}
