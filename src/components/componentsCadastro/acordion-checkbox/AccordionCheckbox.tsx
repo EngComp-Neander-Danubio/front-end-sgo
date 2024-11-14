@@ -25,7 +25,7 @@ type opmSaPM = {
 };
 interface IAccordionCheckbox {
   setDatasOpmFilhas: React.Dispatch<React.SetStateAction<opmSaPM[]>>;
-  setCheckboxStates?: React.Dispatch<React.SetStateAction<boolean[]>>;
+  setCheckboxStates?: React.Dispatch<React.SetStateAction<number[]>>;
   opm: opmSaPM[];
   children?: React.ReactNode;
   isInput?: boolean;
@@ -60,12 +60,10 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
   }, []);
   const rec_opm = async (param: number, new_opm: opmSaPM[], opm: opmSaPM) => {
     if (!opm) return;
-
     const opmForm = new_opm.map(o => ({
       ...o,
       opm_filha: o.opm_filha || [],
     }));
-
     if (opm.uni_codigo === param) {
       opm.opm_filha = opmForm;
       return opm;
@@ -102,12 +100,10 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
           return result ?? o;
         }),
       );
-
       methodsInput.setValue(
         'uni_codigo',
         methodsInput.watch('uni_codigo').filter((f: number) => param !== f),
       );
-
       const rec_add_opm = (
         param: number,
         opm: opmSaPM | opmSaPM[] | undefined,
@@ -181,9 +177,11 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                                 );
                                 if (setCheckboxStates)
                                   setCheckboxStates(prevStates =>
-                                    prevStates.map((state, i) =>
-                                      i === index ? isChecked : state,
-                                    ),
+                                    isChecked
+                                      ? [...prevStates, item?.uni_codigo]
+                                      : prevStates.filter(
+                                          codigo => codigo !== item?.uni_codigo,
+                                        ),
                                   );
                               }}
                             >

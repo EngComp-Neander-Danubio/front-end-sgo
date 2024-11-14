@@ -41,10 +41,14 @@ export const FormSolicitacaoPostos: React.FC = () => {
   const [endDate, setEndDate] = useState<Date>();
   const [dataGraCmd, setDataGraCmd] = useState<opmSaPM[]>([]);
   const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
-  const [checkboxStates, setCheckboxStates] = useState<boolean[]>([]);
+  const [checkboxStates, setCheckboxStates] = useState<number[]>([]);
   const handleDeleteAllOpmCancel = async () => {
     setDatasOpmFilhas([]);
   };
+   useEffect(() => {
+     handleLoadGrandeComandos();
+     handleDeleteAllOpmCancel();
+   }, []);
   const handleLoadGrandeComandos = useCallback(async () => {
     try {
       const response = await api.get<opmSaPM[]>('/unidades');
@@ -57,10 +61,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
       console.error('Erro ao carregar as unidades principais:', error);
     }
   }, []);
-  useEffect(() => {
-    handleLoadGrandeComandos();
-    handleDeleteAllOpmCancel();
-  }, []);
+
 
   const handleLoadOpmFilhas = async (param: number) => {
     try {
@@ -108,23 +109,22 @@ export const FormSolicitacaoPostos: React.FC = () => {
       });
     }
   };
-  const handleCheckboxChange = (
-    index: number,
-    checked: boolean,
-    data: opmSaPM,
-  ) => {
-    // Atualiza o estado específico do checkbox com base no índice
+  const handleCheckboxChange = async (checked: boolean, data: opmSaPM) => {
+    const { uni_codigo, uni_sigla } = data;
+
     setCheckboxStates(prevStates =>
-      prevStates.map((state, i) => (i === index ? checked : state)),
+      checked
+        ? [...prevStates, uni_codigo]
+        : prevStates.filter(codigo => codigo !== uni_codigo),
     );
+
     if (checked) {
-      handleCheckboxChangeGrandeOPM(data.uni_sigla);
-      setValue('uni_codigo', [...watch('uni_codigo'), data.uni_codigo]);
+      await handleCheckboxChangeGrandeOPM(uni_sigla);
+      setValue('uni_codigo', [...watch('uni_codigo'), uni_codigo]);
     } else {
-      const new_datas = datasOpmFilhas.filter(
-        o => o.uni_codigo !== data.uni_codigo,
+      setDatasOpmFilhas(
+        datasOpmFilhas.filter(o => o.uni_codigo !== uni_codigo),
       );
-      setDatasOpmFilhas(new_datas);
     }
   };
   const loadOptions = async (
@@ -144,7 +144,6 @@ export const FormSolicitacaoPostos: React.FC = () => {
         const filteredOptions = options.filter(option =>
           option.label.toLowerCase().includes(inputValue.toLowerCase()),
         );
-
         resolve(filteredOptions);
         //setDataValue(filteredOptions);
       }, 1000);
@@ -211,23 +210,24 @@ export const FormSolicitacaoPostos: React.FC = () => {
           colorScheme="green"
           onChange={async e => {
             if (e.target.checked) {
-              dataGraCmd.map(
-                async (data, index) =>
-                  await handleCheckboxChange(index, e.target.checked, data),
+              dataGraCmd.forEach(
+                async data => await handleCheckboxChange(true, data),
               );
             } else {
               setDatasOpmFilhas([]);
-              setCheckboxStates(Array(dataGraCmd.length).fill(false));
+              setCheckboxStates([]);
             }
           }}
         >
           Todos
         </Checkbox>
-        {dataGraCmd.map((data, index) => (
+        {dataGraCmd.map(data => (
           <Checkbox
-            key={index}
-            isChecked={checkboxStates[index]} // Define o estado do checkbox
-            onChange={e => handleCheckboxChange(index, e.target.checked, data)}
+            key={data.uni_codigo}
+            isChecked={checkboxStates.includes(data.uni_codigo)}
+            onChange={async e =>
+              await handleCheckboxChange(e.target.checked, data)
+            }
             colorScheme="green"
           >
             {data.uni_sigla.includes('CMTE-GERAL') ? 'ADM' : data.uni_sigla}

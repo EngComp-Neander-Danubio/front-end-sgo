@@ -41,7 +41,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
   const { getValues } = methodsInput;
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
-  const [checkboxStates, setCheckboxStates] = useState<boolean[]>([]);
+  const [checkboxStates, setCheckboxStates] = useState<number[]>([]);
 
   const handleDeleteAllOpmCancel = async () => {
     setDatasOpmFilhas([]);
@@ -140,24 +140,22 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
     }
     handleLoadOpmFilhas(dados.uni_codigo);
   };
-  const handleCheckboxChange = (
-    index: number,
-    checked: boolean,
-    data: opmSaPM,
-  ) => {
-    // Atualiza o estado específico do checkbox com base no índice
+  const handleCheckboxChange = async (checked: boolean, data: opmSaPM) => {
+    const { uni_codigo, uni_sigla } = data;
+
     setCheckboxStates(prevStates =>
-      prevStates.map((state, i) => (i === index ? checked : state)),
+      checked
+        ? [...prevStates, uni_codigo]
+        : prevStates.filter(codigo => codigo !== uni_codigo),
     );
 
     if (checked) {
-      handleCheckboxChangeGrandeOPM(data.uni_sigla);
-      setValue('uni_codigo', [...watch('uni_codigo'), data.uni_codigo]);
+      await handleCheckboxChangeGrandeOPM(uni_sigla);
+      setValue('uni_codigo', [...watch('uni_codigo'), uni_codigo]);
     } else {
-      const new_datas = datasOpmFilhas.filter(
-        o => o.uni_codigo !== data.uni_codigo,
+      setDatasOpmFilhas(
+        datasOpmFilhas.filter(o => o.uni_codigo !== uni_codigo),
       );
-      setDatasOpmFilhas(new_datas);
     }
   };
   const handleSelectOpm = async (data: opmSaPM) => {
@@ -270,22 +268,24 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
           colorScheme="green"
           onChange={async e => {
             if (e.target.checked) {
-              dataGraCmd.map(async (data, index) =>
-                handleCheckboxChange(index, e.target.checked, data),
+              dataGraCmd.forEach(
+                async data => await handleCheckboxChange(true, data),
               );
             } else {
               setDatasOpmFilhas([]);
-              setCheckboxStates(Array(dataGraCmd.length).fill(false));
+              setCheckboxStates([]);
             }
           }}
         >
           Todos
         </Checkbox>
-        {dataGraCmd.map((data, index) => (
+        {dataGraCmd.map(data => (
           <Checkbox
-            key={index}
-            isChecked={checkboxStates[index]} // Define o estado do checkbox
-            onChange={e => handleCheckboxChange(index, e.target.checked, data)}
+            key={data.uni_codigo}
+            isChecked={checkboxStates.includes(data.uni_codigo)}
+            onChange={async e =>
+              await handleCheckboxChange(e.target.checked, data)
+            }
             colorScheme="green"
           >
             {data.uni_sigla.includes('CMTE-GERAL') ? 'ADM' : data.uni_sigla}
