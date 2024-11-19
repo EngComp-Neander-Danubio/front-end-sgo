@@ -18,6 +18,7 @@ import { OptionsOrGroups, GroupBase } from 'react-select';
 import api from '../../../services/api';
 import { AccordionCheckbox } from '../acordion-checkbox/AccordionCheckbox';
 type opmSaPM = {
+  i: number;
   uni_codigo_pai: number;
   uni_codigo: number;
   uni_sigla: string;

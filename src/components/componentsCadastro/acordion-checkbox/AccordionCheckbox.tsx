@@ -17,6 +17,7 @@ import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi';
 import api from '../../../services/api';
 
 type opmSaPM = {
+  i: number;
   uni_codigo_pai: number;
   uni_codigo: number;
   uni_sigla: string;
@@ -40,9 +41,10 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
   const methodsInput = useFormContext();
   const { control } = methodsInput;
   const [loadingResponse, setLoadingResponse] = useState<boolean>(false);
-  useEffect(() => {
-    console.log(methodsInput.watch('efetivo'));
-  }, [methodsInput.watch]);
+
+  /*   useEffect(() => {
+    console.log('efetivo', methodsInput.watch('efetivo'));
+  }, [methodsInput.watch]); */
   useEffect(() => {
     const loadDefaultValues = async () => {
       const values = await Promise.all(
@@ -132,144 +134,133 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
 
   return (
     <FormControl>
-      {opm?.map((item, index) => (
-        <Accordion defaultIndex={[1]} allowMultiple key={index.toString()}>
-          <AccordionItem border="none" w={'100%'}>
-            {({ isExpanded }) => (
-              <>
-                <AccordionButton>
-                  <Flex
-                    flex="1"
-                    textAlign="left"
-                    //gap={4}
-                    //alignContent={'center'}
-                    //justifyContent={'center'}
-                    w={'100%'}
-                    //border={'1px solid black'}
-                  >
+      {opm?.map((item, index) => {
+        //console.log(index);
+        return (
+          <Accordion defaultIndex={[1]} allowMultiple key={item?.uni_codigo}>
+            <AccordionItem border="none" w={'100%'}>
+              {({ isExpanded }) => (
+                <>
+                  <AccordionButton>
                     <Flex
-                      gap={4}
-                      //w={'15vw'}
+                      flex="1"
+                      textAlign="left"
+                      //gap={4}
+                      //alignContent={'center'}
+                      //justifyContent={'center'}
                       w={'100%'}
-                      justifyContent={'space-between'}
                       //border={'1px solid black'}
                     >
-                      <Controller
-                        name={`uni_codigo`}
-                        control={control}
-                        render={({ field }) => (
-                          <>
-                            <Checkbox
-                              size="md"
-                              colorScheme="green"
-                              //defaultChecked
-                              isChecked={field.value?.includes(item.uni_codigo)}
-                              onChange={e => {
-                                const isChecked = e.target.checked;
-                                const currentValue = field?.value ?? [];
-                                field.onChange(
-                                  isChecked
-                                    ? [...currentValue, item.uni_codigo]
-                                    : currentValue.filter(
-                                        (codigo: number) =>
-                                          codigo !== item.uni_codigo,
-                                      ),
-                                );
-                                if (setCheckboxStates)
-                                  setCheckboxStates(prevStates =>
+                      <Flex
+                        gap={4}
+                        //w={'15vw'}
+                        w={'100%'}
+                        justifyContent={'space-between'}
+                        //border={'1px solid black'}
+                      >
+                        <Controller
+                          name={`uni_codigo`}
+                          control={control}
+                          render={({ field }) => (
+                            <>
+                              <Checkbox
+                                size="md"
+                                colorScheme="green"
+                                //defaultChecked
+                                isChecked={field.value?.includes(
+                                  item.uni_codigo,
+                                )}
+                                onChange={e => {
+                                  const isChecked = e.target.checked;
+                                  const currentValue = field?.value ?? [];
+                                  field.onChange(
                                     isChecked
-                                      ? [...prevStates, item?.uni_codigo]
-                                      : prevStates.filter(
-                                          codigo => codigo !== item?.uni_codigo,
+                                      ? [...currentValue, item.uni_codigo]
+                                      : currentValue.filter(
+                                          (codigo: number) =>
+                                            codigo !== item.uni_codigo,
                                         ),
                                   );
-                              }}
-                            >
-                              {item?.uni_sigla}{' '}
-                            </Checkbox>
-                            {/* {isInput &&
-                              !(item?.opm_filha.length > 0) &&
-                              methodsInput
-                                .watch('uni_codigo')
-                                ?.includes(item?.uni_codigo) && (
-                                <Input
-                                  key={index}
-                                  mr={2}
-                                  w="6vw"
-                                  placeholder="efetivo"
-                                  h="30px"
-                                  //value={field.value || ''}
-                                  //onChange={field.onChange}
-                                  //onBlur={field.onBlur}
-                                  ref={field.ref}
-                                />
-                              )} */}
-                          </>
-                        )}
-                      />
-                      {isInput &&
-                        !(item?.opm_filha.length > 0) &&
-                        methodsInput
-                          .watch('uni_codigo')
-                          ?.includes(item?.uni_codigo) && (
-                          <Flex justify="center">
-                            <Controller
-                              name={`efetivo[${item?.uni_codigo}]`}
-                              control={control}
-                              render={({ field }) => (
-                                <Input
-                                  key={index}
-                                  mr={2}
-                                  w="6vw"
-                                  //placeholder="efetivo"
-                                  placeholder={`${item?.uni_sigla}`}
-                                  h="30px"
-                                  value={field.value || ''}
-                                  onChange={field.onChange}
-                                  onBlur={field.onBlur}
-                                  ref={field.ref}
-                                />
-                              )}
-                            />
-                          </Flex>
-                        )}
+                                  if (setCheckboxStates)
+                                    setCheckboxStates(prevStates =>
+                                      isChecked
+                                        ? [...prevStates, item?.uni_codigo]
+                                        : prevStates.filter(
+                                            codigo =>
+                                              codigo !== item?.uni_codigo,
+                                          ),
+                                    );
+                                }}
+                              >
+                                {item?.uni_sigla}{' '}
+                              </Checkbox>
+                            </>
+                          )}
+                        />
+                        {console.log(index, item.uni_sigla)}
+                        {isInput &&
+                          !(item?.opm_filha.length > 0) &&
+                          methodsInput
+                            .watch('uni_codigo')
+                            ?.includes(item?.uni_codigo) && (
+                            <Flex justify="center">
+                              <Controller
+                                name={`efetivo.[${item?.uni_codigo}]`}
+                                control={control}
+                                render={({ field }) => (
+                                  <Input
+                                    //key={item?.uni_codigo}
+                                    mr={2}
+                                    w="6vw"
+                                    placeholder={`${item?.uni_sigla}`}
+                                    h="30px"
+                                    value={field.value || ''} // Evita valores indefinidos
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
+                                    ref={field.ref}
+                                  />
+                                )}
+                              />
+                            </Flex>
+                          )}
+                      </Flex>
                     </Flex>
-                  </Flex>
-                  {methodsInput
-                    .watch('uni_codigo')
-                    ?.includes(item?.uni_codigo) && (
-                    <AccordionIcon
-                      as={!isExpanded ? HiPlusCircle : HiMinusCircle}
-                      color="#A0AEC0"
-                      onClick={async () => {
-                        await handleLoadOpmFilhas(item?.uni_codigo);
-                      }}
-                    />
-                  )}
-                </AccordionButton>
-
-                <AccordionPanel ml={'auto'}>
-                  {loadingResponse ? (
-                    <Center>
-                      <Spinner
-                        alignSelf={'center'}
-                        size={'lg'}
-                        justifyContent={'center'}
+                    {methodsInput
+                      .watch('uni_codigo')
+                      ?.includes(item?.uni_codigo) && (
+                      <AccordionIcon
+                        as={!isExpanded ? HiPlusCircle : HiMinusCircle}
+                        color="#A0AEC0"
+                        onClick={async () => {
+                          await handleLoadOpmFilhas(item?.uni_codigo);
+                        }}
                       />
-                    </Center>
-                  ) : (
-                    <AccordionCheckbox
-                      setDatasOpmFilhas={setDatasOpmFilhas}
-                      opm={item?.opm_filha}
-                      isInput={isInput}
-                    />
-                  )}
-                </AccordionPanel>
-              </>
-            )}
-          </AccordionItem>
-        </Accordion>
-      ))}
+                    )}
+                  </AccordionButton>
+
+                  <AccordionPanel ml={'auto'}>
+                    {loadingResponse ? (
+                      <Center>
+                        <Spinner
+                          alignSelf={'center'}
+                          size={'lg'}
+                          justifyContent={'center'}
+                        />
+                      </Center>
+                    ) : (
+                      <AccordionCheckbox
+                        setDatasOpmFilhas={setDatasOpmFilhas}
+                        opm={item?.opm_filha}
+                        isInput={isInput}
+                      />
+                    )}
+                  </AccordionPanel>
+                </>
+              )}
+            </AccordionItem>
+          </Accordion>
+        );
+      })}
     </FormControl>
   );
 };
