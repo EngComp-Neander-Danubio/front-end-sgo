@@ -18,7 +18,6 @@ import { OptionsOrGroups, GroupBase } from 'react-select';
 import api from '../../../services/api';
 import { AccordionCheckbox } from '../acordion-checkbox/AccordionCheckbox';
 type opmSaPM = {
-  i: number;
   uni_codigo_pai: number;
   uni_codigo: number;
   uni_sigla: string;
@@ -26,8 +25,8 @@ type opmSaPM = {
   opm_filha: opmSaPM[];
 };
 interface SolicitacaoForm {
-  dataInicio: Date;
-  dataFinal: Date;
+  data_inicio: Date;
+  data_final: Date;
   uni_codigo: number[];
   efetivo: number[];
   select_opm?: opmSaPM;
@@ -222,7 +221,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
           <Flex flexDirection="column" gap={1} w={'12vw'}>
             <FormLabel>Prazo Inicial</FormLabel>
             <Controller
-              name="dataInicio"
+              name="data_inicio"
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <DatePickerEvent
@@ -243,7 +242,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
           <Flex flexDirection="column" gap={1} w={'12vw'}>
             <FormLabel>Prazo Final</FormLabel>
             <Controller
-              name="dataFinal"
+              name="data_final"
               control={control}
               render={({ field, fieldState: { error } }) => (
                 <DatePickerEvent
@@ -387,7 +386,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
               control={methodsInput.control}
               //defaultValue={methodsInput.formState.defaultValues}
               render={({
-                field: { onChange, onBlur, value, ref },
+                field: { onChange, onBlur, value },
                 fieldState: { error },
               }) => (
                 <InputPatternController
@@ -415,7 +414,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
               methodsInput.setValue(
                 'efetivo',
                 datasOpmFilhas.map(() => {
-                  console.log('clicou em inserir');
+                  //console.log('clicou em inserir');
                   methodsInput.watch('totalEfetivo');
                 }),
               );
@@ -451,6 +450,7 @@ export const FormSolicitacaoEfetivo: React.FC = () => {
           opm={datasOpmFilhas}
           setDatasOpmFilhas={setDatasOpmFilhas}
           setCheckboxStates={setCheckboxStates}
+          parentIndex={0}
           isInput
         />
       </Flex>

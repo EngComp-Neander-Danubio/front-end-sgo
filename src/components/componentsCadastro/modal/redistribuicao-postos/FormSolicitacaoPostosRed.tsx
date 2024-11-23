@@ -41,7 +41,7 @@ export const FormSolicitacaoPostosRed: React.FC = () => {
   };
 
   useEffect(() => {
-    handleLoadOpmFilhas(1800);
+    handleLoadOpmFilhas(1945);
   }, []);
   return (
     <FormControl {...methodsInput} mb={4}>

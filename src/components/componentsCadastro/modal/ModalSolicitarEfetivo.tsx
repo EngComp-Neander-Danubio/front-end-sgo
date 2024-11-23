@@ -17,6 +17,7 @@ import { FormSolicitacaoEfetivo } from './FormSolicitacaoEfetivo';
 import { yupResolver } from '@hookform/resolvers/yup';
 import solicitacaoEfetivoSchema from '../../../types/yupSolicitacaoEfetiv/yupSolicitacaoEfetivo';
 import api from '../../../services/api';
+import { formatDate } from '../../../utils/utils';
 
 interface IModal {
   isOpen: boolean;
@@ -26,11 +27,11 @@ interface IModal {
 }
 interface SolicitacaoForm {
   operacao_id?: string;
-  dataInicio: Date;
-  dataFinal: Date;
+  data_inicio: Date;
+  data_final: Date;
   totalEfetivo?: number;
-  uni_codigo: number[];
-  efetivo: number[];
+  uni_codigo: (number | undefined)[];
+  efetivo: (number | undefined)[];
 }
 
 export const ModalSolicitarEfetivo: React.FC<IModal> = ({
@@ -41,20 +42,30 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
   const methodsInput = useForm<SolicitacaoForm>({
     resolver: yupResolver(solicitacaoEfetivoSchema),
     defaultValues: {
-      dataInicio: new Date(),
+      data_inicio: new Date(),
       operacao_id: '02/2024',
       uni_codigo: [],
       efetivo: [],
     },
   });
   const { reset } = methodsInput;
+
   const onSubmit = async (data: SolicitacaoForm) => {
     try {
-      console.log(data);
-      //await api.post('/solicitacao', data);
+      const dados = {
+        operacao_id: data.operacao_id,
+        prazo_inicial: formatDate(data.data_inicio),
+        prazo_final: formatDate(data.data_final),
+        unidades: data.uni_codigo.map((codigo, index) => ({
+          uni_codigo: codigo,
+          qtd_efetivo: data.efetivo[index], // Mapeia `efetivo` na mesma ordem
+        })),
+      };
+
+      await api.post('/solicitacao-efetivo', dados);
       toast({
-        title: 'Solicitações de Postos.',
-        description: 'Solicitação Salva.',
+        title: 'Solicitação de Postos',
+        description: 'Solicitação salva com sucesso.',
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -63,15 +74,16 @@ export const ModalSolicitarEfetivo: React.FC<IModal> = ({
     } catch (err) {
       toast({
         title: 'Erro',
-        description: 'Falha ao criar solicitação',
+        description: 'Falha ao criar solicitação.',
         status: 'error',
         position: 'top-right',
         duration: 3000,
         isClosable: true,
       });
+    } finally {
+      onClose();
+      reset();
     }
-    onClose();
-    reset();
   };
 
   return (

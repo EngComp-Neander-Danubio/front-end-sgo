@@ -45,10 +45,10 @@ export const FormSolicitacaoPostos: React.FC = () => {
   const handleDeleteAllOpmCancel = async () => {
     setDatasOpmFilhas([]);
   };
-   useEffect(() => {
-     handleLoadGrandeComandos();
-     handleDeleteAllOpmCancel();
-   }, []);
+  useEffect(() => {
+    handleLoadGrandeComandos();
+    handleDeleteAllOpmCancel();
+  }, []);
   const handleLoadGrandeComandos = useCallback(async () => {
     try {
       const response = await api.get<opmSaPM[]>('/unidades');
@@ -61,7 +61,6 @@ export const FormSolicitacaoPostos: React.FC = () => {
       console.error('Erro ao carregar as unidades principais:', error);
     }
   }, []);
-
 
   const handleLoadOpmFilhas = async (param: number) => {
     try {
@@ -329,6 +328,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
           opm={datasOpmFilhas}
           setDatasOpmFilhas={setDatasOpmFilhas}
           setCheckboxStates={setCheckboxStates}
+          parentIndex={0}
           isInput={false}
         />
       </Flex>

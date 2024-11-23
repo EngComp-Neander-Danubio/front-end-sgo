@@ -17,7 +17,6 @@ import { HiMinusCircle, HiPlusCircle } from 'react-icons/hi';
 import api from '../../../services/api';
 
 type opmSaPM = {
-  i: number;
   uni_codigo_pai: number;
   uni_codigo: number;
   uni_sigla: string;
@@ -30,6 +29,7 @@ interface IAccordionCheckbox {
   opm: opmSaPM[];
   children?: React.ReactNode;
   isInput?: boolean;
+  parentIndex: number;
 }
 
 export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
@@ -37,14 +37,12 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
   setCheckboxStates,
   opm = [],
   isInput = false,
+  parentIndex = 0,
 }) => {
   const methodsInput = useFormContext();
   const { control } = methodsInput;
   const [loadingResponse, setLoadingResponse] = useState<boolean>(false);
 
-  /*   useEffect(() => {
-    console.log('efetivo', methodsInput.watch('efetivo'));
-  }, [methodsInput.watch]); */
   useEffect(() => {
     const loadDefaultValues = async () => {
       const values = await Promise.all(
@@ -106,6 +104,18 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
         'uni_codigo',
         methodsInput.watch('uni_codigo').filter((f: number) => param !== f),
       );
+      /* const indexInput = methodsInput
+      .watch('uni_codigo')
+      .findIndex((f: number) => param === f);
+
+      if (indexInput !== -1) {
+        const efetivo = methodsInput.watch('efetivo');
+        const updatedEfetivo = [
+          ...efetivo.slice(0, indexInput),
+          ...efetivo.slice(indexInput + 1),
+        ];
+        methodsInput.setValue('efetivo', updatedEfetivo);
+      } */
       const rec_add_opm = (
         param: number,
         opm: opmSaPM | opmSaPM[] | undefined,
@@ -134,10 +144,13 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
 
   return (
     <FormControl>
-      {opm?.map((item, index) => {
-        //console.log(index);
+      {opm?.map((item, localIndex) => {
+       /*  const dataOpm = methodsInput
+          .watch('uni_codigo')
+          .filter((item: number) => item?.uni_codigo === item); */
+        const currentIndex = parentIndex + localIndex;
         return (
-          <Accordion defaultIndex={[1]} allowMultiple key={item?.uni_codigo}>
+          <Accordion defaultIndex={[1]} allowMultiple key={currentIndex}>
             <AccordionItem border="none" w={'100%'}>
               {({ isExpanded }) => (
                 <>
@@ -197,7 +210,8 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                             </>
                           )}
                         />
-                        {console.log(index, item.uni_sigla)}
+
+                        {console.log(item.uni_sigla, currentIndex)}
                         {isInput &&
                           !(item?.opm_filha.length > 0) &&
                           methodsInput
@@ -205,16 +219,16 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                             ?.includes(item?.uni_codigo) && (
                             <Flex justify="center">
                               <Controller
-                                name={`efetivo.[${item?.uni_codigo}]`}
+                                name={`efetivo[${currentIndex}]`}
                                 control={control}
                                 render={({ field }) => (
                                   <Input
-                                    //key={item?.uni_codigo}
+                                    key={`${currentIndex}`}
                                     mr={2}
                                     w="6vw"
                                     placeholder={`${item?.uni_sigla}`}
                                     h="30px"
-                                    value={field.value || ''} // Evita valores indefinidos
+                                    value={field.value || `${item?.uni_sigla}`}
                                     onChange={field.onChange}
                                     onBlur={field.onBlur}
                                     ref={field.ref}
@@ -252,6 +266,7 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                         setDatasOpmFilhas={setDatasOpmFilhas}
                         opm={item?.opm_filha}
                         isInput={isInput}
+                        parentIndex={currentIndex + 1}
                       />
                     )}
                   </AccordionPanel>
