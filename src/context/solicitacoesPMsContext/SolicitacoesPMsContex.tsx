@@ -1,7 +1,15 @@
-import React, { createContext, useState, ReactNode, useMemo } from 'react';
+import React, {
+  createContext,
+  useState,
+  ReactNode,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react';
 
 import { useToast } from '@chakra-ui/react';
 import soli_data from '../../assets/solicitacoes_pms.json';
+import api from '../../services/api';
 
 export type SolicitacoesPM = {
   columns?: string[];
@@ -23,6 +31,7 @@ export interface IContextSolicitacoesPMData {
   solicitacoesPMs: SolicitacoesPMData[];
   loadMoreSolicitacoesPMs: () => void;
   loadLessSolicitacoesPMs: () => void;
+  loadSolicitacaoPMByApi: (param: number) => Promise<void>;
   currentDataIndex: number;
   dataPerPage: number;
   lastDataIndex: number;
@@ -38,12 +47,28 @@ export const SolicitacoesPMsProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const toast = useToast();
+  const [solicitacoesPM, setSolicitacoesPM] = useState<SolicitacoesPMData[]>(
+    [],
+  );
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
   const [dataPerPage] = useState(15);
   const lastDataIndex = (currentDataIndex + 1) * dataPerPage;
   const firstDataIndex = lastDataIndex - dataPerPage;
-  const totalData = soli_data.length;
-  const currentData = soli_data.slice(firstDataIndex, lastDataIndex);
+  const totalData = solicitacoesPM.length;
+  const currentData = solicitacoesPM.slice(firstDataIndex, lastDataIndex);
+  useEffect(() => {
+    loadSolicitacaoPMByApi(1904);
+  }, []);
+  const loadSolicitacaoPMByApi = useCallback(async (param: number) => {
+    try {
+      const response = await api.get<SolicitacoesPMData[]>(
+        `solicitacao-postos/${param}`,
+      );
+      setSolicitacoesPM(response.data);
+    } catch (error) {
+      console.error('Falha ao carregar as Operações:', error);
+    }
+  }, []);
 
   const loadMoreSolicitacoesPMs = () => {
     if (lastDataIndex < soli_data.length) {
@@ -85,6 +110,7 @@ export const SolicitacoesPMsProvider: React.FC<{ children: ReactNode }> = ({
       dataPerPage,
       loadMoreSolicitacoesPMs,
       loadLessSolicitacoesPMs,
+      loadSolicitacaoPMByApi,
     }),
     [
       currentData,
@@ -95,6 +121,7 @@ export const SolicitacoesPMsProvider: React.FC<{ children: ReactNode }> = ({
       dataPerPage,
       loadMoreSolicitacoesPMs,
       loadLessSolicitacoesPMs,
+      loadSolicitacaoPMByApi,
     ],
   );
 

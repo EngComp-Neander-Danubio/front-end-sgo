@@ -1,7 +1,13 @@
-import React, { createContext, useState, ReactNode, useMemo } from 'react';
-
+import React, {
+  createContext,
+  useState,
+  ReactNode,
+  useMemo,
+  useCallback,
+  useEffect,
+} from 'react';
 import { useToast } from '@chakra-ui/react';
-import soli_data from '../../assets/solitacoes_postos.json';
+import api from '../../services/api';
 
 export type SolicitacoesPosto = {
   columns?: string[];
@@ -9,18 +15,20 @@ export type SolicitacoesPosto = {
 };
 
 export interface SolicitacoesPostoData {
-  operacao: string;
+  id: number;
+  operacao_id: string;
   solicitacao: string;
-  prazoFinal: Date;
-  prazoInicio: Date;
-  bairro: string;
-  qtd_postos: string | number;
   status: string;
+  prazo_final: Date;
+  prazo_inicio: Date;
+  //bairro: string;
+  //qtd_postos: string | number;
   [key: string]: any;
 }
 
 export interface IContextSolicitacoesPostoData {
   solicitacoesPostos: SolicitacoesPostoData[];
+  loadSolicitacaoPostosByApi: (param: number) => Promise<void>;
   loadMoreSolicitacoesPostos: () => void;
   loadLessSolicitacoesPostos: () => void;
   currentDataIndex: number;
@@ -38,20 +46,31 @@ export const SolicitacoesPostosProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const toast = useToast();
-
-  // Estado para armazenar os dados paginados de solicitações
+  const [solicitacoesPostos, setSolicitacoesPostos] = useState<
+    SolicitacoesPostoData[]
+  >([]);
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
   const [dataPerPage] = useState(15); // Defina o número de registros por página
-
-  // Calcule os índices de início e fim da paginação
   const lastDataIndex = (currentDataIndex + 1) * dataPerPage;
   const firstDataIndex = lastDataIndex - dataPerPage;
-  const totalData = soli_data.length;
-  // Dados paginados baseados no índice atual
-  const currentData = soli_data.slice(firstDataIndex, lastDataIndex);
+  const totalData = solicitacoesPostos.length;
 
+  const currentData = solicitacoesPostos.slice(firstDataIndex, lastDataIndex);
+  useEffect(() => {
+    loadSolicitacaoPostosByApi(1904);
+  }, []);
+  const loadSolicitacaoPostosByApi = useCallback(async (param: number) => {
+    try {
+      const response = await api.get<SolicitacoesPostoData[]>(
+        `solicitacao-postos/${param}`,
+      );
+      setSolicitacoesPostos(response.data);
+    } catch (error) {
+      console.error('Falha ao carregar as Operações:', error);
+    }
+  }, []);
   const loadMoreSolicitacoesPostos = () => {
-    if (lastDataIndex < soli_data.length) {
+    if (lastDataIndex < solicitacoesPostos.length) {
       setCurrentDataIndex(prevIndex => prevIndex + 1);
     } else {
       toast({
@@ -90,6 +109,7 @@ export const SolicitacoesPostosProvider: React.FC<{ children: ReactNode }> = ({
       dataPerPage,
       loadMoreSolicitacoesPostos,
       loadLessSolicitacoesPostos,
+      loadSolicitacaoPostosByApi,
     }),
     [
       currentData,
@@ -100,6 +120,7 @@ export const SolicitacoesPostosProvider: React.FC<{ children: ReactNode }> = ({
       dataPerPage,
       loadMoreSolicitacoesPostos,
       loadLessSolicitacoesPostos,
+      loadSolicitacaoPostosByApi,
     ],
   );
 
