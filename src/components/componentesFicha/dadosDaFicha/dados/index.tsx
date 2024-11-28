@@ -1,7 +1,17 @@
 import React from 'react';
 import { Flex, FlexProps, HStack, Text, VStack } from '@chakra-ui/react';
-interface IDados extends FlexProps {}
-export const DadosFicha: React.FC<IDados> = () => {
+interface IDados extends FlexProps {
+  operacao?: string;
+  solicitacao?: string;
+  prazo_inicial?: Date;
+  prazo_final?: Date;
+}
+export const DadosFicha: React.FC<IDados> = ({
+  operacao,
+  solicitacao,
+  prazo_final,
+  prazo_inicial,
+}) => {
   return (
     <>
       <Flex
@@ -40,6 +50,15 @@ export const DadosFicha: React.FC<IDados> = () => {
             <Text fontWeight={700}>Sub Comandante:</Text>
             <Text flexWrap={'nowrap'}>Major PM Leibniz</Text>
           </Flex>
+          <Flex
+            gap={2}
+            flex={1}
+            //border={'1px solid red'}
+            w={'20vw'}
+          >
+            <Text fontWeight={700}></Text>
+            <Text flexWrap={'nowrap'}></Text>
+          </Flex>
         </Flex>
 
         {/* Segunda linha de dados */}
@@ -51,7 +70,7 @@ export const DadosFicha: React.FC<IDados> = () => {
             w={'20vw'}
           >
             <Text fontWeight={700}>Operação:</Text>
-            <Text>Evangelizar</Text>
+            <Text>{operacao ? operacao : 'Evangelizar'}</Text>
           </Flex>
           <Flex
             gap={2}
@@ -68,8 +87,17 @@ export const DadosFicha: React.FC<IDados> = () => {
             //border={'1px solid red'}
             w={'20vw'}
           >
+            <Text fontWeight={700}>Prazo Inicial:</Text>
+            <Text>{prazo_inicial as React.ReactNode}</Text>
+          </Flex>
+          <Flex
+            gap={2}
+            flex={1}
+            //border={'1px solid red'}
+            w={'20vw'}
+          >
             <Text fontWeight={700}>Prazo Final:</Text>
-            <Text>20.01.2012</Text>
+            <Text>{prazo_final as React.ReactNode}</Text>
           </Flex>
         </Flex>
       </Flex>

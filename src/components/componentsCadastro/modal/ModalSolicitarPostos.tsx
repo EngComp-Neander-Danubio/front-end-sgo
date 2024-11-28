@@ -16,6 +16,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { FormSolicitacaoPostos } from './FormSolicitacaoPostos';
 import { solicitacaoPostosSchema } from '../../../types/yupSolicitacaoPostos/yupSolicitacaoPostos';
 import api from '../../../services/api';
+import { formatDate } from '../../../utils/utils';
 
 interface IModal {
   isOpen: boolean;
@@ -54,8 +55,13 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
   const onSubmit = async (data: SolicitacaoForm) => {
     try {
       console.log(' dados', data);
-      //await api.post('/solicitacao-postos', data);
-      //console.log('chamou o post');
+      const dados = {
+        uni_codigo: data.uni_codigo,
+        operacao_id: data.operacao_id,
+        prazo_inicial: formatDate(data.dataInicio),
+        prazo_final: formatDate(data.dataFinal),
+      };
+      await api.post('/solicitacao-postos', dados);
       toast({
         title: 'Solicitações de Postos.',
         description: 'Solicitação Salva.',

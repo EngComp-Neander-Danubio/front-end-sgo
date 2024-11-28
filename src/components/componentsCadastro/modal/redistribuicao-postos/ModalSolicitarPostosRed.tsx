@@ -21,13 +21,6 @@ interface IModal {
   onOpen: () => void;
   onClose: () => void;
 }
-type opmSaPM = {
-  uni_codigo_pai: number;
-  uni_codigo: number;
-  uni_sigla: string;
-  uni_nome: string;
-  opm_filha: opmSaPM[];
-};
 
 type SolicitacaoForm = {
   dataInicio: Date;

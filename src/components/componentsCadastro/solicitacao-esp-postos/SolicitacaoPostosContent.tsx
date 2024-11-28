@@ -3,13 +3,13 @@ import { DashButtons } from '../../componentesFicha/registrosMedicos/header';
 import { TitlePerfil } from '../../componentesFicha/dadosDaFicha/titlePerfil';
 import { TitleSolicitacoes } from '../../componentesFicha/registrosMedicos/title';
 import { DadosFicha } from '../../ViewLogin';
-import { FiSave } from 'react-icons/fi';
 import { ModalFormAddPosto } from '../modal/ModalFormAddPosto';
 import { TableSolicitacoes } from '../table-solicitacoes';
 import { columnsMapPostos } from '../../../types/yupPostos/yupPostos';
 import { Pagination } from '../pagination/Pagination';
 import { useSolicitacoesOPMPostos } from '../../../context/solicitacoesOPMPostosContext/useSolicitacoesOPMPostos';
 import { IoIosSend } from 'react-icons/io';
+import { useSolicitacoesPostos } from '../../../context/solicitacoesPostosContext/useSolicitacoesPostos';
 interface ISolicitacaoPostosContent {
   isOpen: boolean;
   handleToggle: () => void;
@@ -27,7 +27,6 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
   } = useDisclosure();
 
   const {
-    postos,
     dataPerPage,
     postosLocal,
     firstDataIndex,
@@ -41,6 +40,7 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
     deletePostoByOPM,
     totalData,
   } = useSolicitacoesOPMPostos();
+  const { solicitacaoPostoIndividual } = useSolicitacoesPostos();
   const totalPages = totalData;
   const transformedPostos = postosLocal.map(posto => {
     const transformedPosto: {
@@ -75,6 +75,10 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
           gap={{ lg: 2, md: 2, sm: 4 }}
         >
           <DadosFicha
+            operacao={solicitacaoPostoIndividual?.nome_operacao}
+            solicitacao={solicitacaoPostoIndividual?.sps_operacao_id}
+            prazo_final={solicitacaoPostoIndividual?.prazo_final}
+            prazo_inicial={solicitacaoPostoIndividual?.prazo_inicial}
             marginLeft={{ lg: 6, md: 6, sm: 0 }}
             align={{ lg: 'center', md: 'center', sm: 'left' }}
           />

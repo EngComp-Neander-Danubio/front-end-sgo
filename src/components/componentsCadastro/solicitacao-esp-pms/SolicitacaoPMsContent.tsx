@@ -10,6 +10,7 @@ import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
 import { Pagination } from '../pagination/Pagination';
 import { useSolicitacoesOPMPMs } from '../../../context/solicitacoesOPMPMsContext/useSolicitacoesOPMPMs';
 import { IoIosSend } from 'react-icons/io';
+import { useSolicitacoesPMs } from '../../../context/solicitacoesPMsContext/useSolicitacoesPMs';
 interface IFlexCadastrar {
   isOpen: boolean;
   handleToggle: () => void;
@@ -32,7 +33,7 @@ export const SolicitacaoPMsContent: React.FC<IFlexCadastrar> = ({
     dataPerPage,
     deletePMByOPM,
   } = useSolicitacoesOPMPMs();
-
+  const { solicitacaoPMIndividual } = useSolicitacoesPMs();
   const {
     isOpen: isOpenAlertSolicitacao,
     onOpen: onOpenAlertSolicitacao,
@@ -76,6 +77,10 @@ export const SolicitacaoPMsContent: React.FC<IFlexCadastrar> = ({
           gap={{ lg: 2, md: 2, sm: 4 }}
         >
           <DadosFicha
+            operacao={solicitacaoPMIndividual?.nome_operacao}
+            solicitacao={solicitacaoPMIndividual?.sps_operacao_id}
+            prazo_final={solicitacaoPMIndividual?.prazo_final}
+            prazo_inicial={solicitacaoPMIndividual?.prazo_inicial}
             marginLeft={{ lg: 6, md: 6, sm: 0 }}
             align={{ lg: 'center', md: 'center', sm: 'left' }}
           />

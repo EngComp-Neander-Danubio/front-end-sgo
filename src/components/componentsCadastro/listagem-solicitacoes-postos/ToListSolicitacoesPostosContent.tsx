@@ -1,11 +1,17 @@
 import { TableSolicitacoes } from '../table-solicitacoes';
-import { Flex, useDisclosure } from '@chakra-ui/react';
+import { Flex, FlexProps, useDisclosure } from '@chakra-ui/react';
 import { Pagination } from '../pagination/Pagination';
 import { useSolicitacoesPostos } from '../../../context/solicitacoesPostosContext/useSolicitacoesPostos';
 import { ModalSolicitacarPostosRed } from '../modal/redistribuicao-postos/ModalSolicitarPostosRed';
-
+import React from 'react';
+interface IDados extends FlexProps {
+  operacao?: string;
+  solicitacao?: string;
+  prazo_inicial?: Date;
+  prazo_final?: Date;
+}
 // lista as solicitacoes da OPM no que se refere ao posto de serviço
-export const ToListSolicitacoesPostosContent = () => {
+export const ToListSolicitacoesPostosContent: React.FC<IDados> = () => {
   const {
     solicitacoesPostos,
     totalData,
@@ -18,13 +24,14 @@ export const ToListSolicitacoesPostosContent = () => {
 
   // Defina as colunas desejadas e o mapeamento para as chaves dos eventos
   const columnsMap: { [key: string]: string } = {
-    Operação: 'operacao_id',
-    'ID Solicitação': 'id',
+    //'ID Operação': 'sps_operacao_id',
+    Operação: 'nome_operacao',
+    'ID Solicitação': 'sps_id',
     'Prazo Final': 'prazo_final',
     'Prazo Inicial': 'prazo_inicial',
     //'Quantidade de postos': 'qtd_postos',
     //OPM: 'OPM',
-    Status: 'status',
+    Status: 'sps_status',
   };
 
   // Use o mapeamento para criar as colunas a serem exibidas

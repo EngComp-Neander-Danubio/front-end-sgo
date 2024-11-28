@@ -15,12 +15,14 @@ export type SolicitacoesPosto = {
 };
 
 export interface SolicitacoesPostoData {
-  id: number;
-  operacao_id: string;
+  sps_id: number;
+  sps_operacao_id: string;
   solicitacao: string;
-  status: string;
+  sps_status: string;
   prazo_final: Date;
-  prazo_inicio: Date;
+  prazo_inicial: Date;
+  unidades_id: number;
+  nome_operacao: string;
   //bairro: string;
   //qtd_postos: string | number;
   [key: string]: any;
@@ -28,7 +30,9 @@ export interface SolicitacoesPostoData {
 
 export interface IContextSolicitacoesPostoData {
   solicitacoesPostos: SolicitacoesPostoData[];
+  solicitacaoPostoIndividual: SolicitacoesPostoData | undefined;
   loadSolicitacaoPostosByApi: (param: number) => Promise<void>;
+  loadSolicitacaoPostosById: (id: number) => Promise<void>;
   loadMoreSolicitacoesPostos: () => void;
   loadLessSolicitacoesPostos: () => void;
   currentDataIndex: number;
@@ -49,6 +53,10 @@ export const SolicitacoesPostosProvider: React.FC<{ children: ReactNode }> = ({
   const [solicitacoesPostos, setSolicitacoesPostos] = useState<
     SolicitacoesPostoData[]
   >([]);
+  const [solicitacaoPostoIndividual, setSolicitacaoPostoIndividual] = useState<
+    SolicitacoesPostoData | undefined
+  >(undefined);
+
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
   const [dataPerPage] = useState(15); // Defina o número de registros por página
   const lastDataIndex = (currentDataIndex + 1) * dataPerPage;
@@ -56,9 +64,25 @@ export const SolicitacoesPostosProvider: React.FC<{ children: ReactNode }> = ({
   const totalData = solicitacoesPostos.length;
 
   const currentData = solicitacoesPostos.slice(firstDataIndex, lastDataIndex);
+
   useEffect(() => {
     loadSolicitacaoPostosByApi(1904);
-  }, []);
+  }, [solicitacoesPostos.length]);
+
+  const loadSolicitacaoPostosById = useCallback(
+    async (id: number) => {
+      const itemEncontrado = solicitacoesPostos.find(
+        item => item.sps_id === id,
+      );
+      if (itemEncontrado) {
+        setSolicitacaoPostoIndividual(itemEncontrado);
+      } else {
+        console.error('Solicitação não encontrada.');
+      }
+    },
+    [solicitacoesPostos],
+  );
+
   const loadSolicitacaoPostosByApi = useCallback(async (param: number) => {
     try {
       const response = await api.get<SolicitacoesPostoData[]>(
@@ -102,6 +126,7 @@ export const SolicitacoesPostosProvider: React.FC<{ children: ReactNode }> = ({
   const contextValue = useMemo(
     () => ({
       solicitacoesPostos: currentData,
+      solicitacaoPostoIndividual,
       totalData,
       firstDataIndex,
       lastDataIndex,
@@ -110,9 +135,11 @@ export const SolicitacoesPostosProvider: React.FC<{ children: ReactNode }> = ({
       loadMoreSolicitacoesPostos,
       loadLessSolicitacoesPostos,
       loadSolicitacaoPostosByApi,
+      loadSolicitacaoPostosById,
     }),
     [
       currentData,
+      solicitacaoPostoIndividual,
       totalData,
       firstDataIndex,
       lastDataIndex,
@@ -121,6 +148,7 @@ export const SolicitacoesPostosProvider: React.FC<{ children: ReactNode }> = ({
       loadMoreSolicitacoesPostos,
       loadLessSolicitacoesPostos,
       loadSolicitacaoPostosByApi,
+      loadSolicitacaoPostosById,
     ],
   );
 

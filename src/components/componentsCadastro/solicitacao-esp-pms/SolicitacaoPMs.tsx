@@ -3,6 +3,7 @@ import React from 'react';
 
 import { SolicitacaoPMsContent } from './SolicitacaoPMsContent';
 import { BreadCrumb } from '../flexMenor/BreadCrumb';
+import { useSolicitacoesPMs } from '../../../context/solicitacoesPMsContext/useSolicitacoesPMs';
 
 interface ISolicitacaoPMs {
   isOpen: boolean;
@@ -12,6 +13,7 @@ export const SolicitacaoPMs: React.FC<ISolicitacaoPMs> = ({
   isOpen,
   handleToggle,
 }) => {
+  const { solicitacaoPMIndividual } = useSolicitacoesPMs();
   return (
     <Flex h={'100%'} flexDirection={'column'} gap={2}>
       <BreadCrumb />
@@ -43,7 +45,7 @@ export const SolicitacaoPMs: React.FC<ISolicitacaoPMs> = ({
             }}
             textDecoration={'underline'}
           >
-            Solicitação de PMs n° XX
+            Solicitação de PMs n° {solicitacaoPMIndividual?.operacao}
           </Text>
         </Flex>
         <Flex

@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { DashHeader } from '../../../components/layout/dashHeader';
 import { MenuLateral } from '../../../components/layout/menulateral';
-import { FlexConteudo } from '../../../components/componentsCadastro/flexCadastrar';
-import { Center, Flex, Grid, GridItem, useDisclosure } from '@chakra-ui/react';
-import { FooterCetic } from '../../../components/componentsCadastro/footerImgCETIC';
+import { Flex, Grid, GridItem } from '@chakra-ui/react';
 import { SolicitacaoPostos } from '../../../components/componentsCadastro/solicitacao-esp-postos/SolicitacaoPostos';
 
 export const ViewSolicitacaoPostos: React.FC = () => {

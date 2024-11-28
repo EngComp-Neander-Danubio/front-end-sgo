@@ -8,12 +8,19 @@ import {
   Center,
   Spinner,
   Grid,
+  FlexProps,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { Controller, useFormContext } from 'react-hook-form';
 import api from '../../../../services/api';
 import { DatePickerEvent } from '../../formGrandeEvento/DatePickerEvent';
-
+import { useSolicitacoesPostos } from '../../../../context/solicitacoesPostosContext/useSolicitacoesPostos';
+/* interface IDados extends FlexProps {
+  operacao?: string;
+  solicitacao?: string;
+  prazo_inicial?: Date;
+  prazo_final?: Date;
+} */
 type SolicitacaoForm = {
   dataInicio: Date;
   dataFinal: Date;
@@ -29,6 +36,7 @@ type opmSaPM = {
 };
 export const FormSolicitacaoPostosRed: React.FC = () => {
   const methodsInput = useFormContext<SolicitacaoForm>();
+  const { solicitacaoPostoIndividual } = useSolicitacoesPostos();
   const { control } = methodsInput;
   const [startDate, setStartDate] = useState<Date>();
   const [endDate, setEndDate] = useState<Date>();
@@ -39,7 +47,6 @@ export const FormSolicitacaoPostosRed: React.FC = () => {
       setDatasOpmFilhas(response.data);
     } catch (error) {}
   };
-
   useEffect(() => {
     handleLoadOpmFilhas(1945);
   }, []);
@@ -80,7 +87,7 @@ export const FormSolicitacaoPostosRed: React.FC = () => {
               w={'10vw'}
             >
               <Text fontWeight={700}>Operação:</Text>
-              <Text>Evangelizar</Text>
+              <Text>{solicitacaoPostoIndividual?.nome_operacao}</Text>
             </Flex>
             <Flex
               gap={2}
@@ -98,7 +105,7 @@ export const FormSolicitacaoPostosRed: React.FC = () => {
               w={'10vw'}
             >
               <Text fontWeight={700}>Solicitação:</Text>
-              <Text>N° XX</Text>
+              <Text>N° {solicitacaoPostoIndividual?.sps_id}</Text>
             </Flex>
           </Flex>
         </Flex>

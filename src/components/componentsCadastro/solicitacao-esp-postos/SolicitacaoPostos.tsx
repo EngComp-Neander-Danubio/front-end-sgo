@@ -2,6 +2,7 @@ import { Flex, Text } from '@chakra-ui/react';
 import React from 'react';
 import { SolicitacaoPostosContent } from './SolicitacaoPostosContent';
 import { BreadCrumb } from '../flexMenor/BreadCrumb';
+import { useSolicitacoesPostos } from '../../../context/solicitacoesPostosContext/useSolicitacoesPostos';
 
 interface ISolicitacaoPostos {
   isOpen: boolean;
@@ -11,6 +12,7 @@ export const SolicitacaoPostos: React.FC<ISolicitacaoPostos> = ({
   isOpen,
   handleToggle,
 }) => {
+  const { solicitacaoPostoIndividual } = useSolicitacoesPostos();
   return (
     <Flex h={'96%'} flexDirection={'column'} gap={2}>
       <BreadCrumb />
@@ -49,7 +51,7 @@ export const SolicitacaoPostos: React.FC<ISolicitacaoPostos> = ({
             }}
             textDecoration={'underline'}
           >
-            Solicitação de Postos n° XX
+            Solicitação de Postos n° {solicitacaoPostoIndividual?.sps_id}
           </Text>
         </Flex>
         <Flex

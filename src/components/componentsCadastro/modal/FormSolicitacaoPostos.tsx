@@ -42,6 +42,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
   const [dataGraCmd, setDataGraCmd] = useState<opmSaPM[]>([]);
   const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
   const [checkboxStates, setCheckboxStates] = useState<number[]>([]);
+  const [listOfIndex, setListOfIndex] = useState<number[]>([]);
   const handleDeleteAllOpmCancel = async () => {
     setDatasOpmFilhas([]);
   };
@@ -69,6 +70,7 @@ export const FormSolicitacaoPostos: React.FC = () => {
       if (!gra_cmd) {
         const uni = dataGraCmd.find(o => o.uni_codigo === param);
         setDatasOpmFilhas(prev => [...prev, uni as opmSaPM]);
+        //setListOfIndex(prev => [...prev, prev + 1]);
       }
     } catch (error) {
       console.error('Erro ao carregar as unidades:', error);

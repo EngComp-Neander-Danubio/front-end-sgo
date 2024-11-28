@@ -3,13 +3,12 @@ import React from 'react';
 import { ToListSolicitacoesPostosContent } from './ToListSolicitacoesPostosContent';
 import { BreadCrumb } from '../flexMenor/BreadCrumb';
 
-interface IFlexCadastrar {
+interface IInterface {
   isOpen: boolean;
   handleToggle: () => void;
 }
-export const ToListSolicitacoesPostos: React.FC<IFlexCadastrar> = ({
+export const ToListSolicitacoesPostos: React.FC<IInterface> = ({
   isOpen,
-  handleToggle,
 }) => {
   return (
     <Flex
@@ -41,7 +40,12 @@ export const ToListSolicitacoesPostos: React.FC<IFlexCadastrar> = ({
             color={'rgba(0, 0, 0, 0.48)'}
             fontWeight={'700'}
             //fontSize={'1.2vw'}
-            fontSize={{ base: '1.2rem', lg: '1.3rem', md: '1rem', sm: '1rem' }}
+            fontSize={{
+              base: '1.2rem',
+              lg: '1.3rem',
+              md: '1rem',
+              sm: '1rem',
+            }}
             textDecoration={'underline'}
           >
             Solicitações de Postos

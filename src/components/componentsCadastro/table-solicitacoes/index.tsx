@@ -15,8 +15,8 @@ import { BotaoAlert, IconeDeletar, IconeEditar } from '../../ViewLogin';
 import { useNavigate } from 'react-router-dom';
 import { IconeVisualizar } from '../../componentesFicha/registrosMedicos/icones/iconeVisualizarSolicitacao';
 import { IconeRedistribuir } from '../../componentesFicha/registrosMedicos/icones/iconeRedistribuir';
-import { IconeGeralTabelas } from '../iconeGeralTabelas';
-import { BsPencilSquare } from 'react-icons/bs';
+import { useSolicitacoesPostos } from '../../../context/solicitacoesPostosContext/useSolicitacoesPostos';
+import { useSolicitacoesPMs } from '../../../context/solicitacoesPMsContext/useSolicitacoesPMs';
 
 interface ITable {
   isOpen?: boolean;
@@ -45,6 +45,8 @@ export const TableSolicitacoes: React.FC<ITable> = ({
   openModalSend,
 }) => {
   const navigate = useNavigate();
+  const { loadSolicitacaoPostosById } = useSolicitacoesPostos();
+  const { loadSolicitacaoPMById } = useSolicitacoesPMs();
   return (
     <>
       <Flex
@@ -112,6 +114,7 @@ export const TableSolicitacoes: React.FC<ITable> = ({
                       ]}
                     />
                   ))}
+
                   <TdTable
                     customIcons={
                       isActions &&
@@ -120,14 +123,26 @@ export const TableSolicitacoes: React.FC<ITable> = ({
                             <IconeVisualizar
                               key="viewPostos"
                               label_tooltip={label_tooltip}
-                              onOpen={() =>
-                                navigate('/listar-solicitacao-posto')
-                              }
+                              onOpen={async () => {
+                                const idSolicitacao = Number(
+                                  register['ID Solicitação'],
+                                );
+                                await loadSolicitacaoPostosById(idSolicitacao);
+                                navigate(
+                                  `/solicitacao-posto-id/${idSolicitacao}`,
+                                );
+                              }}
                             />,
                             <IconeRedistribuir
                               key="redistribuir"
                               label_tooltip={label_tooltip}
-                              onOpen={openModalSend}
+                              onOpen={async () => {
+                                const idSolicitacao = Number(
+                                  register['ID Solicitação'],
+                                );
+                                await loadSolicitacaoPostosById(idSolicitacao);
+                                openModalSend();
+                              }}
                             />,
                           ]
                         : !isView
@@ -135,12 +150,26 @@ export const TableSolicitacoes: React.FC<ITable> = ({
                             <IconeVisualizar
                               key="viewPMs"
                               label_tooltip={label_tooltip}
-                              onOpen={() => navigate('/listar-solicitacao-pms')}
+                              onOpen={async () => {
+                                const idSolicitacao = Number(
+                                  register['ID Solicitação'],
+                                );
+                                await loadSolicitacaoPMById(idSolicitacao);
+                                navigate(
+                                  `/solicitacao-pms-id/${idSolicitacao}`,
+                                );
+                              }}
                             />,
                             <IconeRedistribuir
                               key="redistribuir"
                               label_tooltip={label_tooltip}
-                              onOpen={openModalSend}
+                              onOpen={async () => {
+                                const idSolicitacao = Number(
+                                  register['ID Solicitação'],
+                                );
+                                await loadSolicitacaoPMById(idSolicitacao);
+                                openModalSend;
+                              }}
                             />,
                           ]
                         : isView &&

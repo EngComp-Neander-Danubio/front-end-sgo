@@ -29,8 +29,10 @@ export interface SolicitacoesPMData {
 
 export interface IContextSolicitacoesPMData {
   solicitacoesPMs: SolicitacoesPMData[];
+  solicitacaoPMIndividual: SolicitacoesPMData | undefined;
   loadMoreSolicitacoesPMs: () => void;
   loadLessSolicitacoesPMs: () => void;
+  loadSolicitacaoPMById: (id: number) => Promise<void>;
   loadSolicitacaoPMByApi: (param: number) => Promise<void>;
   currentDataIndex: number;
   dataPerPage: number;
@@ -50,6 +52,9 @@ export const SolicitacoesPMsProvider: React.FC<{ children: ReactNode }> = ({
   const [solicitacoesPM, setSolicitacoesPM] = useState<SolicitacoesPMData[]>(
     [],
   );
+  const [solicitacaoPMIndividual, setSolicitacaoPMIndividual] = useState<
+    SolicitacoesPMData | undefined
+  >(undefined);
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
   const [dataPerPage] = useState(15);
   const lastDataIndex = (currentDataIndex + 1) * dataPerPage;
@@ -59,6 +64,17 @@ export const SolicitacoesPMsProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     loadSolicitacaoPMByApi(1904);
   }, []);
+  const loadSolicitacaoPMById = useCallback(
+    async (id: number) => {
+      const itemEncontrado = solicitacoesPM.find(item => item.sps_id === id);
+      if (itemEncontrado) {
+        setSolicitacaoPMIndividual(itemEncontrado);
+      } else {
+        console.error('Solicitação não encontrada.');
+      }
+    },
+    [solicitacoesPM],
+  );
   const loadSolicitacaoPMByApi = useCallback(async (param: number) => {
     try {
       const response = await api.get<SolicitacoesPMData[]>(
@@ -103,6 +119,7 @@ export const SolicitacoesPMsProvider: React.FC<{ children: ReactNode }> = ({
   const contextValue = useMemo(
     () => ({
       solicitacoesPMs: currentData,
+      solicitacaoPMIndividual,
       totalData,
       firstDataIndex,
       lastDataIndex,
@@ -111,9 +128,11 @@ export const SolicitacoesPMsProvider: React.FC<{ children: ReactNode }> = ({
       loadMoreSolicitacoesPMs,
       loadLessSolicitacoesPMs,
       loadSolicitacaoPMByApi,
+      loadSolicitacaoPMById,
     }),
     [
       currentData,
+      solicitacaoPMIndividual,
       totalData,
       firstDataIndex,
       lastDataIndex,
@@ -122,6 +141,7 @@ export const SolicitacoesPMsProvider: React.FC<{ children: ReactNode }> = ({
       loadMoreSolicitacoesPMs,
       loadLessSolicitacoesPMs,
       loadSolicitacaoPMByApi,
+      loadSolicitacaoPMById,
     ],
   );
 

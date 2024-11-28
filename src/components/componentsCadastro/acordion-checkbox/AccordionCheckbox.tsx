@@ -145,7 +145,7 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
   return (
     <FormControl>
       {opm?.map((item, localIndex) => {
-       /*  const dataOpm = methodsInput
+        /*  const dataOpm = methodsInput
           .watch('uni_codigo')
           .filter((item: number) => item?.uni_codigo === item); */
         const currentIndex = parentIndex + localIndex;
@@ -228,7 +228,7 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                                     w="6vw"
                                     placeholder={`${item?.uni_sigla}`}
                                     h="30px"
-                                    value={field.value || `${item?.uni_sigla}`}
+                                    value={field.value}
                                     onChange={field.onChange}
                                     onBlur={field.onBlur}
                                     ref={field.ref}

@@ -11,6 +11,7 @@ import { SolicitacaoPMs } from '../pages/views/page-solicitacoes-pms';
 import { SolicitacaoPostos } from '../pages/views/page-solicitacoes-postos';
 import { ViewSolicitacaoPMs } from '../pages/views/page-viewSolicitacao-pms';
 import { ViewSolicitacaoPostos } from '../pages/views/page-viewSolicitacao-postos';
+import { ProtectedRoute } from '../protected-routes/protectedRoutes';
 
 export const Rotas = () => {
   // const { onOpen, onClose } = useDisclosure();
@@ -18,12 +19,13 @@ export const Rotas = () => {
     <Router>
       <Routes>
         <Route path="/" element={<HomePrincipal />} />
+
         <Route
-          path="/listar-solicitacao-posto"
+          path="/solicitacao-posto-id/*"
           element={<ViewSolicitacaoPostos />}
         />
         <Route
-          path="/listar-solicitacao-pms"
+          path="/solicitacao-pms-id/*"
           element={<ViewSolicitacaoPMs />}
         />
         <Route path="/login" element={<Login />} />
@@ -39,6 +41,9 @@ export const Rotas = () => {
           element={<SolicitacaoPostos />}
         />
         <Route path="/listar-solicitacoes-pms" element={<SolicitacaoPMs />} />
+        {/* <ProtectedRoute allowedRoles={['admin']}>
+          <></>
+        </ProtectedRoute> */}
       </Routes>
     </Router>
   );

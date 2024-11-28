@@ -30,10 +30,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <ChakraProvider theme={theme}>
       <AuthProvider>
         <EventsProvider>
-          <SolicitacoesPostosProvider>
-            <SolicitacoesPMsProvider>
-              <SolicitacoesOPMPostosProvider>
-                <SolicitacoesOPMPMsProvider>
+          <SolicitacoesOPMPostosProvider>
+            <SolicitacoesOPMPMsProvider>
+              <SolicitacoesPostosProvider>
+                <SolicitacoesPMsProvider>
                   <TotalEfetivoOPMsProvider>
                     <MilitaresProvider>
                       <PostosProvider>
@@ -44,10 +44,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                       </PostosProvider>
                     </MilitaresProvider>
                   </TotalEfetivoOPMsProvider>
-                </SolicitacoesOPMPMsProvider>
-              </SolicitacoesOPMPostosProvider>
-            </SolicitacoesPMsProvider>
-          </SolicitacoesPostosProvider>
+                </SolicitacoesPMsProvider>
+              </SolicitacoesPostosProvider>
+            </SolicitacoesOPMPMsProvider>
+          </SolicitacoesOPMPostosProvider>
         </EventsProvider>
       </AuthProvider>
     </ChakraProvider>
