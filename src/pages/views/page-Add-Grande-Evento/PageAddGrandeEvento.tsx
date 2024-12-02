@@ -4,14 +4,10 @@ import { MenuLateral } from '../../../components/layout/menulateral';
 import { Flex, Grid, GridItem } from '@chakra-ui/react';
 import { FooterCetic } from '../../../components/componentsCadastro/footerImgCETIC';
 import { FormGrandeEventoVertical } from '../../../components/componentsCadastro/formGrandeEventoVertical/FormGrandeEventoVertical';
+import { useIsOpen } from '../../../context/isOpenContext/useIsOpen';
 
 export const PageAddGrandeEvento: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleToggle = () => {
-    setIsOpen(prevIsOpen => !prevIsOpen);
-    console.log('isOpen', !isOpen); // Observe que isso sempre exibirá o valor antigo de `isOpen`
-  };
+  const { handleOnOpen, isOpen } = useIsOpen();
 
   return (
     <>
@@ -35,10 +31,10 @@ export const PageAddGrandeEvento: React.FC = () => {
           h={'content'}
         >
           <GridItem area={'header'} h={'fit-content'}>
-            <DashHeader isOpen={isOpen} handleToggle={handleToggle} />
+            <DashHeader isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
           <GridItem area={'nav'}>
-            <MenuLateral isOpen={isOpen} handleToggle={handleToggle} />
+            <MenuLateral isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
           <GridItem
             area={'main'}

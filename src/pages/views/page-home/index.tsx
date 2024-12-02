@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
 import { DashHeader } from '../../../components/layout/dashHeader';
 import { MenuLateral } from '../../../components/layout/menulateral';
-import { FlexConteudo } from '../../../components/componentsCadastro/flexCadastrar';
-import { Center, Flex, Grid, GridItem, useDisclosure } from '@chakra-ui/react';
-import { FooterCetic } from '../../../components/componentsCadastro/footerImgCETIC';
+import { Flex, Grid, GridItem } from '@chakra-ui/react';
+import { useIsOpen } from '../../../context/isOpenContext/useIsOpen';
 
 export const HomePrincipal: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
-  };
-
+  const { handleOnOpen, isOpen } = useIsOpen();
   return (
     <>
       <Flex
@@ -35,10 +29,10 @@ export const HomePrincipal: React.FC = () => {
           //maxH={'100vh'}
         >
           <GridItem area={'header'}>
-            <DashHeader isOpen={isOpen} handleToggle={handleToggle} />
+            <DashHeader isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
           <GridItem area={'nav'}>
-            <MenuLateral isOpen={isOpen} handleToggle={handleToggle} />
+            <MenuLateral isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
           <GridItem area={'main'}>Home</GridItem>
         </Grid>

@@ -2,24 +2,16 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthProvider/useAuth';
 
-interface ProtectedRouteProps {
+interface IProps {
   children: React.ReactNode;
-  allowedRoles: string[];
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
-  children,
-  allowedRoles,
-}) => {
-  const { user, role } = useAuth();
+export default function PrivateRoute({ children }: IProps) {
+  const { token } = useAuth();
 
-  if (!user) {
-    return <Navigate to="/login" />;
-  }
-
-  if (!allowedRoles.includes(role)) {
-    return <Navigate to="/access-denied" />;
+  if (!token) {
+    return <Navigate to="/login-sgo" />;
   }
 
   return <>{children}</>;
-};
+}

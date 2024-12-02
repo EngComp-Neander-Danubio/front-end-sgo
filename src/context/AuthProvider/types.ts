@@ -5,9 +5,9 @@ export interface IUser {
   token?: string
   user?: string
   matricula?: string
+  senha?: string,
   nome?: string,
   id?: string
-  role: string;
 }
 
 export interface IContext extends IUser {

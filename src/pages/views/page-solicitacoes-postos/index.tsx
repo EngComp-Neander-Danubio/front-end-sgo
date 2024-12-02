@@ -4,13 +4,10 @@ import { MenuLateral } from '../../../components/layout/menulateral';
 import { Center, Flex, Grid, GridItem } from '@chakra-ui/react';
 import { FooterCetic } from '../../../components/componentsCadastro/footerImgCETIC';
 import { ToListSolicitacoesPostos } from '../../../components/componentsCadastro/listagem-solicitacoes-postos/ToListSolicitacoesPostos';
+import { useIsOpen } from '../../../context/isOpenContext/useIsOpen';
 
 export const SolicitacaoPostos: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
-  };
+  const { handleOnOpen, isOpen } = useIsOpen();
 
   return (
     <>
@@ -35,15 +32,15 @@ export const SolicitacaoPostos: React.FC = () => {
           //maxH={'100vh'}
         >
           <GridItem area={'header'} h={'fit-content'}>
-            <DashHeader isOpen={isOpen} handleToggle={handleToggle} />
+            <DashHeader isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
           <GridItem area={'nav'}>
-            <MenuLateral isOpen={isOpen} handleToggle={handleToggle} />
+            <MenuLateral isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
           <GridItem area={'main'}>
             <ToListSolicitacoesPostos
               isOpen={isOpen}
-              handleToggle={handleToggle}
+              handleToggle={handleOnOpen}
             />
           </GridItem>
         </Grid>

@@ -18,13 +18,11 @@ export const AuthProvider = ({ children }: IAuthProvider) => {
 
   async function authenticate(matricula: string, senha: string) {
     const response = await LoginRequest(matricula, senha);
-    const decodedToken: IDecodedToken = jwtDecode(response.token);
     const payload = {
       //userId: response.user.id_usuario,
       matricula: response.user.matricula,
       senha: response.user.senha,
       token: response.token,
-      role: response.user.role,
     };
     setUser(payload);
     setUserLocalStorage(payload);

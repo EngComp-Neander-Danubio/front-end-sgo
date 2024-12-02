@@ -17,6 +17,7 @@ interface IMenuLateral {
 
 export const MenuLateral: React.FC<IMenuLateral> = props => {
   const navigate = useNavigate();
+  const perfil = 'cgo';
   return (
     <>
       <Flex
@@ -204,22 +205,40 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
               <Icon as={IconeSolicitacoes} boxSize={5} />,
               <Icon as={IconeRelatorio} boxSize={5} />,
             ]}
-            nameLabels={['Cadastro', 'Consulta', 'Solicitacões', 'Escalas']}
-            handleClick={[
-              () => navigate('/criar-operacao'),
-              () => navigate('/listar-operacoes'),
-              [
-                () => navigate('/listar-solicitacoes-postos'),
-                () => navigate('/listar-solicitacoes-pms'),
-              ],
-              () => navigate('/escalas'),
-            ]}
-            nameLabelSecundarys={[
-              ['Cadastrar Operação'],
-              ['Lista de Operações'],
-              ['Postos', 'PMs'],
-              ['Escalas'],
-            ]}
+            nameLabels={
+              perfil.includes('cgo')
+                ? ['Cadastro', 'Consulta', 'Solicitacões', 'Escalas']
+                : ['Solicitacões', 'Escalas']
+            }
+            handleClick={
+              perfil.includes('cgo')
+                ? [
+                    () => navigate('/criar-operacao'),
+                    () => navigate('/listar-operacoes'),
+                    [
+                      () => navigate('/listar-solicitacoes-postos'),
+                      () => navigate('/listar-solicitacoes-pms'),
+                    ],
+                    () => navigate('/escalas'),
+                  ]
+                : [
+                    [
+                      () => navigate('/listar-solicitacoes-postos'),
+                      () => navigate('/listar-solicitacoes-pms'),
+                    ],
+                    () => navigate('/escalas'),
+                  ]
+            }
+            nameLabelSecundarys={
+              perfil.includes('cgo')
+                ? [
+                    ['Cadastrar Operação'],
+                    ['Lista de Operações'],
+                    ['Postos', 'PMs'],
+                    ['Escalas'],
+                  ]
+                : [['Postos', 'PMs'], ['Escalas']]
+            }
             displayCustom={{
               lg: props.isOpen ? 'block' : 'none',
               md: props.isOpen ? 'block' : 'none',

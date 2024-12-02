@@ -3,13 +3,10 @@ import { DashHeader } from '../../../components/layout/dashHeader';
 import { MenuLateral } from '../../../components/layout/menulateral';
 import { Flex, Grid, GridItem } from '@chakra-ui/react';
 import { ToListSolicitacoesPMs } from '../../../components/componentsCadastro/listagem-solicitacoes-pms/ToListSolicitacoesPMs';
+import { useIsOpen } from '../../../context/isOpenContext/useIsOpen';
 
 export const SolicitacaoPMs: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
-  };
+  const { handleOnOpen, isOpen } = useIsOpen();
 
   return (
     <>
@@ -34,15 +31,15 @@ export const SolicitacaoPMs: React.FC = () => {
           gridTemplateRows={'80px 1fr'}
         >
           <GridItem area={'header'} h={'fit-content'}>
-            <DashHeader isOpen={isOpen} handleToggle={handleToggle} />
+            <DashHeader isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
           <GridItem area={'nav'}>
-            <MenuLateral isOpen={isOpen} handleToggle={handleToggle} />
+            <MenuLateral isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
           <GridItem area={'main'}>
             <ToListSolicitacoesPMs
               isOpen={isOpen}
-              handleToggle={handleToggle}
+              handleToggle={handleOnOpen}
             />
           </GridItem>
         </Grid>

@@ -72,7 +72,7 @@ export const AccordionMenuLateral: React.FC<IAccordionMenu> = props => {
                 <AccordionPanel
                   key={subIndex}
                   width="100%"
-                  height="100%"
+                  //height="fit-content"
                   display={props.displayCustom}
                   onClick={() => {
                     if (Array.isArray(props.handleClick?.[index])) {
@@ -92,6 +92,7 @@ export const AccordionMenuLateral: React.FC<IAccordionMenu> = props => {
                   }}
                 >
                   <Center
+                    pt={2}
                     fontSize="0.9rem"
                     justifyContent={'center'}
                     //fontWeight={'600'}

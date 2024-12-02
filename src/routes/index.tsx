@@ -11,28 +11,104 @@ import { SolicitacaoPMs } from '../pages/views/page-solicitacoes-pms';
 import { SolicitacaoPostos } from '../pages/views/page-solicitacoes-postos';
 import { ViewSolicitacaoPMs } from '../pages/views/page-viewSolicitacao-pms';
 import { ViewSolicitacaoPostos } from '../pages/views/page-viewSolicitacao-postos';
-import { ProtectedRoute } from '../protected-routes/protectedRoutes';
+import PrivateRoute from '../protected-routes/protectedRoutes';
 
 export const Rotas = () => {
-  // const { onOpen, onClose } = useDisclosure();
   return (
     <Router>
       <Routes>
+        {/* Rotas públicas */}
         <Route path="/" element={<HomePrincipal />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/login-sgo" element={<LoginSGO />} />
 
+        {/* Rotas privadas */}
+        {/* <Route
+          path="/ficha"
+          element={
+            <PrivateRoute>
+              <Ficha />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/criar-operacao"
+          element={
+            <PrivateRoute>
+              <PostoServico />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/criar-operacao/*"
+          element={
+            <PrivateRoute>
+              <EditarPostoServico />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/listar-operacoes"
+          element={
+            <PrivateRoute>
+              <ListEvent />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/adicionar-operacao"
+          element={
+            <PrivateRoute>
+              <PageAddGrandeEvento />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/novoRegistro"
+          element={
+            <PrivateRoute>
+              <Ficha />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/listar-solicitacoes-postos"
+          element={
+            <PrivateRoute>
+              <SolicitacaoPostos />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/listar-solicitacoes-pms"
+          element={
+            <PrivateRoute>
+              <SolicitacaoPMs />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/solicitacao-posto-id/*"
-          element={<ViewSolicitacaoPostos />}
+          element={
+            <PrivateRoute>
+              <ViewSolicitacaoPostos />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/solicitacao-pms-id/*"
-          element={<ViewSolicitacaoPMs />}
-        />
+          element={
+            <PrivateRoute>
+              <ViewSolicitacaoPMs />
+            </PrivateRoute>
+          }
+        /> */}
+        <Route path="/" element={<HomePrincipal />} />
         <Route path="/login" element={<Login />} />
         <Route path="/login-sgo" element={<LoginSGO />} />
         <Route path="/ficha" element={<Ficha />} />
         <Route path="/criar-operacao" element={<PostoServico />} />
-        <Route path={`/criar-operacao/*`} element={<EditarPostoServico />} />
+        <Route path="/criar-operacao/*" element={<EditarPostoServico />} />
         <Route path="/listar-operacoes" element={<ListEvent />} />
         <Route path="/adicionar-operacao" element={<PageAddGrandeEvento />} />
         <Route path="/novoRegistro" element={<Ficha />} />
@@ -41,9 +117,11 @@ export const Rotas = () => {
           element={<SolicitacaoPostos />}
         />
         <Route path="/listar-solicitacoes-pms" element={<SolicitacaoPMs />} />
-        {/* <ProtectedRoute allowedRoles={['admin']}>
-          <></>
-        </ProtectedRoute> */}
+        <Route
+          path="/solicitacao-posto-id/*"
+          element={<ViewSolicitacaoPostos />}
+        />
+        <Route path="/solicitacao-pms-id/*" element={<ViewSolicitacaoPMs />} />
       </Routes>
     </Router>
   );

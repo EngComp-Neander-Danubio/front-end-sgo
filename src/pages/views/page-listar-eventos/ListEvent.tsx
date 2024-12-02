@@ -3,13 +3,10 @@ import { DashHeader } from '../../../components/layout/dashHeader';
 import { MenuLateral } from '../../../components/layout/menulateral';
 import { Flex, Grid, GridItem } from '@chakra-ui/react';
 import { ToListEvents } from '../../../components/componentsCadastro/listar-eventos/ToListEvents';
+import { useIsOpen } from '../../../context/isOpenContext/useIsOpen';
 
 export const ListEvent: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleToggle = () => {
-    setIsOpen(prevIsOpen => !prevIsOpen);
-  };
+  const { handleOnOpen, isOpen } = useIsOpen();
 
   return (
     <>
@@ -31,13 +28,13 @@ export const ListEvent: React.FC = () => {
           gridTemplateRows={'80px 1fr 1px'}
         >
           <GridItem area={'header'} h={'fit-content'}>
-            <DashHeader isOpen={isOpen} handleToggle={handleToggle} />
+            <DashHeader isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
           <GridItem area={'nav'}>
-            <MenuLateral isOpen={isOpen} handleToggle={handleToggle} />
+            <MenuLateral isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
           <GridItem area={'main'}>
-            <ToListEvents isOpen={isOpen} handleToggle={handleToggle} />
+            <ToListEvents isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
         </Grid>
       </Flex>

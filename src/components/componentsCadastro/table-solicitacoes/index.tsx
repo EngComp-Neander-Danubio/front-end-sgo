@@ -35,6 +35,7 @@ interface ITable {
 }
 
 export const TableSolicitacoes: React.FC<ITable> = ({
+  isOpen,
   isActions,
   isView,
   columns,
@@ -51,6 +52,7 @@ export const TableSolicitacoes: React.FC<ITable> = ({
     <>
       <Flex
         //overflowY={'auto'}
+        //border={'1px solid red'}
         w="100%"
       >
         <TableContainer
@@ -141,7 +143,7 @@ export const TableSolicitacoes: React.FC<ITable> = ({
                                   register['ID Solicitação'],
                                 );
                                 await loadSolicitacaoPostosById(idSolicitacao);
-                                openModalSend();
+                                if (openModalSend) openModalSend();
                               }}
                             />,
                           ]

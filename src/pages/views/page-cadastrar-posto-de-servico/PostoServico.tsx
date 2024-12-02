@@ -3,14 +3,10 @@ import { DashHeader } from '../../../components/layout/dashHeader';
 import { MenuLateral } from '../../../components/layout/menulateral';
 import { Flex, Grid, GridItem } from '@chakra-ui/react';
 import { FlexConteudo } from '../../../components/componentsCadastro/flexCadastrar';
+import { useIsOpen } from '../../../context/isOpenContext/useIsOpen';
 
 export const PostoServico: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleToggle = () => {
-    setIsOpen(prevIsOpen => !prevIsOpen);
-  };
-
+  const { handleOnOpen, isOpen } = useIsOpen();
   return (
     <>
       <Flex
@@ -34,13 +30,13 @@ export const PostoServico: React.FC = () => {
           gridTemplateRows={'80px 1fr'}
         >
           <GridItem area={'header'} h={'fit-content'}>
-            <DashHeader isOpen={isOpen} handleToggle={handleToggle} />
+            <DashHeader isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
           <GridItem area={'nav'}>
-            <MenuLateral isOpen={isOpen} handleToggle={handleToggle} />
+            <MenuLateral isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
           <GridItem area={'main'}>
-            <FlexConteudo isOpen={isOpen} handleToggle={handleToggle} />
+            <FlexConteudo isOpen={isOpen} handleToggle={handleOnOpen} />
           </GridItem>
         </Grid>
       </Flex>

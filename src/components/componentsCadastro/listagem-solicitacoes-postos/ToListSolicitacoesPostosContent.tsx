@@ -5,13 +5,16 @@ import { useSolicitacoesPostos } from '../../../context/solicitacoesPostosContex
 import { ModalSolicitacarPostosRed } from '../modal/redistribuicao-postos/ModalSolicitarPostosRed';
 import React from 'react';
 interface IDados extends FlexProps {
+  isOpen?: boolean;
   operacao?: string;
   solicitacao?: string;
   prazo_inicial?: Date;
   prazo_final?: Date;
 }
 // lista as solicitacoes da OPM no que se refere ao posto de serviço
-export const ToListSolicitacoesPostosContent: React.FC<IDados> = () => {
+export const ToListSolicitacoesPostosContent: React.FC<IDados> = ({
+  isOpen,
+}) => {
   const {
     solicitacoesPostos,
     totalData,
@@ -76,6 +79,12 @@ export const ToListSolicitacoesPostosContent: React.FC<IDados> = () => {
           loadLess={loadLessSolicitacoesPostos}
           loadMore={loadMoreSolicitacoesPostos}
         />
+        {/* <Flex
+          flexDirection={'column'}
+          //p={8}
+          transitionDuration="1.0s"
+          w={isOpen ? '86vw' : '94vw'}
+        ></Flex> */}
       </Flex>
       <ModalSolicitacarPostosRed
         isOpen={isOpenFormRedSolPosto}
