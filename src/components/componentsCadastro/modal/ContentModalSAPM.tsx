@@ -43,6 +43,7 @@ export const ContentModalSAPM: React.FC = () => {
   >();
   const [dataGraCmd, setDataGraCmd] = useState<opmSaPM[]>([]);
   const [datasOpmFilhas, setDatasOpmFilhas] = useState<opmSaPM[]>([]);
+  const [checkboxStates, setCheckboxStates] = useState<number[]>([]);
   const handleDeleteAllOpmCancel = async () => {
     setDatasOpmFilhas([]);
   };
@@ -83,7 +84,24 @@ export const ContentModalSAPM: React.FC = () => {
     }
     handleLoadOpmFilhas(dados.uni_codigo);
   };
+  const handleCheckboxChange = async (checked: boolean, data: opmSaPM) => {
+    const { uni_codigo, uni_sigla } = data;
 
+    setCheckboxStates(prevStates =>
+      checked
+        ? [...prevStates, uni_codigo]
+        : prevStates.filter(codigo => codigo !== uni_codigo),
+    );
+
+    if (checked) {
+      await handleCheckboxChangeGrandeOPM(uni_sigla);
+      setValue('uni_codigo', [...watch('uni_codigo'), uni_codigo]);
+    } else {
+      setDatasOpmFilhas(
+        datasOpmFilhas.filter(o => o.uni_codigo !== uni_codigo),
+      );
+    }
+  };
   const {
     pms,
     firstDataIndex,
@@ -119,39 +137,30 @@ export const ContentModalSAPM: React.FC = () => {
                 colorScheme="green"
                 onChange={async e => {
                   if (e.target.checked) {
-                    dataGraCmd.map(async v => {
-                      await handleLoadOpmFilhas(v.uni_codigo);
-                    });
+                    dataGraCmd.forEach(
+                      async data => await handleCheckboxChange(true, data),
+                    );
+                  } else {
+                    setDatasOpmFilhas([]);
+                    setCheckboxStates([]);
                   }
                 }}
               >
                 Todos
               </Checkbox>
-              {dataGraCmd.map((data, index) => (
-                <>
-                  <Checkbox
-                    key={index}
-                    onChange={async e => {
-                      if (e.currentTarget.checked) {
-                        await handleCheckboxChangeGrandeOPM(data.uni_sigla);
-                        setValue('uni_codigo', [
-                          ...watch('uni_codigo'),
-                          data.uni_codigo,
-                        ]);
-                      } else {
-                        const new_datas = datasOpmFilhas.filter(
-                          o => o.uni_codigo !== data.uni_codigo,
-                        );
-                        setDatasOpmFilhas(new_datas);
-                      }
-                    }}
-                    colorScheme="green"
-                  >
-                    {data.uni_sigla.includes('CMTE-GERAL')
-                      ? 'ADM'
-                      : data.uni_sigla}
-                  </Checkbox>
-                </>
+              {dataGraCmd.map(data => (
+                <Checkbox
+                  key={data.uni_codigo}
+                  isChecked={checkboxStates.includes(data.uni_codigo)}
+                  onChange={async e =>
+                    await handleCheckboxChange(e.target.checked, data)
+                  }
+                  colorScheme="green"
+                >
+                  {data.uni_sigla.includes('CMTE-GERAL')
+                    ? 'ADM'
+                    : data.uni_sigla}
+                </Checkbox>
               ))}
             </Flex>
             <Divider />
@@ -202,6 +211,7 @@ export const ContentModalSAPM: React.FC = () => {
                   <Button
                     onClick={() => {
                       handleDeleteAllOpmCancel();
+                      setCheckboxStates(Array(dataGraCmd.length).fill(false));
                     }}
                     colorScheme="blue"
                     variant="outline"
@@ -248,6 +258,9 @@ export const ContentModalSAPM: React.FC = () => {
               <AccordionCheckbox
                 opm={datasOpmFilhas}
                 setDatasOpmFilhas={setDatasOpmFilhas}
+                setCheckboxStates={setCheckboxStates}
+                parentIndex={0}
+                isInput={false}
               />
             </Flex>
             <Flex
