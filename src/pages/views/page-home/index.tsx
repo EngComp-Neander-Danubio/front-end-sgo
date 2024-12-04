@@ -5,7 +5,7 @@ import { Flex, Grid, GridItem } from '@chakra-ui/react';
 import { useIsOpen } from '../../../context/isOpenContext/useIsOpen';
 
 export const HomePrincipal: React.FC = () => {
-  const { handleOnOpen, isOpen } = useIsOpen();
+  
   return (
     <>
       <Flex
@@ -29,10 +29,10 @@ export const HomePrincipal: React.FC = () => {
           //maxH={'100vh'}
         >
           <GridItem area={'header'}>
-            <DashHeader isOpen={isOpen} handleToggle={handleOnOpen} />
+            <DashHeader />
           </GridItem>
           <GridItem area={'nav'}>
-            <MenuLateral isOpen={isOpen} handleToggle={handleOnOpen} />
+            <MenuLateral />
           </GridItem>
           <GridItem area={'main'}>Home</GridItem>
         </Grid>

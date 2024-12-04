@@ -47,7 +47,7 @@ export const ToListEvents: React.FC<IToListEventProps> = ({
               md: '20px',
               sm: '20px',
             }}
-            textDecoration={'underline'}
+            //textDecoration={'underline'}
           >
             Lista de Operações
           </Text>

@@ -78,7 +78,7 @@ export const SolicitacoesPMsProvider: React.FC<{ children: ReactNode }> = ({
   const loadSolicitacaoPMByApi = useCallback(async (param: number) => {
     try {
       const response = await api.get<SolicitacoesPMData[]>(
-        `solicitacao-postos/${param}`,
+        `solicitacao-pms/${param}`,
       );
       setSolicitacoesPM(response.data);
     } catch (error) {

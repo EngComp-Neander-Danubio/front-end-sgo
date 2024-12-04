@@ -9,7 +9,7 @@ export const TitlePerfil: React.FC = () => {
         fontWeight={'700'}
         //fontSize={'1.2vw'}
         fontSize={{ base: '1.2rem', lg: '1.2rem', md: '1.2rem', sm: '1.2rem' }}
-        textDecoration={'underline'}
+        //textDecoration={'underline'}
       >
         Dados da OPM
       </Text>

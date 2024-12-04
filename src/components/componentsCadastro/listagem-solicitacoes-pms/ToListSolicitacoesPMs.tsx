@@ -41,7 +41,7 @@ export const ToListSolicitacoesPMs: React.FC<IInterface> = ({
               md: '1rem',
               sm: '1rem',
             }}
-            textDecoration={'underline'}
+            //textDecoration={'underline'}
           >
             Solicitações de PMs
           </Text>

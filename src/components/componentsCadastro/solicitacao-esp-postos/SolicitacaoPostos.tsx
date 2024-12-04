@@ -49,7 +49,7 @@ export const SolicitacaoPostos: React.FC<ISolicitacaoPostos> = ({
               md: '20px',
               sm: '20px',
             }}
-            textDecoration={'underline'}
+            //textDecoration={'underline'}
           >
             Solicitação de Postos n° {solicitacaoPostoIndividual?.sps_id}
           </Text>

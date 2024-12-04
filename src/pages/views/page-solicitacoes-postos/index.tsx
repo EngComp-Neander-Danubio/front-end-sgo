@@ -32,10 +32,10 @@ export const SolicitacaoPostos: React.FC = () => {
           //maxH={'100vh'}
         >
           <GridItem area={'header'} h={'fit-content'}>
-            <DashHeader isOpen={isOpen} handleToggle={handleOnOpen} />
+            <DashHeader  />
           </GridItem>
           <GridItem area={'nav'}>
-            <MenuLateral isOpen={isOpen} handleToggle={handleOnOpen} />
+            <MenuLateral />
           </GridItem>
           <GridItem area={'main'}>
             <ToListSolicitacoesPostos

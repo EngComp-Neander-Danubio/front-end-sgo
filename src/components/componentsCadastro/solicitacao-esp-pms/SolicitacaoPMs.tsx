@@ -43,9 +43,9 @@ export const SolicitacaoPMs: React.FC<ISolicitacaoPMs> = ({
               md: '20px',
               sm: '20px',
             }}
-            textDecoration={'underline'}
+            //textDecoration={'underline'}
           >
-            Solicitação de PMs n° {solicitacaoPMIndividual?.operacao}
+            Solicitação de PMs n° {solicitacaoPMIndividual?.sps_id}
           </Text>
         </Flex>
         <Flex

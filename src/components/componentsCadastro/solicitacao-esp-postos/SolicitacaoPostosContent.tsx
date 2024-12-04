@@ -51,7 +51,7 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
     });
     return transformedPosto;
   });
-  console.log(transformedPostos);
+  //console.log(transformedPostos);
   return (
     <>
       <Flex h={'100%'} flexDirection={'column'}>

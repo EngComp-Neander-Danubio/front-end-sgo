@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { DashHeader } from '../../../components/layout/dashHeader';
 import { MenuLateral } from '../../../components/layout/menulateral';
 import { Flex, Grid, GridItem } from '@chakra-ui/react';
@@ -31,10 +31,10 @@ export const ViewSolicitacaoPostos: React.FC = () => {
           //maxH={'100vh'}
         >
           <GridItem area={'header'} h={'fit-content'}>
-            <DashHeader isOpen={isOpen} handleToggle={handleOnOpen} />
+            <DashHeader />
           </GridItem>
           <GridItem area={'nav'}>
-            <MenuLateral isOpen={isOpen} handleToggle={handleOnOpen} />
+            <MenuLateral />
           </GridItem>
           <GridItem area={'main'}>
             <SolicitacaoPostos isOpen={isOpen} handleToggle={handleOnOpen} />

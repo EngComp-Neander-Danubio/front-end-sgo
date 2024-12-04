@@ -3,20 +3,12 @@ import { IconeConfig } from '../../componentesGerais/iconeDashHeader/iconeEnginn
 import '../../border.modules.css';
 import { IconeSino } from '../../componentesGerais/iconeDashHeader/iconeSino';
 import React from 'react';
-import { useAuth } from '../../../context/AuthProvider/useAuth';
 import { PopoverLogout } from '../../componentsCadastro/modal/PopoverLogout';
 import { ListDashHeader } from '../../componentesGerais/listDashHeader/ListDashHeader';
+import { useIsOpen } from '../../../context/isOpenContext/useIsOpen';
 
-interface IDashHeader {
-  isOpen: boolean;
-  handleToggle: () => void;
-}
-
-export const DashHeader: React.FC<IDashHeader> = props => {
-  const { isTokenValid } = useAuth();
-  const u = isTokenValid();
-  console.log(u);
-
+export const DashHeader: React.FC = () => {
+  const { handleOnOpen, isOpen } = useIsOpen();
   return (
     <>
       <Flex
@@ -24,11 +16,11 @@ export const DashHeader: React.FC<IDashHeader> = props => {
         textAlign="center"
         justify="center"
         flexDirection="row"
-        //w={props.isOpen ? "1200px" : "1400px"}
+        //w={isOpen ? "1200px" : "1400px"}
         w={{
-          lg: props.isOpen ? '86vw' : '94vw',
-          md: props.isOpen ? '86vw' : '94vw',
-          sm: props.isOpen ? '86vw' : '94vw',
+          lg: isOpen ? '86vw' : '94vw',
+          md: isOpen ? '86vw' : '94vw',
+          sm: isOpen ? '86vw' : '94vw',
         }}
         transitionDuration="1.0s"
         height={'80px'}
@@ -39,7 +31,7 @@ export const DashHeader: React.FC<IDashHeader> = props => {
       >
         <HStack justifyContent="space-between" w="100%">
           <ListDashHeader
-            handleToggle={props.handleToggle}
+            handleToggle={handleOnOpen}
             pr={4}
             //border={'1px solid green'}
             //className="gradient-border-vertical"

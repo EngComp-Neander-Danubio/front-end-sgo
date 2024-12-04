@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { DashHeader } from '../../../components/layout/dashHeader';
 import { MenuLateral } from '../../../components/layout/menulateral';
 import { Flex, Grid, GridItem } from '@chakra-ui/react';
@@ -28,10 +28,10 @@ export const ListEvent: React.FC = () => {
           gridTemplateRows={'80px 1fr 1px'}
         >
           <GridItem area={'header'} h={'fit-content'}>
-            <DashHeader isOpen={isOpen} handleToggle={handleOnOpen} />
+            <DashHeader />
           </GridItem>
           <GridItem area={'nav'}>
-            <MenuLateral isOpen={isOpen} handleToggle={handleOnOpen} />
+            <MenuLateral />
           </GridItem>
           <GridItem area={'main'}>
             <ToListEvents isOpen={isOpen} handleToggle={handleOnOpen} />

@@ -19,14 +19,13 @@ export const ToListSolicitacoesPMsContent = () => {
   const totalPages = totalData;
   // Defina as colunas desejadas e o mapeamento para as chaves dos eventos
   const columnsMap: { [key: string]: string } = {
-    Operação: 'operacao',
-    Solicitação: 'solicitacao',
-    'Prazo Final': 'prazoFinal',
-    //'Prazo Inicial': 'prazoInicial',
-    'Quantidade Total Efetivo': 'qtd_efetivo',
-    'Quantidade Parcial Efetivo': 'qtd_parcial_efetivo',
-    //OPM: 'OPM',
-    Status: 'status',
+    Operação: 'nome_operacao',
+    'ID Solicitação': 'sps_id',
+    'Prazo Inicial': 'prazo_inicial',
+    'Prazo Final': 'prazo_final',
+    Status: 'sps_status',
+    'Qtd Total Efetivo': 'qtd_efetivo',
+    'Qtd Parcial Efetivo': 'qtd_parcial_efetivo',
   };
   // Use o mapeamento para criar as colunas a serem exibidas
   const columns = Object.keys(columnsMap);

@@ -583,11 +583,13 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
               <AccordionPanel
                 pb={4}
                 w={{
+                  xl: isOpen ? '84vw' : '91vw',
                   lg: isOpen ? '84vw' : '91vw',
                   md: isOpen ? '84vw' : '91vw',
                   sm: isOpen ? '84vw' : '91vw',
                 }}
                 transitionDuration="1.0s"
+                //border={'1px solid black'}
               >
                 <Flex
                   flexDirection={'column'}
@@ -609,7 +611,6 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                     gap={2}
                     h={'fit-content'}
                   >
-                    <Flex></Flex>
                     <Flex
                       //gap={2}
                       //border={'1px solid red'}
@@ -617,14 +618,16 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
                       align={'center'}
                       justifyContent={'space-between'}
                       w={{
-                        lg: isOpen ? '85vw' : '88vw',
-                        md: isOpen ? '85vw' : '88vw',
-                        sm: isOpen ? '85vw' : '88vw',
+                        xl: isOpen ? '83vw' : '88vw',
+                        lg: isOpen ? '83vw' : '88vw',
+                        md: isOpen ? '83vw' : '88vw',
+                        sm: isOpen ? '83vw' : '88vw',
                       }}
                       transitionDuration="1.0s"
-                      pr={7}
+                      //pr={7}
+                      ml={4}
                     >
-                      <Flex gap={2}>
+                      <Flex gap={2} pl={!isOpen ? 0 : 2}>
                         <Text fontWeight={'bold'}>Total:</Text>
                         {totalMilitar}
                         <Text fontWeight={'bold'}>Escalados: </Text>
@@ -723,24 +726,16 @@ export const AccordinCadastro: React.FC<IAccordion> = ({ isOpen }) => {
         isOpen={isOpenModalSAPM}
         onOpen={onOpenModalSAPM}
         onClose={onCloseModalSAPM}
-        opms={[]}
-        select_opm={'' as OPMs}
-        militaresRestantes={[]}
       />
       <ModalSolicitacarPostos
         isOpen={isOpenModalSolicitarPostos}
         onOpen={onOpenModalSolicitarPostos}
         onClose={onCloseModalSolicitarPostos}
-        opms={[]}
-        select_opm={'' as OPMs}
-        militaresRestantes={[]}
       />
       <ModalSolicitarEfetivo
         isOpen={isOpenModalSolicitarMilitares}
         onOpen={onOpenModalSolicitarMilitares}
         onClose={onCloseModalSolicitarMilitares}
-        //opms={[]}
-        //select_opm={'' as OPMs}
         militaresRestantes={[]}
       />
       <ModalServices

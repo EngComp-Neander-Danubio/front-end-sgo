@@ -9,14 +9,11 @@ import { IconeRelatorio } from '../../componentesGerais/iconesMenuLateral/iconeM
 import { IconeSolicitacoes } from '../../componentesGerais/iconesMenuLateral/iconeMenuLateralSolicitacoes';
 import { FooterCetic } from '../../componentsCadastro/footerImgCETIC';
 import { AccordionMenuLateral } from '../../componentesGerais/accordionMenuLateral/AccordionMenuLateral';
+import { useIsOpen } from '../../../context/isOpenContext/useIsOpen';
 
-interface IMenuLateral {
-  isOpen: boolean;
-  handleToggle: () => void;
-}
-
-export const MenuLateral: React.FC<IMenuLateral> = props => {
+export const MenuLateral: React.FC = () => {
   const navigate = useNavigate();
+  const { handleOnOpen, isOpen } = useIsOpen();
   const perfil = 'cgo';
   return (
     <>
@@ -24,12 +21,12 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
         flexDirection={'column'}
         justifyContent={'space-between'}
         w={{
-          base: props.isOpen ? '240px' : '0px',
-          lg: props.isOpen ? '240px' : '80px',
-          md: props.isOpen ? '240px' : '80px',
-          sm: props.isOpen ? '240px' : '0px',
+          base: isOpen ? '240px' : '0px',
+          lg: isOpen ? '240px' : '80px',
+          md: isOpen ? '240px' : '80px',
+          sm: isOpen ? '240px' : '0px',
         }}
-        //w={props.isOpen ? "12vw" : "3vw"}
+        //w={isOpen ? "12vw" : "3vw"}
         transitionDuration="1.0s"
         height={'98vh'}
         //border={"1px solid red"}
@@ -40,26 +37,27 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
           md: 'block',
           sm: 'block',
         }}
-        //opacity={{sm: '0.5'}}
       >
-        <Flex
-          //flex para a imagem
-          pb={4}
-          className="gradient-border"
-          display={props.isOpen ? 'flex' : 'none'}
-          align={'center'}
-          justify={'center'}
-        >
-          <Link to={'/'}>
-            <Image
-              src={Brasao}
-              pt={4}
-              //w={'8vw'}
-              w={'164px'}
-              display={{ base: 'none', lg: 'flex', md: 'flex', sm: 'flex' }}
-            />
-          </Link>
-        </Flex>
+        {isOpen ? (
+          <Flex
+            //flex para a imagem
+            pb={4}
+            className="gradient-border"
+            align={'center'}
+            justify={'center'}
+          >
+            <Link to={'/'}>
+              <Image
+                src={Brasao}
+                pt={4}
+                //w={'8vw'}
+                w={'164px'}
+              />
+            </Link>
+          </Flex>
+        ) : (
+          <Flex align={'center'} justify={'center'}></Flex>
+        )}
 
         <Flex flexDirection="column">
           <Flex
@@ -69,125 +67,37 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
             align={'center'}
             justify={'center'}
           >
-            <Text
-              color={'white'}
-              width={'224px'}
-              height={'88px'}
-              mb={10}
-              fontSize={'20px'}
-              textAlign={'center'}
-              fontWeight={500}
-              display={
-                props.isOpen
-                  ? { base: 'none', lg: 'block', md: 'block', sm: 'block' }
-                  : 'none'
-              }
-            >
-              SISTEMA DE GERENCIAMENTO
-              <br />
-              DE OPERAÇÕES
-            </Text>
-            {/* <Link to="/"></Link> */}
-            {/* <Flex
-              display={
-                !props.isOpen
-                  ? { base: 'block', lg: 'none', md: 'none', sm: 'block' }
-                  : 'none'
-              }
-              className="gradient-border"
-            ></Flex> */}
-            <Text
-              color={'white'}
-              width={'224px'}
-              height={'88px'}
-              fontSize={'20px'}
-              fontWeight={800}
-              mb={2.5}
-              display={!props.isOpen ? 'block' : 'none'}
-              textAlign={'center'}
-            >
-              SGO
-            </Text>
-          </Flex>
-
-          <Flex
-            color={'white'}
-            gap="8px"
-            //className="gradient-border"
-            display={!props.isOpen ? 'block' : 'none'}
-          >
-            {/* <Flex
-              p={6}
-              pl={4}
-              //width={"25vh"}
-              _hover={{
-                transform: 'scale(1.0)',
-                bgColor: 'white',
-                textColor: 'black',
-                cursor: 'pointer',
-                transition: '.9s',
-              }}
-              className="gradient-border"
-              align="center"
-              justify={!props.isOpen ? 'center' : 'left'}
-            >
-              <IconeSistema />
+            {' '}
+            {isOpen ? (
               <Text
-                pl={10}
-                display={props.isOpen ? 'block' : 'none'}
-                //display={props.isOpen ? { base: "none", lg: 'block', md: "none", sm: 'none' } : "none"}
-                //fontSize={'0.9vw'}
-                fontSize={'14px'}
+                color={'white'}
+                width={'224px'}
+                height={'88px'}
+                mb={10}
+                fontSize={'20px'}
+                textAlign={'center'}
+                fontWeight={500}
               >
-                Sistemas
+                SISTEMA DE GERENCIAMENTO
+                <br />
+                DE OPERAÇÕES
               </Text>
-            </Flex> */}
-
-            {/* <Link to="/ficha">
-              <Flex
-                p={6}
-                pl={4}
-                _hover={{
-                  base: {
-                    transform: 'scale(1.0)',
-                    bgColor: 'white',
-                    textColor: 'black',
-                    cursor: 'pointer',
-                    transition: '.9s',
-                  },
-                }}
-                align={'center'}
-                justify={!props.isOpen ? 'center' : 'left'}
+            ) : (
+              <Text
+                color={'white'}
+                width={'224px'}
+                height={'88px'}
+                fontSize={'20px'}
+                fontWeight={800}
+                mb={2.5}
+                textAlign={'center'}
               >
-                <IconeMinhaArea />
-
-                <Text
-                  pl={10}
-                  display={props.isOpen ? 'block' : 'none'}
-                  //display={props.isOpen ? { base: "none", lg: 'block', md: "none", sm: 'none' } : "none"}
-                  //fontSize={'0.9vw'}
-                  fontSize={'14px'}
-                >
-                  Minha área
-                </Text>
-              </Flex>
-            </Link> */}
+                SGO
+              </Text>
+            )}
           </Flex>
         </Flex>
 
-        {/* <Flex
-          pt={1}
-          color="white"
-          textAlign={'center'}
-          align={'center'} // Adicionado para centralizar verticalmente
-          justify={'center'} // Adicionado para centralizar horizontalmente
-          //className="gradient-border"
-          display={
-            !props.isOpen
-              ? { base: 'none', lg: 'block', md: 'none', sm: 'none' }
-              : 'none'
-          }
-        ></Flex> */}
         <Flex
           color={'white'}
           //border={"1px solid yellow"}
@@ -195,7 +105,7 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
           //width={"25vh"}
           //height={'168px'}
           align="center"
-          mt={!props.isOpen ? 4 : 0}
+          mt={!isOpen ? 4 : 0}
           pt={4}
         >
           <AccordionMenuLateral
@@ -240,16 +150,16 @@ export const MenuLateral: React.FC<IMenuLateral> = props => {
                 : [['Postos', 'PMs'], ['Escalas']]
             }
             displayCustom={{
-              lg: props.isOpen ? 'block' : 'none',
-              md: props.isOpen ? 'block' : 'none',
-              sm: props.isOpen ? 'block' : 'none',
+              lg: isOpen ? 'block' : 'none',
+              md: isOpen ? 'block' : 'none',
+              sm: isOpen ? 'block' : 'none',
             }}
-            isOpen={props.isOpen}
-            handleToggle={!props.isOpen ? props.handleToggle : undefined}
+            isOpen={isOpen}
+            handleToggle={!isOpen ? handleOnOpen : undefined}
           />
         </Flex>
 
-        <FooterCetic isOpen={props.isOpen} />
+        <FooterCetic isOpen={isOpen} />
       </Flex>
     </>
   );

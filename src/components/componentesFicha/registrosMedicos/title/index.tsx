@@ -11,7 +11,7 @@ export const TitleSolicitacoes: React.FC<ITitle> = ({ label }) => {
         fontWeight={'700'}
         //fontSize={'1.2vw'}
         fontSize={{ base: '1rem', lg: '1.2rem', md: '1rem', sm: '1rem' }}
-        textDecoration={'underline'}
+        //textDecoration={'underline'}
       >
         {label}
       </Text>

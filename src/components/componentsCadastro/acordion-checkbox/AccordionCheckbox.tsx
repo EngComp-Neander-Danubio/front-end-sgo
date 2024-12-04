@@ -55,7 +55,10 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
       ];
       methodsInput.setValue('uni_codigo', uniqueValues);
     };
-
+    console.log(
+      methodsInput.watch('uni_codigo'),
+      methodsInput.watch('efetivo'),
+    );
     loadDefaultValues();
   }, []);
   const rec_opm = async (param: number, new_opm: opmSaPM[], opm: opmSaPM) => {
@@ -104,18 +107,7 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
         'uni_codigo',
         methodsInput.watch('uni_codigo').filter((f: number) => param !== f),
       );
-      /* const indexInput = methodsInput
-      .watch('uni_codigo')
-      .findIndex((f: number) => param === f);
 
-      if (indexInput !== -1) {
-        const efetivo = methodsInput.watch('efetivo');
-        const updatedEfetivo = [
-          ...efetivo.slice(0, indexInput),
-          ...efetivo.slice(indexInput + 1),
-        ];
-        methodsInput.setValue('efetivo', updatedEfetivo);
-      } */
       const rec_add_opm = (
         param: number,
         opm: opmSaPM | opmSaPM[] | undefined,
@@ -145,9 +137,6 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
   return (
     <FormControl>
       {opm?.map((item, localIndex) => {
-        /*  const dataOpm = methodsInput
-          .watch('uni_codigo')
-          .filter((item: number) => item?.uni_codigo === item); */
         const currentIndex = parentIndex + localIndex;
         return (
           <Accordion defaultIndex={[1]} allowMultiple key={currentIndex}>
@@ -211,7 +200,12 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                           )}
                         />
 
-                        {console.log(item.uni_sigla, currentIndex)}
+                        {/* {console.log(
+                          item.uni_sigla,
+                          methodsInput
+                            .watch('uni_codigo')
+                            .indexOf(item?.uni_codigo),
+                        )} */}
                         {isInput &&
                           !(item?.opm_filha.length > 0) &&
                           methodsInput
@@ -219,14 +213,18 @@ export const AccordionCheckbox: React.FC<IAccordionCheckbox> = ({
                             ?.includes(item?.uni_codigo) && (
                             <Flex justify="center">
                               <Controller
-                                name={`efetivo[${currentIndex}]`}
+                                name={`efetivo[${methodsInput
+                                  .watch('uni_codigo')
+                                  .indexOf(item?.uni_codigo)}]`}
                                 control={control}
                                 render={({ field }) => (
                                   <Input
-                                    key={`${currentIndex}`}
+                                    key={methodsInput
+                                      .watch('uni_codigo')
+                                      .indexOf(item?.uni_codigo)}
                                     mr={2}
                                     w="6vw"
-                                    placeholder={`${item?.uni_sigla}`}
+                                    placeholder={`${item?.uni_codigo}`}
                                     h="30px"
                                     value={field.value}
                                     onChange={field.onChange}

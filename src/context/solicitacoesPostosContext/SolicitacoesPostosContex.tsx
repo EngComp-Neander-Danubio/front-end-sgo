@@ -66,7 +66,7 @@ export const SolicitacoesPostosProvider: React.FC<{ children: ReactNode }> = ({
   const currentData = solicitacoesPostos.slice(firstDataIndex, lastDataIndex);
 
   useEffect(() => {
-    loadSolicitacaoPostosByApi(1904);
+    loadSolicitacaoPostosByApi(2009);
   }, [solicitacoesPostos.length]);
 
   const loadSolicitacaoPostosById = useCallback(

@@ -46,7 +46,7 @@ export const ToListSolicitacoesPostos: React.FC<IInterface> = ({
               md: '1rem',
               sm: '1rem',
             }}
-            textDecoration={'underline'}
+            //textDecoration={'underline'}
           >
             Solicitações de Postos
           </Text>

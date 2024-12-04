@@ -47,7 +47,7 @@ export const ModalSolicitacarPostos: React.FC<IModal> = ({
     resolver: yupResolver(solicitacaoPostosSchema),
     defaultValues: {
       dataInicio: new Date(),
-      operacao_id: '02/2024',
+      operacao_id: '06/2024',
       uni_codigo: [],
     },
   });
