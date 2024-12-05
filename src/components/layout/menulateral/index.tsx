@@ -19,7 +19,7 @@ export const MenuLateral: React.FC = () => {
     <>
       <Flex
         flexDirection={'column'}
-        justifyContent={'space-between'}
+        justifyContent={'flex-start'}
         w={{
           base: isOpen ? '240px' : '0px',
           lg: isOpen ? '240px' : '80px',
@@ -33,15 +33,16 @@ export const MenuLateral: React.FC = () => {
         bg={'#276749'}
         borderRadius={'15px'}
         display={{
-          lg: 'block',
-          md: 'block',
-          sm: 'block',
+          xl: 'flex',
+          lg: 'flex',
+          md: 'flex',
+          sm: 'flex',
+          base: 'none',
         }}
       >
         {isOpen ? (
           <Flex
-            //flex para a imagem
-            pb={4}
+            //border={'1px solid red'}
             className="gradient-border"
             align={'center'}
             justify={'center'}
@@ -49,53 +50,51 @@ export const MenuLateral: React.FC = () => {
             <Link to={'/'}>
               <Image
                 src={Brasao}
-                pt={4}
-                //w={'8vw'}
                 w={'164px'}
+                h={'12vh'}
               />
             </Link>
           </Flex>
-        ) : (
-          <Flex align={'center'} justify={'center'}></Flex>
-        )}
+        ) : null}
 
-        <Flex flexDirection="column">
-          <Flex
-            pt={6}
-            pb={0}
-            className="gradient-border"
-            align={'center'}
-            justify={'center'}
-          >
-            {' '}
-            {isOpen ? (
-              <Text
-                color={'white'}
-                width={'224px'}
-                height={'88px'}
-                mb={10}
-                fontSize={'20px'}
-                textAlign={'center'}
-                fontWeight={500}
-              >
-                SISTEMA DE GERENCIAMENTO
-                <br />
-                DE OPERAÇÕES
-              </Text>
-            ) : (
-              <Text
-                color={'white'}
-                width={'224px'}
-                height={'88px'}
-                fontSize={'20px'}
-                fontWeight={800}
-                mb={2.5}
-                textAlign={'center'}
-              >
-                SGO
-              </Text>
-            )}
-          </Flex>
+        <Flex
+          className="gradient-border"
+          align={'center'}
+          justify={'center'}
+          //border={'1px solid red'}
+          h={'15vh'}
+        >
+          {' '}
+          {isOpen ? (
+            <Text
+              align={'center'}
+              justifyContent={'center'}
+              color={'white'}
+              width={'224px'}
+              height={'88px'}
+              //mb={10}
+              fontSize={'20px'}
+              textAlign={'center'}
+              fontWeight={500}
+            >
+              SISTEMA DE GERENCIAMENTO
+              <br />
+              DE OPERAÇÕES
+            </Text>
+          ) : (
+            <Text
+              color={'white'}
+              width={'224px'}
+              height={'88px'}
+              fontSize={'20px'}
+              fontWeight={800}
+              //mb={2.5}
+              textAlign={'center'}
+              justifyContent={'space-between'}
+            >
+              SGO
+            </Text>
+          )}
         </Flex>
 
         <Flex

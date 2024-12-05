@@ -83,7 +83,13 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
               render={({ field, fieldState: { error } }) => (
                 <InputPatternController
                   type="text"
-                  w={widthSelect || '400px'}
+                  w={{
+                    base: widthSelect || '400px',
+                    xl: widthSelect || '400px',
+                    lg: widthSelect || '300px',
+                    md: widthSelect || '300px',
+                    sm: widthSelect || '300px',
+                  }}
                   placeholder="Informe o Título do Evento"
                   {...field}
                   error={error}
@@ -91,7 +97,17 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
               )}
             />
           </Flex>
-          <Flex flexDirection="column" gap={0} w={widthSelect || '700px'}>
+          <Flex
+            flexDirection="column"
+            gap={0}
+            w={{
+              base: widthSelect || '400px',
+              xl: widthSelect || '400px',
+              lg: widthSelect || '400px',
+              md: widthSelect || '400px',
+              sm: widthSelect || '400px',
+            }}
+          >
             <FormLabel fontWeight="bold">Comandante</FormLabel>
             <Controller
               name="comandante"
