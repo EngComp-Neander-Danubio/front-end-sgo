@@ -8,9 +8,12 @@ import {
   ModalBody,
   ModalFooter,
   Center,
+  Flex,
 } from '@chakra-ui/react';
 import { Militares_service } from '../../../context/requisitosContext/RequisitosContext';
-import { TableFicha } from '../../componentesFicha/table';
+import { Pagination } from '../pagination/Pagination';
+import { TableSolicitacoes } from '../table-solicitacoes';
+import { useMilitares } from '../../../context/militaresContext/useMilitares';
 
 interface IModal {
   isOpen: boolean;
@@ -57,11 +60,19 @@ export const ModalRestantes: React.FC<IModal> = ({
           ['matricula', 'posto_grad', 'nome_completo', 'opm'].includes(key),
         )
       : [];
+      const {
+        dataPerPage,
+        totalData,
+        pms,
+        firstDataIndexMilitar,
+        lastDataIndexMilitar,
+        loadLessMilitar,
+        loadMoreMilitar,
+      } = useMilitares();
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-
         <ModalContent
           maxW="50vw"
           minW="30vw"
@@ -70,19 +81,37 @@ export const ModalRestantes: React.FC<IModal> = ({
           overflowY={'auto'}
         >
           <ModalHeader>
-            <Center>Militares Restantes</Center>
+            <Center color={'rgba(0, 0, 0, 0.48)'} fontWeight={'700'}>
+              Militares Restantes
+            </Center>
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <TableFicha
-              //isOpen={militares.length > 0}
-              columns={headerKeysMilitar}
-              registers={handleSortByPostoGrad()}
-              currentPosition={50}
-              rowsPerLoad={0}
-              isActions={true}
-              label_tooltip="militar"
-            />
+            <Flex mt={2} flexDirection={'column'} w={'100%'}>
+              <TableSolicitacoes
+                isOpen={isOpen}
+                isActions
+                isView={true}
+                columns={[
+                  'Matrícula',
+                  'Posto/Graduação',
+                  'Nome Completo',
+                  'Unidade',
+                ]}
+                registers={headerKeysMilitar}
+                label_tooltip="Militar"
+                height={'32vh'}
+              />
+              {/* Componente de paginação */}
+              <Pagination
+                totalPages={totalData}
+                dataPerPage={dataPerPage}
+                firstDataIndex={firstDataIndexMilitar}
+                lastDataIndex={lastDataIndexMilitar}
+                loadLess={loadLessMilitar}
+                loadMore={loadMoreMilitar}
+              />
+            </Flex>
           </ModalBody>
 
           <ModalFooter>

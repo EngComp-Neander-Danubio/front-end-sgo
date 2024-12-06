@@ -11,7 +11,7 @@ export const TitlePerfil: React.FC = () => {
         fontSize={{ base: '1.2rem', lg: '1.2rem', md: '1.2rem', sm: '1.2rem' }}
         //textDecoration={'underline'}
       >
-        Dados da OPM
+        Dados da Operação
       </Text>
     </>
   );

@@ -11,7 +11,6 @@ import {
 } from '@chakra-ui/react';
 import { FormPosto } from '../formPosto/FormPosto';
 import { FormProvider, useForm } from 'react-hook-form';
-import { usePostos } from '../../../context/postosContext/usePostos';
 import { PostoForm } from '../../../context/postosContext/PostosContex';
 import { postosSchema } from '../../../types/yupPostos/yupPostos';
 import { yupResolver } from '@hookform/resolvers/yup';

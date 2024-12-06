@@ -23,7 +23,7 @@ export const DadosFicha: React.FC<IDados> = ({
       >
         {/* Primeira linha de dados */}
         <Flex flexDirection={'row'} gap={4} w={'100%'}>
-          <Flex
+          {/* <Flex
             gap={2}
             flex={1}
             //border={'1px solid red'}
@@ -58,7 +58,7 @@ export const DadosFicha: React.FC<IDados> = ({
           >
             <Text fontWeight={700}></Text>
             <Text flexWrap={'nowrap'}></Text>
-          </Flex>
+          </Flex> */}
         </Flex>
 
         {/* Segunda linha de dados */}

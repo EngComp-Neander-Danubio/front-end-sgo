@@ -100,7 +100,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
         await api.post('/operacao', data);
         toast({
           title: 'Sucesso',
-          description: 'Evento/Operação atualizada com sucesso',
+          description: 'Evento/Operação criada com sucesso',
           status: 'success',
           position: 'top-right',
           duration: 9000,

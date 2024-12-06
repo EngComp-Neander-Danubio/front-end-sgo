@@ -111,12 +111,12 @@ export const RequisitosProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const { militares } = useMilitares();
-  const { postos } = usePostos();
+  const { postos, postosLocal } = usePostos();
   const [militars, setMilitares] = useState<Militares_service[]>(militares);
   const [militaresRestantes, setMilitaresRestantes] = useState<
     Militares_service[]
   >([]);
-  const [postosServices, setPostosServices] = useState<Postos[]>(postos);
+  const [postosServices, setPostosServices] = useState<Postos[]>(postosLocal);
   const [totalMilitar, setTotalMilitar] = useState<number>(0);
   const [dateFirst, setDateFirst] = useState<Date>();
   const [dateFinished, setdateFinished] = useState<Date>();

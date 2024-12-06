@@ -24,7 +24,7 @@ export interface PostoForm {
   cidade: string;
   modalidade: string;
   qtd_efetivo?: number;
-  quantity_militars?: number;
+  militares_por_posto?: number;
   [key: string]: any;
 }
 
@@ -34,6 +34,7 @@ export interface IContextSolicitacoesOPMPostoData {
   loadMoreSolicitacoesOPMPostos: () => void;
   loadLessSolicitacoesOPMPostos: () => void;
   loadPostoByOPM: (data: PostoForm) => void;
+  setPostosLocal: React.Dispatch<React.SetStateAction<PostoForm[]>>;
   handleClick: () => void;
   handleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleOnSubmit: (e: React.FormEvent) => void;
@@ -65,6 +66,8 @@ export const SolicitacoesOPMPostosProvider: React.FC<{
   const currentData = postosLocal.slice(firstDataIndex, lastDataIndex);
   const hasMore = lastDataIndex < postosLocal.length;
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+
 
   // Função para carregar o CSV completo
   const loadCompleteCSV = (text: string) => {
@@ -329,6 +332,7 @@ export const SolicitacoesOPMPostosProvider: React.FC<{
       handleOnSubmit,
       deletePostoByOPM,
       loadPostosByApi,
+      setPostosLocal,
     }),
     [
       currentData,
@@ -346,6 +350,7 @@ export const SolicitacoesOPMPostosProvider: React.FC<{
       handleOnSubmit,
       deletePostoByOPM,
       loadPostosByApi,
+      setPostosLocal,
     ],
   );
 

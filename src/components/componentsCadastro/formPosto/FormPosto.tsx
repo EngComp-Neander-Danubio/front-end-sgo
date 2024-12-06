@@ -19,7 +19,7 @@ interface IForm {
   bairro: string;
   cidade: string;
   modalidade: string;
-  quantity_militars?: number | string;
+  militares_por_posto?: number | string;
 }
 interface IModal extends FlexProps {}
 export const FormPosto: React.FC<IModal> = () => {
@@ -29,7 +29,7 @@ export const FormPosto: React.FC<IModal> = () => {
     setValue,
   } = useFormContext<IForm>();
   const [quantity, setQuantity] = useState(2);
-  setValue('quantity_militars', quantity);
+  setValue('militares_por_posto', quantity);
   const handleQuantityPlus = async () => {
     setQuantity(q => q + 1);
   };
@@ -51,7 +51,7 @@ export const FormPosto: React.FC<IModal> = () => {
         <Flex flexDirection={'column'} gap={1} w={'full'}>
           <FormLabel fontWeight={'bold'}>Militares por posto</FormLabel>
           <Controller
-            name="quantity_militars"
+            name="militares_por_posto"
             control={control}
             render={({ field }) => (
               <Flex

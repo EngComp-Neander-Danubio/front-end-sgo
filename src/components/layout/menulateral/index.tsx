@@ -48,11 +48,7 @@ export const MenuLateral: React.FC = () => {
             justify={'center'}
           >
             <Link to={'/'}>
-              <Image
-                src={Brasao}
-                w={'164px'}
-                h={'12vh'}
-              />
+              <Image src={Brasao} w={'140px'} h={'10vh'} />
             </Link>
           </Flex>
         ) : null}
@@ -88,7 +84,7 @@ export const MenuLateral: React.FC = () => {
               height={'88px'}
               fontSize={'20px'}
               fontWeight={800}
-              //mb={2.5}
+              mb={2.5}
               textAlign={'center'}
               justifyContent={'space-between'}
             >

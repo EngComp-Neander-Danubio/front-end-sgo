@@ -32,10 +32,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <AuthProvider>
         <IsOpenProvider>
           <EventsProvider>
-            <SolicitacoesOPMPostosProvider>
-              <SolicitacoesOPMPMsProvider>
-                <SolicitacoesPostosProvider>
-                  <SolicitacoesPMsProvider>
+            <SolicitacoesPostosProvider>
+              <SolicitacoesPMsProvider>
+                <SolicitacoesOPMPostosProvider>
+                  <SolicitacoesOPMPMsProvider>
                     <TotalEfetivoOPMsProvider>
                       <MilitaresProvider>
                         <PostosProvider>
@@ -46,10 +46,10 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                         </PostosProvider>
                       </MilitaresProvider>
                     </TotalEfetivoOPMsProvider>
-                  </SolicitacoesPMsProvider>
-                </SolicitacoesPostosProvider>
-              </SolicitacoesOPMPMsProvider>
-            </SolicitacoesOPMPostosProvider>
+                  </SolicitacoesOPMPMsProvider>
+                </SolicitacoesOPMPostosProvider>
+              </SolicitacoesPMsProvider>
+            </SolicitacoesPostosProvider>
           </EventsProvider>
         </IsOpenProvider>
       </AuthProvider>

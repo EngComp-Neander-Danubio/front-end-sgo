@@ -11,12 +11,14 @@ interface IFunction {
   handleClick: () => void;
   handleOnChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleOnSubmit: (e: React.FormEvent) => void;
+  loadData?: (data: any) => Promise<void>;
 }
 export const DashButtons: React.FC<IFunction> = ({
   openModalAdd,
   handleClick,
   handleOnChange,
   handleOnSubmit,
+  loadData,
 }) => {
   return (
     <>
@@ -74,7 +76,7 @@ export const DashButtons: React.FC<IFunction> = ({
             }}
             color="#fff"
             type="submit"
-            //onClick={reset}
+            onClick={loadData}
             rightIcon={<FiSave color="#fff" size="20px" />}
             w={200}
           >

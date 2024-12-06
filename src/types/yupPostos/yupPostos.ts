@@ -6,7 +6,7 @@ export const postosSchema = yup.object().shape({
   "numero": yup.number().required('Campo obrigatório'),
   "cidade": yup.string().required('Campo obrigatório'),
   "modalidade": yup.string().required('Campo obrigatório'),
-  //'quantity_militars': yup.number().required('Campo obrigatório').min(1, 'No minimo um policial'),
+  'militares_por_posto': yup.number().required('Campo obrigatório').min(1, 'No minimo um policial'),
 
 });
 
@@ -20,8 +20,8 @@ export const columnsMapPostos: {
   'Bairro': 'bairro',
   'Cidade': 'cidade',
   'Modalidade': 'modalidade',
-  'Qtd Efetivo': 'qtd_efetivo',
-  'Qtd Militares': 'quantity_militars',
+  'Qtd Efetivo': 'militares_por_posto',
+  'Qtd Militares': 'militares_por_posto',
 
 };
 

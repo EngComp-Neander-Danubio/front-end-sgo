@@ -47,11 +47,16 @@ export const ModalServices: React.FC<IModal> = ({ isOpen, onClose }) => {
             <Flex
               align={'center'}
               justify={'center'}
-              justifyContent={'space-between'}
-              maxW="100vw"
+              justifyContent={'space-around'}
+              //maxW="100vw"
               //border={'1px solid red'}
             >
-              <Center flexWrap={'nowrap'} w={'100%'}>
+              <Center
+                flexWrap={'nowrap'}
+                w={'100%'}
+                color={'rgba(0, 0, 0, 0.48)'}
+                fontWeight={'700'}
+              >
                 Escala de Serviço
               </Center>
               <Controller
@@ -70,9 +75,7 @@ export const ModalServices: React.FC<IModal> = ({ isOpen, onClose }) => {
                     onBlur={onBlur}
                     value={value}
                     error={error}
-                  >
-                    <BiSearch />
-                  </InputPatternController>
+                  />
                 )}
               />
             </Flex>

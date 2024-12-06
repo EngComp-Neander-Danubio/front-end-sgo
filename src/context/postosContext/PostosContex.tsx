@@ -22,6 +22,7 @@ export interface PostoForm {
   cidade: string;
   modalidade: string;
   qtd_efetivo?: number;
+  militares_por_posto: number;
   [key: string]: any;
 }
 
@@ -145,7 +146,7 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
           setPostosLocal(prevArray => [...prevArray, ...postosDaPlanilha]);
           toast({
             title: 'Sucesso',
-            description: 'Posto(s) adicionado(s) com sucesso',
+            description: 'Posto(s) da planilha carregado(s) com sucesso',
             status: 'success',
             position: 'top-right',
             duration: 5000,
@@ -280,7 +281,7 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
         description: 'Posto salvo com sucesso',
         status: 'success',
         position: 'top-right',
-        duration: 9000,
+        duration: 5000,
         isClosable: true,
       });
     } catch (error) {
@@ -290,7 +291,7 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
         description: 'Falha ao salvar o posto',
         status: 'error',
         position: 'top-right',
-        duration: 9000,
+        duration: 5000,
         isClosable: true,
       });
     } finally {
