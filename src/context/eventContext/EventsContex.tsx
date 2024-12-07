@@ -11,7 +11,7 @@ import { useToast } from '@chakra-ui/react';
 import api from '../../services/api';
 
 export interface Event {
-  id?: string;
+  id: string;
   nomeOperacao: string;
   comandante: number;
   dataInicio: Date;
@@ -26,7 +26,7 @@ interface Militar {
 
 export interface IContextEventsData {
   events: Event[];
-  eventById: Event;
+  eventById: Event | undefined;
   uploadEvent: (data: Event) => Promise<void>;
   loadEvents: (param?: string) => Promise<void>;
   loadEventsById: (id: string) => Promise<void>;
@@ -50,7 +50,7 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const toast = useToast();
   const [events, setEvents] = useState<Event[]>([]);
-  const [eventById, setEventById] = useState<Event>();
+  const [eventById, setEventById] = useState<Event | undefined>(undefined);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
   const [dataPerPage] = useState(8);
@@ -214,20 +214,24 @@ export const EventsProvider: React.FC<{ children: ReactNode }> = ({
     async (id: string) => {
       setIsLoading(true);
       try {
-        await api.delete(`/operacao/${id}`);
+        await api.delete(`/delete-operacao`, {
+          params: {
+            id: id,
+          },
+        });
         toast({
           title: 'Sucesso',
-          description: 'Evento/Operação deletada com sucesso',
+          description: 'Operação deletada com sucesso',
           status: 'success',
           position: 'top-right',
           duration: 9000,
           isClosable: true,
         });
       } catch (error) {
-        console.error('Falha ao deletar a evento/operação:', error);
+        console.error('Falha ao deletar a operação:', error);
         toast({
           title: 'Erro',
-          description: 'Falha ao deletar a evento/operação',
+          description: 'Falha ao deletar a operação',
           status: 'error',
           position: 'top-right',
           duration: 9000,

@@ -1,15 +1,19 @@
 import React from 'react';
 import { useEvents } from '../../../context/eventContext/useEvents';
-import { TableSolicitacoes } from '../table-solicitacoes';
 import { Pagination } from '../pagination/Pagination';
 import { Flex } from '@chakra-ui/react';
-interface IToListEventsContent {
-  isOpen: boolean;
-  handleToggle: () => void;
-}
-export const ToListEventsContent: React.FC<IToListEventsContent> = ({
-  isOpen,
-}) => {
+import TableGeneric, { ColumnProps } from '../table-generic/TableGeneric';
+import { IconeDeletar, IconeEditar } from '../../ViewLogin';
+import { useNavigate } from 'react-router-dom';
+type Data = {
+  id: string;
+  nomeOperacao: string;
+  comandante: number;
+  dataInicio: Date;
+  dataFinal: Date;
+};
+
+export const ToListEventsContent: React.FC = () => {
   const {
     loadEventsById,
     deleteEvent,
@@ -21,31 +25,58 @@ export const ToListEventsContent: React.FC<IToListEventsContent> = ({
     firstDataIndex,
     lastDataIndex,
     dataPerPage,
-    updateEvent,
   } = useEvents();
+  const navigate = useNavigate();
+  const columns: Array<ColumnProps<Data>> = [
+    /* {
+      key: 'id',
+      title: 'Id',
+    }, */
+    {
+      key: 'nomeOperacao',
+      title: 'Operação',
+    },
+    {
+      key: 'comandante',
+      title: 'Comandante',
+    },
 
-  // Defina as colunas desejadas e o mapeamento para as chaves dos eventos
-  const columnsMap: { [key: string]: string } = {
-    Ord: 'id', // Exemplo: 'Ord' mapeia para 'id'
-    'Título da Operação': 'nomeOperacao',
-    'Data inicial': 'dataInicio',
-    'Data final': 'dataFinal',
-    //'Status': 'status',
-    'Comandante': 'comandante',
-  };
-
-  // Use o mapeamento para criar as colunas a serem exibidas
-  const columns = Object.keys(columnsMap);
-
-  // Transforme os registros dos eventos com as novas chaves
-  const transformedEvents = events.map(event => {
-    const transformedEvent: { [key: string]: any } = {};
-    Object.entries(columnsMap).forEach(([newKey, originalKey]) => {
-      transformedEvent[newKey] = event[originalKey];
-    });
-    return transformedEvent;
-  });
-
+    {
+      key: 'dataInicio',
+      title: 'Data Inicial',
+    },
+    {
+      key: 'dataFinal',
+      title: 'Data Inicial',
+    },
+    {
+      key: 'acoes',
+      title: 'Ações',
+      render: (_, record) => {
+        return (
+          <Flex flexDirection={'row'} gap={2}>
+            <IconeEditar
+              key={`${record.id}`}
+              label_tooltip={`${record.nomeOperacao}`}
+              onOpen={async () => {
+                const idSolicitacao = record.id;
+                await loadEventsById(idSolicitacao);
+                navigate(`/editar-operacao/${idSolicitacao}`);
+              }}
+            />
+            <IconeDeletar
+              key={`${record.id}`}
+              label_tooltip={`${record.nomeOperacao}`}
+              handleDelete={async () => {
+                const idSolicitacao = record.id;
+                await deleteEvent(idSolicitacao);
+              }}
+            />
+          </Flex>
+        );
+      },
+    },
+  ];
   return (
     <>
       <Flex
@@ -53,17 +84,7 @@ export const ToListEventsContent: React.FC<IToListEventsContent> = ({
         flexDirection={'column'}
         w={'100%'}
       >
-        <TableSolicitacoes
-          isActions
-          isOpen={true}
-          isView={true}
-          columns={columns}
-          registers={transformedEvents}
-          label_tooltip="Operação"
-          height={'32vh'}
-          handleDelete={() => deleteEvent} //handleDelete={deletePMByCGO}
-          handleUpdate={updateEvent}
-        />
+        <TableGeneric data={events} columns={columns} />
         <Pagination
           totalPages={totalData}
           dataPerPage={dataPerPage}

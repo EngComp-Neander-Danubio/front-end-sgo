@@ -237,11 +237,8 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
   //deletePostoByOPM
   const deletePostoByOPM = useCallback(
     async (id?: string, index?: string | number) => {
-      //setIsLoading(true);
-
       if (id) {
         try {
-          console.log('delete com id');
           await api.delete(`/postos-opm/${id}`);
           toast({
             title: 'Sucesso',
@@ -435,6 +432,7 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
               isActions
               isView={true}
               columns={[
+                'Id',
                 'Local',
                 'Rua',
                 'Número',

@@ -30,7 +30,7 @@ export interface SolicitacoesPostoData {
 
 export interface IContextSolicitacoesPostoData {
   solicitacoesPostos: SolicitacoesPostoData[];
-  solicitacaoPostoIndividual: SolicitacoesPostoData | undefined;
+  solicitacaoPostoIndividual: SolicitacoesPostoData | null;
   loadSolicitacaoPostosByApi: (param: number) => Promise<void>;
   loadSolicitacaoPostosById: (id: number) => Promise<void>;
   loadMoreSolicitacoesPostos: () => void;
@@ -54,8 +54,8 @@ export const SolicitacoesPostosProvider: React.FC<{ children: ReactNode }> = ({
     SolicitacoesPostoData[]
   >([]);
   const [solicitacaoPostoIndividual, setSolicitacaoPostoIndividual] = useState<
-    SolicitacoesPostoData | undefined
-  >(undefined);
+    SolicitacoesPostoData | null
+  >(null);
 
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
   const [dataPerPage] = useState(15); // Defina o número de registros por página

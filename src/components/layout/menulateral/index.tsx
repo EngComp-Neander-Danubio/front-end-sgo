@@ -113,7 +113,7 @@ export const MenuLateral: React.FC = () => {
             nameLabels={
               perfil.includes('cgo')
                 ? ['Cadastro', 'Consulta', 'Solicitacões', 'Escalas']
-                : ['Solicitacões', 'Escalas']
+                : ['Solicitacões']
             }
             handleClick={
               perfil.includes('cgo')
@@ -131,7 +131,7 @@ export const MenuLateral: React.FC = () => {
                       () => navigate('/listar-solicitacoes-postos'),
                       () => navigate('/listar-solicitacoes-pms'),
                     ],
-                    () => navigate('/escalas'),
+                    //() => navigate('/escalas'),
                   ]
             }
             nameLabelSecundarys={
@@ -142,7 +142,9 @@ export const MenuLateral: React.FC = () => {
                     ['Postos', 'PMs'],
                     ['Escalas'],
                   ]
-                : [['Postos', 'PMs'], ['Escalas']]
+                : [['Postos', 'PMs'],
+                //['Escalas']
+              ]
             }
             displayCustom={{
               lg: isOpen ? 'block' : 'none',

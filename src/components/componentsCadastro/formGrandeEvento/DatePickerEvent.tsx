@@ -38,7 +38,7 @@ export const DatePickerEvent: React.FC<IDatePicker> = ({
         timeFormat="p"
         timeIntervals={15}
         showPopperArrow
-        dateFormat="MM-dd-yyyy h:mm"
+        dateFormat="dd/MM/yyyy HH:mm"
         customInput={
           <FormControl isInvalid={!!error}>
             <InputGroup>

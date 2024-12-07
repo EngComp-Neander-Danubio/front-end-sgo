@@ -25,7 +25,7 @@ interface ITable {
   columns: string[]; // Array de strings que representa os nomes das colunas
   registers: { [key: string]: any }[]; // Array de objetos, onde cada objeto representa uma linha e as chaves são os nomes das colunas
   label_tooltip?: string;
-  handleDelete: (id?: string, index?: string) => {};
+  handleDelete: (id?: string, index?: string) => Promise<void>;
   handleUpdate?: (data: any, id: string) => Promise<void>;
   isCheckBox?: boolean;
   //customIcons?: React.ReactNode[];
@@ -181,9 +181,9 @@ export const TableSolicitacoes: React.FC<ITable> = ({
                               key="Deletar"
                               label_tooltip={label_tooltip}
                               handleDelete={async () => {
-                                //console.log(index);
+                                console.log(index, register.id);
                                 handleDelete(
-                                  register.id,
+                                  register['Id'],
                                   index === 0
                                     ? '0'
                                     : ((index as unknown) as string),
@@ -205,23 +205,13 @@ export const TableSolicitacoes: React.FC<ITable> = ({
                               key="Deletar"
                               label_tooltip={label_tooltip}
                               handleDelete={async () => {
-                                //console.log(index);
-                                handleDelete(
-                                  register.id,
-                                  index === 0
-                                    ? '0'
-                                    : ((index as unknown) as string),
-                                );
+                                console.log('delete', register['Id']);
+                                handleDelete(register['Id']);
                               }}
                             />,
                             <IconeEditar
                               key="Editar"
                               label_tooltip={label_tooltip}
-                              /* onOpen={() => {
-                                loadEventsById(register.Ord);
-                                //onOpenFormEditarEvent();
-                                navigate(`/servico/${register.Ord}`);
-                              }} */
                             />,
                           ]
                     }

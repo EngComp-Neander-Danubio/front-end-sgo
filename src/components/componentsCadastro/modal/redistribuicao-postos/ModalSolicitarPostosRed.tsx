@@ -15,6 +15,8 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { FormSolicitacaoPostosRed } from './FormSolicitacaoPostosRed';
 import { solicitacaoPostosSchemaRed } from '../../../../types/yupSolicitacaoPostosRed/yupSolicitacaoPostosRed';
+import { useSolicitacoesPostos } from '../../../../context/solicitacoesPostosContext/useSolicitacoesPostos';
+import { formatDate, normalizeDate } from '../../../../utils/utils';
 
 interface IModal {
   isOpen: boolean;
@@ -34,9 +36,6 @@ export const ModalSolicitacarPostosRed: React.FC<IModal> = ({
   const toast = useToast();
   const methodsInput = useForm<SolicitacaoForm>({
     resolver: yupResolver(solicitacaoPostosSchemaRed),
-    defaultValues: {
-      dataInicio: new Date(),
-    },
   });
 
   const { reset } = methodsInput;

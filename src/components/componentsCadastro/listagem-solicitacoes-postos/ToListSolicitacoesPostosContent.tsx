@@ -4,17 +4,27 @@ import { Pagination } from '../pagination/Pagination';
 import { useSolicitacoesPostos } from '../../../context/solicitacoesPostosContext/useSolicitacoesPostos';
 import { ModalSolicitacarPostosRed } from '../modal/redistribuicao-postos/ModalSolicitarPostosRed';
 import React from 'react';
-interface IDados extends FlexProps {
+import TableGeneric, { ColumnProps } from '../table-generic/TableGeneric';
+import { IconeDeletar } from '../../componentesFicha/registrosMedicos/icones/iconeDeletar';
+import { IconeRedistribuir } from '../../componentesFicha/registrosMedicos/icones/iconeRedistribuir';
+import { IconeBusca } from '../../componentesGerais/iconesMenuLateral/iconeMenulateralBusca';
+import { IconeVisualizar } from '../../componentesFicha/registrosMedicos/icones/iconeVisualizarSolicitacao';
+import { useNavigate } from 'react-router-dom';
+
+type Data = {
   isOpen?: boolean;
-  operacao?: string;
-  solicitacao?: string;
-  prazo_inicial?: Date;
-  prazo_final?: Date;
-}
+  id?: string;
+  sps_id: number;
+  sps_operacao_id: string;
+  solicitacao: string;
+  sps_status: string;
+  prazo_final: Date;
+  prazo_inicial: Date;
+  unidades_id: number;
+  nome_operacao: string;
+};
 // lista as solicitacoes da OPM no que se refere ao posto de serviço
-export const ToListSolicitacoesPostosContent: React.FC<IDados> = ({
-  isOpen,
-}) => {
+export const ToListSolicitacoesPostosContent: React.FC = () => {
   const {
     solicitacoesPostos,
     totalData,
@@ -23,53 +33,78 @@ export const ToListSolicitacoesPostosContent: React.FC<IDados> = ({
     dataPerPage,
     loadLessSolicitacoesPostos,
     loadMoreSolicitacoesPostos,
+    loadSolicitacaoPostosById,
   } = useSolicitacoesPostos();
-
-  // Defina as colunas desejadas e o mapeamento para as chaves dos eventos
-  const columnsMap: { [key: string]: string } = {
-    //'ID Operação': 'sps_operacao_id',
-    Operação: 'nome_operacao',
-    'ID Solicitação': 'sps_id',
-    'Prazo Inicial': 'prazo_inicial',
-    'Prazo Final': 'prazo_final',
-    //'Quantidade de postos': 'qtd_postos',
-    //OPM: 'OPM',
-    Status: 'sps_status',
-  };
-
-  // Use o mapeamento para criar as colunas a serem exibidas
-  const columns = Object.keys(columnsMap);
-
-  // Transforme os registros dos eventos com as novas chaves
-  const transformedPostos = solicitacoesPostos.map(p => {
-    const transformedPosto: { [key: string]: any } = {};
-    Object.entries(columnsMap).forEach(([newKey, originalKey]) => {
-      transformedPosto[newKey] = p[originalKey];
-    });
-    return transformedPosto;
-  });
-
+  const navigate = useNavigate();
+  
   const {
     isOpen: isOpenFormRedSolPosto,
     onOpen: onOpenFormRedSolPosto,
     onClose: onCloseFormRedSolPosto,
   } = useDisclosure();
+  const columns: Array<ColumnProps<Data>> = [
+    /* {
+      key: 'id',
+      title: 'Id',
+    }, */
+    {
+      key: 'sps_id',
+      title: 'Id Solicitação',
+    },
+    /* {
+      key: 'sps_operacao_id',
+      title: 'Id Operação',
+    }, */
+    {
+      key: 'nome_operacao',
+      title: 'Operação',
+    },
+    {
+      key: 'sps_status',
+      title: 'Status',
+    },
+    {
+      key: 'prazo_inicial',
+      title: 'Prazo Inicial',
+    },
+    {
+      key: 'prazo_final',
+      title: 'Prazo Final',
+    },
+
+    {
+      key: 'acoes',
+      title: 'Ações',
+      render: (_, record) => {
+        return (
+          <Flex flexDirection={'row'} gap={2}>
+            <IconeVisualizar
+              key={`${record.id}`}
+              label_tooltip={`${record.sps_id}`}
+              onOpen={async () => {
+                const idSolicitacao = Number(record.id);
+                await loadSolicitacaoPostosById(idSolicitacao);
+                navigate(`/solicitacao-pms-id/${idSolicitacao}`);
+              }}
+            />
+            <IconeRedistribuir
+              key={`${record.id}`}
+              label_tooltip={`${record.sps_id}`}
+              onOpen={async () => {
+                const idSolicitacao = Number(record.id);
+                await loadSolicitacaoPostosById(idSolicitacao);
+                onOpenFormRedSolPosto;
+              }}
+            />
+          </Flex>
+        );
+      },
+    },
+  ];
   return (
     <>
       <Flex flexDirection={'column'} w={'100%'}>
-        {/* Tabela de solicitações de postos */}
-        <TableSolicitacoes
-          columns={columns} // Use as colunas personalizadas
-          registers={transformedPostos} // Use os registros transformados
-          isActions={true}
-          label_tooltip={'Solicitação de Postos'}
-          height={'60vh'}
-          handleDelete={function(id?: string, index?: string): {} {
-            throw new Error('Function not implemented.');
-          }}
-          openModalSend={onOpenFormRedSolPosto}
-        />
-
+        <TableGeneric data={solicitacoesPostos} columns={columns} />
         {/* Componente de paginação */}
         <Pagination
           totalPages={totalData}

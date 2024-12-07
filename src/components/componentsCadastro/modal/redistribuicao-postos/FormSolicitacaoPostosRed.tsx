@@ -15,12 +15,8 @@ import { Controller, useFormContext } from 'react-hook-form';
 import api from '../../../../services/api';
 import { DatePickerEvent } from '../../formGrandeEvento/DatePickerEvent';
 import { useSolicitacoesPostos } from '../../../../context/solicitacoesPostosContext/useSolicitacoesPostos';
-/* interface IDados extends FlexProps {
-  operacao?: string;
-  solicitacao?: string;
-  prazo_inicial?: Date;
-  prazo_final?: Date;
-} */
+import { normalizeDate } from '../../../../utils/utils';
+
 type SolicitacaoForm = {
   dataInicio: Date;
   dataFinal: Date;
@@ -47,9 +43,15 @@ export const FormSolicitacaoPostosRed: React.FC = () => {
       setDatasOpmFilhas(response.data);
     } catch (error) {}
   };
+
   useEffect(() => {
     handleLoadOpmFilhas(1945);
   }, []);
+  /* const normalizeDate = (date: string) => {
+    // Substitui "DD-MM-YYYY" por "YYYY-MM-DD" (ou retorna null se for inválido)
+    const parts = date.split('-');
+    return parts.length === 3 ? new Date(`${parts[2]}-${parts[1]}-${parts[0]}`) : null;
+  }; */
   return (
     <FormControl {...methodsInput} mb={4}>
       <Divider />
@@ -131,7 +133,15 @@ export const FormSolicitacaoPostosRed: React.FC = () => {
                     field.onChange(date);
                     setStartDate(date as Date);
                   }}
-                  selected={field.value ? new Date(field.value) : new Date()}
+                  selected={
+                    field.value
+                      ? new Date(field.value)
+                      : new Date(
+                          normalizeDate(
+                            (solicitacaoPostoIndividual?.prazo_inicial as unknown) as string,
+                          ) || new Date(),
+                        )
+                  }
                   startDate={startDate}
                   endDate={endDate}
                   error={error}
@@ -151,7 +161,15 @@ export const FormSolicitacaoPostosRed: React.FC = () => {
                     field.onChange(date);
                     setEndDate(date as Date);
                   }}
-                  selected={field.value ? new Date(field.value) : null}
+                  selected={
+                    field.value
+                      ? new Date(field.value)
+                      : new Date(
+                          normalizeDate(
+                            (solicitacaoPostoIndividual?.prazo_final as unknown) as string,
+                          ) || new Date(),
+                        )
+                  }
                   startDate={startDate}
                   endDate={endDate}
                   minDate={startDate}

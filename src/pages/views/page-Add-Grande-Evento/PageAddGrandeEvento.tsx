@@ -7,8 +7,7 @@ import { FormGrandeEventoVertical } from '../../../components/componentsCadastro
 import { useIsOpen } from '../../../context/isOpenContext/useIsOpen';
 
 export const PageAddGrandeEvento: React.FC = () => {
-  const { handleOnOpen, isOpen } = useIsOpen();
-
+  
   return (
     <>
       <Flex
@@ -31,10 +30,10 @@ export const PageAddGrandeEvento: React.FC = () => {
           h={'content'}
         >
           <GridItem area={'header'} h={'fit-content'}>
-            <DashHeader isOpen={isOpen} handleToggle={handleOnOpen} />
+            <DashHeader  />
           </GridItem>
           <GridItem area={'nav'}>
-            <MenuLateral isOpen={isOpen} handleToggle={handleOnOpen} />
+            <MenuLateral />
           </GridItem>
           <GridItem
             area={'main'}

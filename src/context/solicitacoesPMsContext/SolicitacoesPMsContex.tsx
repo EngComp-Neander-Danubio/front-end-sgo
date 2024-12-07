@@ -17,10 +17,15 @@ export type SolicitacoesPM = {
 };
 
 export interface SolicitacoesPMData {
-  operacao: string;
+  id: string;
+  sps_id: number;
+  sps_operacao_id: string;
   solicitacao: string;
-  prazoFinal: Date;
-  prazoInicial: Date;
+  sps_status: string;
+  prazo_final: Date;
+  prazo_inicial: Date;
+  unidades_id: number;
+  nome_operacao: string;
   qtd_efetivo: string | number;
   qtd_parcial_efetivo: string | number;
   status: string;

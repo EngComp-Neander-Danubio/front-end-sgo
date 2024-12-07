@@ -14,6 +14,7 @@ export const postosSchema = yup.object().shape({
 export const columnsMapPostos: {
   [key: string]: string;
 } = {
+  'Id': 'id',
   'Local': 'local',
   'Rua': 'rua',
   'Número': 'numero',
