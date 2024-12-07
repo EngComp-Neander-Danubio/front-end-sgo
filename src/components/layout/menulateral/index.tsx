@@ -1,4 +1,4 @@
-import { Flex, Icon, Image, Text } from '@chakra-ui/react';
+import { Center, Flex, Icon, Image, Text } from '@chakra-ui/react';
 import Brasao from '../../../assets/img/BRASAOPMCEbranco2.png';
 import { IconeCadastro } from '../../componentesGerais/iconesMenuLateral/iconeMenulateralCadastro';
 import '../../border.modules.css';
@@ -40,24 +40,41 @@ export const MenuLateral: React.FC = () => {
           base: 'none',
         }}
       >
-        {isOpen ? (
-          <Flex
-            //border={'1px solid red'}
-            className="gradient-border"
-            align={'center'}
-            justify={'center'}
-          >
-            <Link to={'/'}>
-              <Image src={Brasao} w={'140px'} h={'10vh'} />
-            </Link>
-          </Flex>
-        ) : null}
-
         <Flex
+          //border={'1px solid red'}
           className="gradient-border"
           align={'center'}
           justify={'center'}
+          h={'16vh'}
+        >
+          {isOpen ? (
+            <Link to={'/'}>
+              <Image src={Brasao} w={'140px'} h={'10vh'} />
+            </Link>
+          ) : (
+            <Flex flexDirection={'column'} h={'10vh'}>
+              <Center
+                //border={'1px solid red'}
+                justifyItems={'center'}
+                color={'white'}
+                fontSize={'20px'}
+                fontWeight={800}
+                textAlign={'center'}
+              >
+                SGO
+              </Center>
+            </Flex>
+          )}
+        </Flex>
+
+        <Flex
+          className={isOpen ? 'gradient-border' : 'none'}
+          align={'center'}
+          justify={'center'}
           //border={'1px solid red'}
+          //mt={10}
+          //m={2}
+          //mb={10}
           h={'15vh'}
         >
           {' '}
@@ -67,7 +84,7 @@ export const MenuLateral: React.FC = () => {
               justifyContent={'center'}
               color={'white'}
               width={'224px'}
-              height={'88px'}
+              //height={'20vh'}
               //mb={10}
               fontSize={'20px'}
               textAlign={'center'}
@@ -78,18 +95,7 @@ export const MenuLateral: React.FC = () => {
               DE OPERAÇÕES
             </Text>
           ) : (
-            <Text
-              color={'white'}
-              width={'224px'}
-              height={'88px'}
-              fontSize={'20px'}
-              fontWeight={800}
-              mb={2.5}
-              textAlign={'center'}
-              justifyContent={'space-between'}
-            >
-              SGO
-            </Text>
+            <Flex flexDirection={'column'} h={'10vh'}></Flex>
           )}
         </Flex>
 
@@ -100,8 +106,8 @@ export const MenuLateral: React.FC = () => {
           //width={"25vh"}
           //height={'168px'}
           align="center"
-          mt={!isOpen ? 4 : 0}
-          pt={4}
+          mt={!isOpen ? 1 : 2}
+          //pt={10}
         >
           <AccordionMenuLateral
             customIcons={[
@@ -142,9 +148,10 @@ export const MenuLateral: React.FC = () => {
                     ['Postos', 'PMs'],
                     ['Escalas'],
                   ]
-                : [['Postos', 'PMs'],
-                //['Escalas']
-              ]
+                : [
+                    ['Postos', 'PMs'],
+                    //['Escalas']
+                  ]
             }
             displayCustom={{
               lg: isOpen ? 'block' : 'none',
