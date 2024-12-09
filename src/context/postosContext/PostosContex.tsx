@@ -116,7 +116,7 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   // Função para carregar o CSV completo
-  const loadCompleteCSV = (text: string) => {
+  const loadCompleteCSV = async (text: string) => {
     readString(text, {
       header: true,
       delimiter: ';',
@@ -129,24 +129,25 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
 
         const parsedArray = result.data as PostoForm[];
 
+        // Filtrar apenas os novos postos que ainda não existem no estado
         const newPostos = parsedArray.filter(
           a =>
             !postosLocal.some(
               m =>
-                a.local === m.local &&
-                a.bairro === m.bairro &&
-                a.numero === m.numero &&
-                a.rua === m.rua &&
-                a.cidade === m.cidade,
+                a.local?.trim() === m.local?.trim() &&
+                a.bairro?.trim() === m.bairro?.trim() &&
+                a.numero?.toString() === m.numero?.toString() &&
+                a.rua?.trim() === m.rua?.trim() &&
+                a.cidade?.trim() === m.cidade?.trim(),
             ),
         );
 
         if (newPostos.length > 0) {
-          setPostosDaPlanilha(prevArray => [...prevArray, ...newPostos]);
-          setPostosLocal(prevArray => [...prevArray, ...postosDaPlanilha]);
+          // Adicionar os novos postos ao estado
+          setPostosLocal(prevArray => [...prevArray, ...newPostos]);
           toast({
             title: 'Sucesso',
-            description: 'Posto(s) da planilha carregado(s) com sucesso',
+            description: `${newPostos.length} posto(s) carregado(s) com sucesso.`,
             status: 'success',
             position: 'top-right',
             duration: 5000,
@@ -154,8 +155,8 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
           });
         } else {
           toast({
-            title: 'Erro',
-            description: 'Todos os Postos já existem, não serão adicionados:',
+            title: 'Nenhum posto novo encontrado',
+            description: 'Todos os postos do CSV já existem.',
             status: 'warning',
             position: 'top-right',
             duration: 5000,
@@ -397,10 +398,11 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
     [],
   );
   const deletePostoByOPM = useCallback(
-    async (id?: string, index?: string) => {
+    async (id?: string, index?: number) => {
       setIsLoading(true);
 
-      if (id) {
+      console.log('chamou', id, index);
+      if (id !== undefined && index !== undefined) {
         try {
           console.log('delete com id');
           await api.delete(`/postos-opm/${id}`);
@@ -426,7 +428,7 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
           setIsLoading(false);
         }
       } else if (index) {
-        //console.log('delete com index');
+        console.log('delete com index');
         const indexDeletedOpm =
           currentDataIndex * (lastDataIndex - firstDataIndex) + Number(index);
 

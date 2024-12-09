@@ -1,4 +1,7 @@
 import * as yup from 'yup';
+import { IconeRedistribuir } from '../../components/componentesFicha/registrosMedicos/icones/iconeRedistribuir';
+import { ColumnProps } from '../../components/componentsCadastro/TableMain/TableMain';
+import { IconeEditar } from '../../components/ViewLogin';
 export const postosSchema = yup.object().shape({
   "local": yup.string().required('Campo obrigatório'),
   "rua": yup.string().required('Campo obrigatório'),

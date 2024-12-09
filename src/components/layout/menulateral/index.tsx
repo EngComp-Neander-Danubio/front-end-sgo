@@ -55,11 +55,12 @@ export const MenuLateral: React.FC = () => {
             <Flex flexDirection={'column'} h={'10vh'}>
               <Center
                 //border={'1px solid red'}
-                justifyItems={'center'}
+                //justifyItems={'center'}
                 color={'white'}
                 fontSize={'20px'}
                 fontWeight={800}
                 textAlign={'center'}
+                justifyContent={'space-between'}
               >
                 SGO
               </Center>

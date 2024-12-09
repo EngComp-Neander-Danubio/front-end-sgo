@@ -108,7 +108,7 @@ export const Rotas = () => {
         <Route path="/login-sgo" element={<LoginSGO />} />
         <Route path="/ficha" element={<Ficha />} />
         <Route path="/criar-operacao" element={<PostoServico />} />
-        <Route path="/criar-operacao/*" element={<EditarPostoServico />} />
+        <Route path="/editar-operacao/*" element={<EditarPostoServico />} />
         <Route path="/listar-operacoes" element={<ListEvent />} />
         <Route path="/adicionar-operacao" element={<PageAddGrandeEvento />} />
         <Route path="/novoRegistro" element={<Ficha />} />

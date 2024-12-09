@@ -102,7 +102,7 @@ export const FormGrandeEvento: React.FC<IFormProps> = ({
             gap={0}
             w={{
               base: widthSelect || '400px',
-              xl: widthSelect || '700px',
+              xl: widthSelect || '400px',
               lg: widthSelect || '400px',
               md: widthSelect || '400px',
               sm: widthSelect || '400px',

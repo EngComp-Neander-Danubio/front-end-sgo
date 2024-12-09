@@ -2,9 +2,10 @@ import React from 'react';
 import { useEvents } from '../../../context/eventContext/useEvents';
 import { Pagination } from '../pagination/Pagination';
 import { Flex } from '@chakra-ui/react';
-import TableGeneric, { ColumnProps } from '../table-generic/TableGeneric';
+
 import { IconeDeletar, IconeEditar } from '../../ViewLogin';
 import { useNavigate } from 'react-router-dom';
+import TableMain, { ColumnProps } from '../TableMain/TableMain';
 type Data = {
   id: string;
   nomeOperacao: string;
@@ -84,7 +85,7 @@ export const ToListEventsContent: React.FC = () => {
         flexDirection={'column'}
         w={'100%'}
       >
-        <TableGeneric data={events} columns={columns} />
+        <TableMain data={events} columns={columns} />
         <Pagination
           totalPages={totalData}
           dataPerPage={dataPerPage}

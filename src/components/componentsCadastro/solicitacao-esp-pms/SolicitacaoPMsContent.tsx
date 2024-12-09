@@ -135,7 +135,7 @@ export const SolicitacaoPMsContent: React.FC<IFlexCadastrar> = ({
           setPMs(prevArray => [...prevArray, ...newPMs]);
          toast({
            title: 'Sucesso',
-           description: `${newPMs.length} PPMM(s) carregado(s) com sucesso.`,
+           description: `${newPMs.length} PPMM carregado(s) com sucesso.`,
            status: 'success',
            position: 'top-right',
            duration: 5000,

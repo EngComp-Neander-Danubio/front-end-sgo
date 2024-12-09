@@ -1,13 +1,10 @@
-import { TableSolicitacoes } from '../table-solicitacoes';
 import { Flex, useDisclosure } from '@chakra-ui/react';
-import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
-import { ModalAlertSolicitacaoPMs } from '../modal/ModalAlertSolicitacaoPMs';
 import { Pagination } from '../pagination/Pagination';
 import { useSolicitacoesPMs } from '../../../context/solicitacoesPMsContext/useSolicitacoesPMs';
 import { ModalSolicitacarEfetivoRed } from '../modal/redistribuicao-efetivo/ModalSolicitarEfetivoRed';
 import { IconeRedistribuir } from '../../componentesFicha/registrosMedicos/icones/iconeRedistribuir';
 import { IconeVisualizar } from '../../componentesFicha/registrosMedicos/icones/iconeVisualizarSolicitacao';
-import TableGeneric, { ColumnProps } from '../table-generic/TableGeneric';
+import TableMain, { ColumnProps } from '../TableMain/TableMain';
 import { useNavigate } from 'react-router-dom';
 type Data = {
   id: string;
@@ -108,7 +105,7 @@ export const ToListSolicitacoesPMsContent = () => {
   return (
     <>
       <Flex flexDirection={'column'} w={'100%'}>
-        <TableGeneric data={solicitacoesPMs} columns={columns} />
+        <TableMain data={solicitacoesPMs} columns={columns} />
         {/* Componente de paginação */}
         <Pagination
           totalPages={totalPages}

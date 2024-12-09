@@ -68,7 +68,7 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
   const [pms, setPMs] = useState<Militar[]>([]);
   const [pmsDaPlanilha, setPMsDaPlanilha] = useState<Militar[]>([]);
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
-  const [dataPerPage] = useState(8); // Defina o número de registros por página
+  const [dataPerPage] = useState(5); // Defina o número de registros por página
   const lastDataIndexMilitar = (currentDataIndex + 1) * dataPerPage;
   const firstDataIndexMilitar = lastDataIndexMilitar - dataPerPage;
   const totalData = pms.length;
@@ -130,24 +130,25 @@ export const MilitaresProvider: React.FC<{ children: ReactNode }> = ({
           return;
         }
         const parsedArray = result.data as Militar[];
+        // Verifica quais PMs são novos e não estão em pms
         const newPMs = parsedArray.filter(
-          a => !pms.some(m => a.matricula === m.matricula),
+          a => !pms.some(m => a.matricula.trim() === m.matricula.trim()),
         );
 
         if (newPMs.length > 0) {
           setPMs(prevArray => [...prevArray, ...newPMs]);
-          toast({
-            title: 'Sucesso',
-            description: 'PM(s) adicionado(s) com sucesso',
-            status: 'success',
-            position: 'top-right',
-            duration: 5000,
-            isClosable: true,
-          });
+         toast({
+           title: 'Sucesso',
+           description: `${newPMs.length} PPMM carregado(s) com sucesso.`,
+           status: 'success',
+           position: 'top-right',
+           duration: 5000,
+           isClosable: true,
+         });
         } else {
           toast({
-            title: 'Erro',
-            description: 'Todos os PMs já existem, não serão adicionados:',
+            title: 'Nenhum PM novo encontrado',
+            description: 'Todos os PPMM do CSV já existem.',
             status: 'warning',
             position: 'top-right',
             duration: 5000,

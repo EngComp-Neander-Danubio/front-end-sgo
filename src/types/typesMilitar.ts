@@ -23,7 +23,13 @@ export enum Militar {
   AlunoSoldado = "13",
   Aleatorio = '14',
 }
-
+export type DataEfetivo = {
+  id?: string;
+  nome_completo: string;
+  opm: string;
+  matricula: string;
+  posto_grad: string;
+};
 export const optionsMilitares: Array<{ label: string; value: string; militarRank: Militar }> = [
   { label: 'Coronel', value: 'Cel PM', militarRank: Militar.Coronel },
   { label: 'Tenente-Coronel', value: 'Ten-Cel PM', militarRank: Militar.TenCoronel },

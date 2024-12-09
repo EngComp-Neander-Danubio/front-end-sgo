@@ -10,9 +10,9 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useIsOpen } from '../../../context/isOpenContext/useIsOpen';
-import TableGeneric, {
+import TableMain, {
   ColumnProps,
-} from '../../../components/componentsCadastro/table-generic/TableGeneric';
+} from '../../../components/componentsCadastro/TableMain/TableMain';
 import { IconeEditar } from '../../../components/componentesFicha/registrosMedicos/icones/iconeEditar';
 import { IconeDeletar } from '../../../components/componentesFicha/registrosMedicos/icones/iconeDeletar';
 import { Pagination } from '../../../components/componentsCadastro/pagination/Pagination';
@@ -60,13 +60,12 @@ export const HomePrincipal: React.FC = () => {
   const toast = useToast();
   const [pms, setPMs] = useState<Militar[]>([]);
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
-  const [dataPerPage] = useState(5); // Defina o número de registros por página
-  const [, setIsLoading] = useState<boolean>(false);
+  const [dataPerPage] = useState(1); // Defina o número de registros por página
   const lastDataIndex = (currentDataIndex + 1) * dataPerPage;
   const firstDataIndex = lastDataIndex - dataPerPage;
-  const totalData = pms.length;
-  const currentData = pms.slice(firstDataIndex, lastDataIndex);
-  const hasMore = lastDataIndex < pms.length;
+  const totalData = data.length;
+  const currentData = data.slice(firstDataIndex, lastDataIndex);
+  const hasMore = lastDataIndex < data.length;
   // Função para carregar mais PMs (próxima página)
   const loadMoreSolicitacoesOPMPMs = () => {
     if (hasMore) {
@@ -138,10 +137,7 @@ export const HomePrincipal: React.FC = () => {
       key: 'matricula',
       title: 'Matrícula',
     },
-    {
-      key: 'ofic_prac',
-      title: 'Oficial/Pracinha',
-    },
+    
     {
       key: 'posto_grad',
       title: 'Posto/Graduação',
@@ -238,7 +234,7 @@ export const HomePrincipal: React.FC = () => {
           <GridItem area={'main'}>
             <>
               <div>
-                <TableGeneric data={data} columns={columns} />
+                <TableMain data={currentData} columns={columns} />
                 <Pagination
                   totalPages={totalData}
                   dataPerPage={dataPerPage}

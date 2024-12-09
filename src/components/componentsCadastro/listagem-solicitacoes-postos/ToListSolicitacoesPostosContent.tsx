@@ -1,13 +1,10 @@
-import { TableSolicitacoes } from '../table-solicitacoes';
-import { Flex, FlexProps, useDisclosure } from '@chakra-ui/react';
+import { Flex, useDisclosure } from '@chakra-ui/react';
 import { Pagination } from '../pagination/Pagination';
 import { useSolicitacoesPostos } from '../../../context/solicitacoesPostosContext/useSolicitacoesPostos';
 import { ModalSolicitacarPostosRed } from '../modal/redistribuicao-postos/ModalSolicitarPostosRed';
 import React from 'react';
-import TableGeneric, { ColumnProps } from '../table-generic/TableGeneric';
-import { IconeDeletar } from '../../componentesFicha/registrosMedicos/icones/iconeDeletar';
+import TableMain, { ColumnProps } from '../TableMain/TableMain';
 import { IconeRedistribuir } from '../../componentesFicha/registrosMedicos/icones/iconeRedistribuir';
-import { IconeBusca } from '../../componentesGerais/iconesMenuLateral/iconeMenulateralBusca';
 import { IconeVisualizar } from '../../componentesFicha/registrosMedicos/icones/iconeVisualizarSolicitacao';
 import { useNavigate } from 'react-router-dom';
 
@@ -36,7 +33,7 @@ export const ToListSolicitacoesPostosContent: React.FC = () => {
     loadSolicitacaoPostosById,
   } = useSolicitacoesPostos();
   const navigate = useNavigate();
-  
+
   const {
     isOpen: isOpenFormRedSolPosto,
     onOpen: onOpenFormRedSolPosto,
@@ -104,7 +101,7 @@ export const ToListSolicitacoesPostosContent: React.FC = () => {
   return (
     <>
       <Flex flexDirection={'column'} w={'100%'}>
-        <TableGeneric data={solicitacoesPostos} columns={columns} />
+        <TableMain data={solicitacoesPostos} columns={columns} />
         {/* Componente de paginação */}
         <Pagination
           totalPages={totalData}

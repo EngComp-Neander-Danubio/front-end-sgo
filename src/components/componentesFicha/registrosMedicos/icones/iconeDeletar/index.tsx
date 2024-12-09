@@ -3,7 +3,7 @@ import React from 'react';
 import { BiTrash } from 'react-icons/bi';
 interface IIcone extends IconProps {
   label_tooltip?: string;
-  handleDelete?: () => Promise<void>;
+  handleDelete?: (id?: string, index?: string | number) => Promise<void>;
 }
 export const IconeDeletar: React.FC<IIcone> = ({
   label_tooltip,

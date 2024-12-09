@@ -15,14 +15,15 @@ import { AiOutlineArrowDown } from 'react-icons/ai';
 export interface ColumnProps<T> {
   key: string;
   title: string | ReactElement;
-  render?: (column: ColumnProps<T>, item: T) => ReactElement;
+  render?: (column: ColumnProps<T>, item: T, index?: number) => ReactElement;
 }
+
 type Props<T> = {
   columns: Array<ColumnProps<T>>;
   data?: T[];
 };
 
-const TableGeneric = <T,>({ data, columns }: Props<T>) => {
+const TableMain = <T,>({ data, columns }: Props<T>) => {
   const headers = columns.map((column, index) => {
     return (
       <Th key={`headCell-${index}`}>
@@ -47,7 +48,15 @@ const TableGeneric = <T,>({ data, columns }: Props<T>) => {
 
             return (
               <Td key={`cell-${index2}`}>
-                <Center>{value}</Center>
+                <Center
+                  fontWeight={400}
+                  color="rgba(102, 112, 133, 1)"
+                  fontSize={'1rem'}
+                  lineHeight="18px"
+                  letterSpacing="0em"
+                >
+                  {value}
+                </Center>
               </Td>
             );
           })}
@@ -67,7 +76,8 @@ const TableGeneric = <T,>({ data, columns }: Props<T>) => {
           //pt={2}
           w="100%"
           transitionDuration="1.0s"
-          h={headers.length ? `50vh` : 'fit-content'}
+          //h={headers.length > 0 ? `40vh` : 'fit-content'}
+          h={'fit-content'}
           //minH={'30vh'}
           //overflowY={'auto'}
           mb={10}
@@ -95,4 +105,4 @@ const TableGeneric = <T,>({ data, columns }: Props<T>) => {
   );
 };
 
-export default TableGeneric;
+export default TableMain;
