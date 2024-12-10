@@ -23,10 +23,16 @@ import { IconeDeletar, IconeEditar } from '../../ViewLogin';
 import { useMilitares } from '../../../context/militaresContext/useMilitares';
 import { ModalSolicitarEfetivo } from '../modal/ModalSolicitarEfetivo';
 import { ModalSAPM } from '../modal/ModalSAPM';
-import { DataEfetivo } from '../../../types/typesMilitar';
+import {
+  DataEfetivo,
+  handleSortByPostoGrad,
+} from '../../../types/typesMilitar';
 import { ModalFormAddMilitar } from '../formEfetivo/ModalFormAddMilitar';
-
-export const AccordionItemEfetivo = () => {
+import React from 'react';
+interface IAccordion {
+  isEditing: boolean;
+}
+export const AccordionItemEfetivo: React.FC<IAccordion> = ({ isEditing }) => {
   const { isOpen } = useIsOpen();
   const {
     dataPerPage,
@@ -229,7 +235,10 @@ export const AccordionItemEfetivo = () => {
                 // border={'1px solid red'}
               >
                 <Flex mt={2} flexDirection={'column'} w={'100%'}>
-                  <TableMain data={pms} columns={columns} />
+                  <TableMain
+                    data={pms}
+                    columns={handleSortByPostoGrad(columns, '1')}
+                  />
                   <Pagination
                     totalPages={totalData}
                     dataPerPage={dataPerPage}
@@ -245,7 +254,7 @@ export const AccordionItemEfetivo = () => {
                   handleSubmit={function(): void {
                     throw new Error('Function not implemented.');
                   }}
-                  label="Salvar"
+                  label={!isEditing ? 'Salvar' : 'Editar'}
                 />
               </Flex>
             </AccordionPanel>

@@ -15,9 +15,19 @@ import { useEffect } from 'react';
 import { useEvents } from '../../../context/eventContext/useEvents';
 import { useRequisitos } from '../../../context/requisitosContext/useRequesitos';
 import { eventoSchema } from '../../../types/yupEvento/yupEvento';
-import { IForm } from '../modal/FormSelectRequesistos';
+import { formatDate, normalizeDate } from '../../../utils/utils';
+import { usePostos } from '../../../context/postosContext/usePostos';
 
-export const AccordionItemOperacao = () => {
+type IForm = {
+  comandante: string;
+  dataFinal: Date;
+  dataInicio: Date;
+  nomeOperacao: string;
+};
+interface IAccordion {
+  isEditing: boolean;
+}
+export const AccordionItemOperacao: React.FC<IAccordion> = ({ isEditing }) => {
   const { isOpen } = useIsOpen();
   const { searchServices, searchServicesById } = useRequisitos();
   const { control, watch } = useForm();
@@ -36,14 +46,30 @@ export const AccordionItemOperacao = () => {
   const methodsInput = useForm<IForm>({
     resolver: yupResolver(eventoSchema),
   });
-  const { uploadEvent } = useEvents();
-
-  const { reset } = methodsInput;
+  const { uploadEvent, eventById } = useEvents();
 
   const onSubmit = async (data: IForm) => {
     await uploadEvent(data);
     //reset();
   };
+
+  const { setValue } = methodsInput;
+  useEffect(() => {
+    console.log(eventById);
+    if (eventById && isEditing) {
+      setValue('comandante', (eventById?.comandante as unknown) as string);
+      setValue('nomeOperacao', eventById?.nomeOperacao);
+      setValue(
+        'dataInicio',
+        new Date(normalizeDate((eventById?.dataInicio as unknown) as string)),
+      );
+      setValue(
+        'dataFinal',
+        new Date(normalizeDate((eventById?.dataFinal as unknown) as string)),
+      );
+    }
+  }, [eventById, setValue]);
+
   return (
     <>
       <AccordionItem>
@@ -87,7 +113,7 @@ export const AccordionItemOperacao = () => {
                     <BotaoCadastrar
                       type="submit"
                       /* handleSubmit={() => onSubmit} */
-                      label="Salvar"
+                      label={!isEditing ? 'Salvar' : 'Editar'}
                     />
                   </Flex>
                 </form>

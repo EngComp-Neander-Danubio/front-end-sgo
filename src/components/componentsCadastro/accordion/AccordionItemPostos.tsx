@@ -9,6 +9,7 @@ import {
   Divider,
   AccordionItem,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import { FaFileUpload } from 'react-icons/fa';
 import { HiPencil } from 'react-icons/hi';
@@ -22,8 +23,15 @@ import { DataPostos } from '../../../types/typesPostos';
 import { IconeDeletar, IconeEditar } from '../../ViewLogin';
 import { ModalSolicitacarPostos } from '../modal/ModalSolicitarPostos';
 import { ModalFormAddPosto } from '../modal/ModalFormAddPosto';
-
-export const AccordionItemPostos = () => {
+import api from '../../../services/api';
+import { useCallback, useEffect } from 'react';
+import { PostoForm } from '../../../context/postosContext/PostosContex';
+import { optionsModalidade } from '../../../types/typesModalidade';
+import { useEvents } from '../../../context/eventContext/useEvents';
+interface IAccordion {
+  isEditing: boolean;
+}
+export const AccordionItemPostos: React.FC<IAccordion> = ({ isEditing }) => {
   const { isOpen } = useIsOpen();
   const {
     loadMore,
@@ -33,12 +41,12 @@ export const AccordionItemPostos = () => {
     handleClick,
     handleOnChange,
     handleOnSubmitP,
-    uploadPostoEmLote,
     postosLocal,
     loadPostoForAccordion,
     totalData: totalDataPostosLocal,
     dataPerPage: dataPerPagePostosLocal,
     deletePostoByOPM,
+    uploadPostoEmLote,
   } = usePostos();
   const {
     isOpen: isOpenFormAddPosto,
@@ -50,14 +58,18 @@ export const AccordionItemPostos = () => {
     onOpen: onOpenModalSolicitarPostos,
     onClose: onCloseModalSolicitarPostos,
   } = useDisclosure();
+  const toast = useToast();
+  const handlePostos = async (): Promise<void> => {
+    uploadPostoEmLote(postosLocal);
+  };
   const columns: Array<ColumnProps<DataPostos>> = [
     {
       key: 'local',
       title: 'Local',
     },
     {
-      key: 'rua',
-      title: 'Rua',
+      key: 'endereco',
+      title: 'Endereço',
     },
     {
       key: 'bairro',
@@ -74,6 +86,12 @@ export const AccordionItemPostos = () => {
     {
       key: 'modalidade',
       title: 'Modalidade',
+      render: (_, record) => {
+        const modalidadeData =
+          optionsModalidade.find(m => m.value === record.modalidade)?.label ||
+          null;
+        return <>{modalidadeData?.toLowerCase() ?? record.modalidade.toLowerCase()}</>;
+      },
     },
     {
       key: 'acoes',
@@ -84,7 +102,7 @@ export const AccordionItemPostos = () => {
 
         return (
           <Flex flexDirection="row" gap={2}>
-            <span key={`delete-${record.id}`}>
+            <span key={`delete-${record.id ?? index}`}>
               <IconeDeletar
                 label_tooltip={record.local}
                 handleDelete={async () => {
@@ -99,7 +117,7 @@ export const AccordionItemPostos = () => {
                 }}
               />
             </span>
-            <span key={`edit-${column.key}`}>
+            <span key={`edit-${record.id ?? index}`}>
               <IconeEditar label_tooltip={record.local} />
             </span>
           </Flex>
@@ -107,6 +125,7 @@ export const AccordionItemPostos = () => {
       },
     },
   ];
+
   return (
     <>
       <AccordionItem>
@@ -235,8 +254,8 @@ export const AccordionItemPostos = () => {
 
                 <Divider />
                 <BotaoCadastrar
-                  handleSubmit={uploadPostoEmLote}
-                  label="Salvar"
+                  handleSubmit={handlePostos}
+                  label={!isEditing ? 'Salvar' : 'Editar'}
                   type="submit"
                 />
               </Flex>

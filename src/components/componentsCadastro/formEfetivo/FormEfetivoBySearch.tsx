@@ -59,7 +59,6 @@ export const FormEfetivoBySearch: React.FC<IFormProps> = ({
           label: `${option.gra_nome} PM ${option.pes_nome} - Matrícula: ${option.pes_codigo} - Unidade: ${option.unidade_uni_sigla}`,
           value: (option.pes_codigo as unknown) as string,
         }));
-        
 
       cache.set(pes_nome, filteredOptions);
 
@@ -134,7 +133,9 @@ export const FormEfetivoBySearch: React.FC<IFormProps> = ({
                 {...field}
                 error={error}
                 isDisabled
-              />
+              >
+                {''}
+              </InputPatternController>
             )}
           />
         </Flex>

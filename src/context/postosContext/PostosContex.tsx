@@ -10,13 +10,14 @@ import React, {
 import { useToast } from '@chakra-ui/react';
 import { readString } from 'react-papaparse';
 import api from '../../services/api';
+import { optionsModalidade } from '../../types/typesModalidade';
 export type Posto = {
   columns?: string[];
   registers?: { [key: string]: any }[];
 };
 export interface PostoForm {
   local: string;
-  rua: string;
+  endereco: string;
   numero: number;
   bairro: string;
   cidade: string;
@@ -38,10 +39,11 @@ export interface IContextPostoData {
   loadLess: () => void;
   loadPostoForAccordion: (data: PostoForm) => Promise<void>;
   uploadPosto: (data: PostoForm) => Promise<void>;
-  uploadPostoEmLote: () => Promise<void>;
+  uploadPostoEmLote: (dados: PostoForm[]) => Promise<void>;
   loadPostosByAPI: () => Promise<void>;
   updatePosto: (data: PostoForm, id: string) => Promise<void>;
   deletePostoByOPM: (id?: string, index?: string) => Promise<void>;
+  loadPostosFromToBackend: (id?: string) => Promise<void>;
   currentDataIndex: number;
   dataPerPage: number;
   lastDataIndex: number;
@@ -62,9 +64,8 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
   const [postosByAPI, setPostosByAPI] = useState<PostoForm[]>([]);
   const [postoById, setPostoById] = useState<PostoForm>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // Verifique as mudanças no estado `pms`
+
   const [postosLocal, setPostosLocal] = useState<PostoForm[]>([]);
-  const [postosDaPlanilha, setPostosDaPlanilha] = useState<PostoForm[]>([]);
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
   const [dataPerPage] = useState(5); // Defina o número de registros por página
 
@@ -73,6 +74,34 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
   const totalData = postosLocal.length;
   const currentData = postosLocal.slice(firstDataIndex, lastDataIndex);
   const hasMore = lastDataIndex < postosLocal.length;
+
+  const loadPostosFromToBackend = async (id?: string) => {
+    try {
+      const response = await api.get<PostoForm[]>(`/listar-postos`, {
+        params: {
+          id: id,
+        },
+      });
+      const newPostos: PostoForm[] = response.data.filter(
+        novoPosto =>
+          !postosLocal.some(
+            postoExistente =>
+              novoPosto.local === postoExistente.local &&
+              novoPosto.bairro === postoExistente.bairro &&
+              novoPosto.numero === postoExistente.numero &&
+              novoPosto.endereco === postoExistente.endereco &&
+              novoPosto.cidade === postoExistente.cidade,
+          ),
+      );
+      setPostosLocal(newPostos);
+    } catch (err) {
+      if (err instanceof Error) {
+        console.error(`Erro ao carregar postos: ${err.message}`);
+      } else {
+        console.error('Erro desconhecido ao carregar postos:', err);
+      }
+    }
+  };
   const loadPostoForAccordion = (data: PostoForm) => {
     try {
       const postoExists = postosLocal.some(
@@ -80,6 +109,7 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
           data.local === m.local &&
           data.bairro === m.bairro &&
           data.numero === m.numero &&
+          data.endereco === m.endereco &&
           data.cidade === m.cidade,
       );
 
@@ -137,7 +167,7 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
                 a.local?.trim() === m.local?.trim() &&
                 a.bairro?.trim() === m.bairro?.trim() &&
                 a.numero?.toString() === m.numero?.toString() &&
-                a.rua?.trim() === m.rua?.trim() &&
+                a.endereco?.trim() === m.endereco?.trim() &&
                 a.cidade?.trim() === m.cidade?.trim(),
             ),
         );
@@ -166,12 +196,6 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
       },
     });
   };
-  useEffect(() => {
-    //console.log('postos de serviço do perfil de OPM', postos);
-    if (postosDaPlanilha.length > 0) {
-      setPostosLocal(prevArray => [...prevArray, ...postosDaPlanilha]); // Usar spread operator
-    }
-  }, [postosDaPlanilha]);
 
   const loadMore = () => {
     if (hasMore) {
@@ -218,7 +242,6 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  useEffect(() => {}, [postosLocal]);
   const handleClick = () => {
     document.getElementById('postoInput')?.click();
   };
@@ -299,15 +322,21 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
       setIsLoading(false);
     }
   }, []);
-  const uploadPostoEmLote = useCallback(async () => {
-    setIsLoading(true);
-    //const postos: { [postos] };
-    console.log(postos);
+  const uploadPostoEmLote = useCallback(async (dados: PostoForm[]) => {
+    const postos_servicos = {
+      postos_servicos: dados.map(
+        ({ militares_por_posto, numero, modalidade, ...rest }) => ({
+          ...rest,
+          operacao_id: '06/2024',
+          militares_por_posto: Number(militares_por_posto),
+          numero: Number(numero),
+          modalidade:
+            optionsModalidade.find(m => m.value === modalidade)?.label || null,
+        }),
+      ),
+    };
     try {
-      // Envia o array de postos para a API
-      await api.post('/postos/upload', postos);
-
-      // Exibe uma notificação de sucesso
+      await api.post('/criar-postos', postos_servicos);
       toast({
         title: 'Sucesso',
         description: 'Postos salvos com sucesso',
@@ -329,9 +358,8 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
         isClosable: true,
       });
     } finally {
-      setIsLoading(false);
     }
-  }, [postos, api, toast]);
+  }, []);
 
   const updatePosto = useCallback(
     async (data: PostoForm, id: string) => {
@@ -400,12 +428,10 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
   const deletePostoByOPM = useCallback(
     async (id?: string, index?: number) => {
       setIsLoading(true);
-
-      console.log('chamou', id, index);
       if (id !== undefined && index !== undefined) {
         try {
           console.log('delete com id');
-          await api.delete(`/postos-opm/${id}`);
+          await api.delete(`/delete-postos/${id}`);
           toast({
             title: 'Sucesso',
             description: 'Posto deletado com sucesso',
@@ -486,6 +512,7 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
       loadPostosByAPI,
       loadPostoForAccordion,
       deletePostoByOPM,
+      loadPostosFromToBackend,
     }),
     [
       postosLocal,
@@ -509,6 +536,7 @@ export const PostosProvider: React.FC<{ children: ReactNode }> = ({
       loadPostosByAPI,
       loadPostoForAccordion,
       deletePostoByOPM,
+      loadPostosFromToBackend,
     ],
   );
 

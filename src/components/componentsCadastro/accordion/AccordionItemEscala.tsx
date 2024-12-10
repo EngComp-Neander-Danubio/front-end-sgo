@@ -24,8 +24,10 @@ import { ModalRelatorio } from '../modal/ModalRelatorio';
 import { ModalRequesitos } from '../modal/ModalRequesitos';
 import { ModalRestantes } from '../modal/ModalRestantes';
 import { ModalServices } from '../modal/ModalServices';
-
-export const AccordionItemEscala = () => {
+interface IAccordion {
+  isEditing: boolean;
+}
+export const AccordionItemEscala: React.FC<IAccordion> = ({ isEditing }) => {
   const { isOpen } = useIsOpen();
   const {
     isOpen: isOpenRequesitos,
@@ -204,7 +206,7 @@ export const AccordionItemEscala = () => {
                     handleSubmit={function(): void {
                       throw new Error('Function not implemented.');
                     }}
-                    label="Salvar"
+                    label={!isEditing ? 'Salvar' : 'Editar'}
                   />
                 </Flex>
               </Flex>

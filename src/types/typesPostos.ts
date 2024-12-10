@@ -10,7 +10,7 @@ export enum Modaliade {
 export type DataPostos = {
   id?: string;
   local: string;
-  rua: string;
+  endereco: string;
   numero: number;
   bairro: string;
   cidade: string;

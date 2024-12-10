@@ -56,6 +56,14 @@ export const ToListEventsContent: React.FC = () => {
       render: (_, record) => {
         return (
           <Flex flexDirection={'row'} gap={2}>
+            <IconeDeletar
+              key={`${record.id}`}
+              label_tooltip={`${record.nomeOperacao}`}
+              handleDelete={async () => {
+                const idSolicitacao = record.id;
+                await deleteEvent(idSolicitacao);
+              }}
+            />
             <IconeEditar
               key={`${record.id}`}
               label_tooltip={`${record.nomeOperacao}`}
@@ -63,14 +71,6 @@ export const ToListEventsContent: React.FC = () => {
                 const idSolicitacao = record.id;
                 await loadEventsById(idSolicitacao);
                 navigate(`/editar-operacao/${idSolicitacao}`);
-              }}
-            />
-            <IconeDeletar
-              key={`${record.id}`}
-              label_tooltip={`${record.nomeOperacao}`}
-              handleDelete={async () => {
-                const idSolicitacao = record.id;
-                await deleteEvent(idSolicitacao);
               }}
             />
           </Flex>

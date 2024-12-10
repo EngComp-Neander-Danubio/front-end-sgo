@@ -38,6 +38,7 @@ export const BotaoAlert: React.FC<IBotaoAlert> = props => {
         h={'22px'}
         fontSize={'12px'}
         color={colorTwo}
+        textAlign={'center'}
         alignContent={'center'}
         justifyContent={'center'}
         _hover={{ cursor: 'pointer' }}

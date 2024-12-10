@@ -51,7 +51,6 @@ export const DatePickerEvent: React.FC<IDatePicker> = ({
                       })
                     : ''
                 }
-                onChange={() => {}}
                 placeholder="Selecione data e horário"
               />
               <InputRightElement>

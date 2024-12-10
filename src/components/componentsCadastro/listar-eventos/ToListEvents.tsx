@@ -9,7 +9,6 @@ interface IToListEventProps {
 }
 export const ToListEvents: React.FC<IToListEventProps> = ({
   isOpen,
-  handleToggle,
 }) => {
   return (
     <Flex
@@ -63,7 +62,7 @@ export const ToListEvents: React.FC<IToListEventProps> = ({
           align={{ base: 'flex-start' }}
         >
           <Flex p={8} w={isOpen ? '86vw' : '93vw'} transitionDuration="1.0s">
-            <ToListEventsContent isOpen={isOpen} handleToggle={handleToggle} />
+            <ToListEventsContent />
           </Flex>
         </Flex>
       </Flex>

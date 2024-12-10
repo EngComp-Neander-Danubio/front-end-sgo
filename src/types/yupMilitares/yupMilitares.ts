@@ -8,15 +8,3 @@ export const militarSchema = yup.object().shape({
 
 });
 
-/* const headerKeys =
-  postos.length > 0
-    ? Object.keys(postos[0]).filter(key =>
-      ['Local', 'Rua', 'Numero', 'Bairro', 'Cidade'].includes(key),
-    )
-    : [];
-const headerKeysMilitar =
-  militares.length > 0
-    ? Object.keys(militares[0]).filter(key =>
-      ['matricula', 'posto_grad', 'nome_completo', 'opm'].includes(key),
-    )
-    : []; */

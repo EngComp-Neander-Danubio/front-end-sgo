@@ -54,6 +54,7 @@ const TableMain = <T,>({ data, columns }: Props<T>) => {
                   fontSize={'1rem'}
                   lineHeight="18px"
                   letterSpacing="0em"
+                  h={'10px'}
                 >
                   {value}
                 </Center>
@@ -76,7 +77,7 @@ const TableMain = <T,>({ data, columns }: Props<T>) => {
           //pt={2}
           w="100%"
           transitionDuration="1.0s"
-          //h={headers.length > 0 ? `40vh` : 'fit-content'}
+          //h={headers.length > 0 ? `30vh` : 'fit-content'}
           h={'fit-content'}
           //minH={'30vh'}
           //overflowY={'auto'}

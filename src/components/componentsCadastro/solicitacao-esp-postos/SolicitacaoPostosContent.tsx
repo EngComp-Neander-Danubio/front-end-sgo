@@ -8,7 +8,12 @@ import {
 import { DashButtons } from '../../componentesFicha/registrosMedicos/header';
 import { TitlePerfil } from '../../componentesFicha/dadosDaFicha/titlePerfil';
 import { TitleSolicitacoes } from '../../componentesFicha/registrosMedicos/title';
-import { DadosFicha } from '../../ViewLogin';
+import {
+  BotaoAlert,
+  DadosFicha,
+  IconeDeletar,
+  IconeEditar,
+} from '../../ViewLogin';
 import { ModalFormAddPosto } from '../modal/ModalFormAddPosto';
 import { TableSolicitacoes } from '../table-solicitacoes';
 import { columnsMapPostos } from '../../../types/yupPostos/yupPostos';
@@ -20,10 +25,26 @@ import { optionsModalidade } from '../../../types/typesModalidade';
 import { useCallback, useEffect, useState } from 'react';
 import { PostoForm } from '../../../context/solicitacoesOPMPostosContext/SolicitacoesOPMPostosContext';
 import { readString } from 'react-papaparse';
+import TableMain, { ColumnProps } from '../TableMain/TableMain';
+import { IconeRedistribuir } from '../../componentesFicha/registrosMedicos/icones/iconeRedistribuir';
+import { IconeVisualizar } from '../../componentesFicha/registrosMedicos/icones/iconeVisualizarSolicitacao';
+import { useNavigate } from 'react-router-dom';
+import { DataPostos } from '../../../types/typesPostos';
 interface ISolicitacaoPostosContent {
   isOpen: boolean;
   handleToggle: () => void;
 }
+type Data = {
+  id?: string;
+  sps_id: number;
+  sps_operacao_id: string;
+  solicitacao: string;
+  sps_status: string;
+  prazo_final: Date;
+  prazo_inicial: Date;
+  unidades_id: number;
+  nome_operacao: string;
+};
 export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = props => {
   const {
     isOpen: isOpenAlertSolicitacao,
@@ -38,10 +59,11 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
 
   const { solicitacaoPostoIndividual } = useSolicitacoesPostos();
   const toast = useToast();
+  const navigate = useNavigate();
   const [file, setFile] = useState<File | null>(null);
-  const [postosLocal, setPostosLocal] = useState<PostoForm[]>([]);
+  const [postosLocal, setPostosLocal] = useState<DataPostos[]>([]);
   const [currentDataIndex, setCurrentDataIndex] = useState(0);
-  const [dataPerPage] = useState(8); // Defina o número de registros por página
+  const [dataPerPage] = useState(5); // Defina o número de registros por página
   const lastDataIndex = (currentDataIndex + 1) * dataPerPage;
   const firstDataIndex = lastDataIndex - dataPerPage;
   const totalData = postosLocal.length;
@@ -54,15 +76,15 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
   }, []);
   const loadPostosFromSolicitacaoToBackend = async (id: number) => {
     try {
-      const response = await api.get<PostoForm[]>(`/listar-postos/${id}`);
-      const newPostos: PostoForm[] = response.data.filter(
+      const response = await api.get<DataPostos[]>(`/listar-postos/${id}`);
+      const newPostos: DataPostos[] = response.data.filter(
         novoPosto =>
           !postosLocal.some(
             postoExistente =>
               novoPosto.local === postoExistente.local &&
               novoPosto.bairro === postoExistente.bairro &&
               novoPosto.numero === postoExistente.numero &&
-              novoPosto.rua === postoExistente.rua &&
+              novoPosto.endereco === postoExistente.endereco &&
               novoPosto.cidade === postoExistente.cidade,
           ),
       );
@@ -88,7 +110,7 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
           return;
         }
 
-        const parsedArray = result.data as PostoForm[];
+        const parsedArray = result.data as DataPostos[];
 
         // Filtrar apenas os novos postos que ainda não existem no estado
         const newPostos = parsedArray.filter(
@@ -98,7 +120,7 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
                 a.local?.trim() === m.local?.trim() &&
                 a.bairro?.trim() === m.bairro?.trim() &&
                 a.numero?.toString() === m.numero?.toString() &&
-                a.rua?.trim() === m.rua?.trim() &&
+                a.endereco?.trim() === m.endereco?.trim() &&
                 a.cidade?.trim() === m.cidade?.trim(),
             ),
         );
@@ -142,7 +164,7 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
       });
     }
   };
-  const loadPostoByOPM = (data: PostoForm) => {
+  const loadPostoByOPM = (data: DataPostos) => {
     try {
       const postoExists = postosLocal.some(
         m =>
@@ -237,7 +259,7 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
   //deletePostoByOPM
   const deletePostoByOPM = useCallback(
     async (id?: string, index?: string | number) => {
-      if (id) {
+      if (id !== undefined && index !== undefined) {
         try {
           await api.delete(`/postos-opm/${id}`);
           toast({
@@ -280,7 +302,7 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
           //setIsLoading(false);
           return;
         }
-        const updatedOpm = postosLocal.filter((_, i) => i !== indexDeletedOpm);
+        const updatedOpm = postosLocal.filter((_, i) => i !== Number(index));
 
         if (updatedOpm.length !== postosLocal.length) {
           setPostosLocal(updatedOpm);
@@ -299,16 +321,74 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
     [postosLocal, currentDataIndex, currentData.length],
   );
 
-  const transformedPostos = currentData.map(posto => {
-    const transformedPosto: {
-      [key: string]: any;
-    } = {};
-    Object.entries(columnsMapPostos).forEach(([newKey, originalKey]) => {
-      transformedPosto[newKey] = posto[originalKey];
-    });
-    return transformedPosto;
-  });
+  const columns: Array<ColumnProps<DataPostos>> = [
+    {
+      key: 'local',
+      title: 'Local',
+    },
+    {
+      key: 'endereco',
+      title: 'Endereço',
+    },
+    {
+      key: 'bairro',
+      title: 'Bairro',
+    },
+    {
+      key: 'numero',
+      title: 'Número',
+    },
+    {
+      key: 'cidade',
+      title: 'Cidade',
+    },
+    {
+      key: 'modalidade',
+      title: 'Modalidade',
+      render: (_, record) => {
+        const modalidadeData =
+          optionsModalidade.find(m => m.value === record.modalidade)?.label ||
+          null;
+        return (
+          <>
+            {modalidadeData?.toLowerCase() ?? record.modalidade.toLowerCase()}
+          </>
+        );
+      },
+    },
+    {
+      key: 'acoes',
+      title: 'Ações',
+      render: (_, record) => {
+        // Encontrar o índice do registro diretamente no array de dados
+        const index = postosLocal?.findIndex(item => item === record);
 
+        return (
+          <Flex flexDirection="row" gap={2}>
+            <span key={`delete-${record.id ?? index}`}>
+              <IconeDeletar
+                label_tooltip={record.local}
+                handleDelete={async () => {
+                  //console.log(index);
+                  if (index !== undefined && index !== -1) {
+                    await deletePostoByOPM(record.id, index.toString()); // Passe o índice diretamente
+                  } else {
+                    console.error(
+                      'Índice não encontrado para o registro',
+                      record,
+                    );
+                  }
+                }}
+              />
+            </span>
+            <span key={`edit-${record.id ?? index}`}>
+              <IconeEditar label_tooltip={record.local} />
+            </span>
+          </Flex>
+        );
+      },
+    },
+  ];
   const sendPostosFromSolicitacaoToBackend = async () => {
     try {
       const postos_servicos = {
@@ -427,25 +507,8 @@ export const SolicitacaoPostosContent: React.FC<ISolicitacaoPostosContent> = pro
             loadData={sendPostosFromSolicitacaoToBackend}
           />
           <Flex mt={2} flexDirection={'column'} w={'100%'}>
-            <TableSolicitacoes
-              isOpen={props.isOpen}
-              isActions
-              isView={true}
-              columns={[
-                'Id',
-                'Local',
-                'Rua',
-                'Número',
-                'Bairro',
-                'Cidade',
-                'Modalidade',
-                'Qtd Militares',
-              ]}
-              registers={transformedPostos}
-              label_tooltip="Posto"
-              height={'32vh'}
-              handleDelete={deletePostoByOPM}
-            />
+            <TableMain data={currentData} columns={columns} />
+
             {/* Componente de paginação */}
             <Pagination
               totalPages={totalData}

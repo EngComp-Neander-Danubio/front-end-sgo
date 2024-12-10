@@ -7,6 +7,7 @@ import TableMain, { ColumnProps } from '../TableMain/TableMain';
 import { IconeRedistribuir } from '../../componentesFicha/registrosMedicos/icones/iconeRedistribuir';
 import { IconeVisualizar } from '../../componentesFicha/registrosMedicos/icones/iconeVisualizarSolicitacao';
 import { useNavigate } from 'react-router-dom';
+import { BotaoAlert } from '../../componentesFicha/registrosMedicos/buttons/buttonAlert';
 
 type Data = {
   isOpen?: boolean;
@@ -56,10 +57,7 @@ export const ToListSolicitacoesPostosContent: React.FC = () => {
       key: 'nome_operacao',
       title: 'Operação',
     },
-    {
-      key: 'sps_status',
-      title: 'Status',
-    },
+
     {
       key: 'prazo_inicial',
       title: 'Prazo Inicial',
@@ -68,31 +66,51 @@ export const ToListSolicitacoesPostosContent: React.FC = () => {
       key: 'prazo_final',
       title: 'Prazo Final',
     },
-
+    {
+      key: 'sps_status',
+      title: 'Status',
+      render: (_, record) => {
+        return (
+          <Flex flexDirection="row" gap={2}>
+            {record.sps_status.includes('Pendente') ? (
+              <BotaoAlert text="Pendente" />
+            ) : record.sps_status.includes('Completa') ? (
+              <BotaoAlert text="Completa" />
+            ) : record.sps_status.includes('Alerta') ? (
+              <BotaoAlert text="Alerta" />
+            ) : null}
+          </Flex>
+        );
+      },
+    },
     {
       key: 'acoes',
       title: 'Ações',
       render: (_, record) => {
         return (
           <Flex flexDirection={'row'} gap={2}>
-            <IconeVisualizar
-              key={`${record.id}`}
-              label_tooltip={`${record.sps_id}`}
-              onOpen={async () => {
-                const idSolicitacao = Number(record.id);
-                await loadSolicitacaoPostosById(idSolicitacao);
-                navigate(`/solicitacao-pms-id/${idSolicitacao}`);
-              }}
-            />
-            <IconeRedistribuir
-              key={`${record.id}`}
-              label_tooltip={`${record.sps_id}`}
-              onOpen={async () => {
-                const idSolicitacao = Number(record.id);
-                await loadSolicitacaoPostosById(idSolicitacao);
-                onOpenFormRedSolPosto;
-              }}
-            />
+            <span key={`visualizar-${record.id}`}>
+              <IconeVisualizar
+                key={`${record.id}`}
+                label_tooltip={`${record.sps_id}`}
+                onOpen={async () => {
+                  const idSolicitacao = Number(record.sps_id);
+                  await loadSolicitacaoPostosById(idSolicitacao);
+                  navigate(`/solicitacao-posto-id/${idSolicitacao}`);
+                }}
+              />
+            </span>
+            <span key={`redistribuir-${record.id}`}>
+              <IconeRedistribuir
+                key={`${record.id}`}
+                label_tooltip={`${record.sps_id}`}
+                onOpen={async () => {
+                  const idSolicitacao = Number(record.sps_id);
+                  await loadSolicitacaoPostosById(idSolicitacao);
+                  onOpenFormRedSolPosto();
+                }}
+              />
+            </span>
           </Flex>
         );
       },
